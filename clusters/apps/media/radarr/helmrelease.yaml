@@ -1,0 +1,129 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: radarr
+  namespace: media
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: "4.5.0"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      radarr:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        initContainers:
+          migrate-data:
+            image:
+              repository: alpine
+              tag: latest
+            command:
+              - "/bin/sh"
+              - "-c"
+            args:
+              - |
+                echo "Checking for migration..."
+                # If the new Longhorn volume is empty, copy data from the old HostPath
+                echo "Longhorn volume is empty. Migrating data..."
+                cp -av /host-config/. /config/
+                echo "Migration Complete!"
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: lscr.io/linuxserver/radarr
+              tag: 6.0.4.10291-ls288@sha256:06ac318ecb95a34c7b229568dcb4271f02cb5007bb189a0dd67a2032864187ca
+            env:
+              - name: PUID
+                value: "1000"
+              - name: PGID
+                value: "1000"
+              - name: TZ
+                value: "Europe/Paris"
+            resources:
+              requests:
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 7878
+                  initialDelaySeconds: 10
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 30
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 7878
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+    service:
+      app:
+        controller: radarr
+        ports:
+          http:
+            port: 7878
+            protocol: TCP
+    ingress:
+      app:
+        enabled: true
+        className: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: radarr.erwanleboucher.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: radarr-tls
+            hosts:
+              - radarr.erwanleboucher.dev
+    persistence:
+      host-config:
+        enabled: true
+        type: persistentVolumeClaim
+        existingClaim: radarr
+        globalMounts:
+          - path: /host-config
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: "local-path"
+        volumeName: radarr-config
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        globalMounts:
+          - path: /config
+      data:
+        type: hostPath
+        hostPath: /srv/media
+        globalMounts:
+          - path: /data

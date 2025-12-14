@@ -1,0 +1,33 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
+  "timezone": "Europe/Paris",
+  "labels": ["dependencies"],
+  "ignorePaths": ["clusters/**"],
+  "packageRules": [
+  {
+      "description": "Fix LinuxServer.io qBittorrent version confusion (ignore year-based tags like 20.x)",
+      "matchPackageNames": ["lscr.io/linuxserver/qbittorrent", "linuxserver/qbittorrent"],
+      "allowedVersions": "<= 10.0.0"
+    },
+    {
+      "description": "Group K3s minor/patch upgrades",
+      "matchManagers": ["flux", "kubernetes", "helmv3"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "k3s dependencies"
+    },
+    {
+      "description": "Group pins and digests separately",
+      "matchUpdateTypes": ["pin", "digest"],
+      "groupName": "pinned dependencies",
+      "automerge": true
+    },
+    {
+      "description": "Auto-merge stable patch updates",
+      "matchUpdateTypes": ["patch"],
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "pr"
+    }
+  ]
+}

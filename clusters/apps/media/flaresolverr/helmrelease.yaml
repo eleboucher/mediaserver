@@ -1,0 +1,104 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: flaresolverr
+  namespace: media
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: "4.5.0"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      flaresolverr:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        initContainers:
+          migrate-data:
+            image:
+              repository: alpine
+              tag: latest
+            command:
+              - "/bin/sh"
+              - "-c"
+            args:
+              - |
+                echo "Checking for migration..."
+                # If the new Longhorn volume is empty, copy data from the old HostPath
+                echo "Longhorn volume is empty. Migrating data..."
+                cp -av /host-config/. /config/
+                echo "Migration Complete!"
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/flaresolverr/flaresolverr
+              tag: v3.4.6@sha256:7962759d99d7e125e108e0f5e7f3cdbcd36161776d058d1d9b7153b92ef1af9e
+            env:
+              - name: LOG_LEVEL
+                value: "info"
+              - name: LOG_FILE
+                value: "none"
+              - name: LOG_HTML
+                value: "false"
+              - name: CAPTCHA_SOLVER
+                value: "none"
+              - name: TZ
+                value: "Europe/London"
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 8191
+                  initialDelaySeconds: 10
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 30
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 8191
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+    service:
+      app:
+        controller: flaresolverr
+        ports:
+          http:
+            port: 8191
+            protocol: TCP
+    persistence:
+      host-config:
+        enabled: true
+        type: persistentVolumeClaim
+        existingClaim: flaresolverr
+        globalMounts:
+          - path: /host-config
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: "local-path"
+        accessMode: ReadWriteOnce
+        volumeName: flaresolverr-config
+        size: 2Gi
+        globalMounts:
+          - path: /config

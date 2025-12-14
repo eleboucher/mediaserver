@@ -1,0 +1,45 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn-release
+  namespace: longhorn-system
+spec:
+  chart:
+    spec:
+      chart: longhorn
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn-repo
+      version: v1.10.1
+  interval: 1m0s
+  values:
+    longhornManager:
+      tolerations:
+        - key: "freebox"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "transient"
+          operator: "Exists"
+          effect: "NoSchedule"
+    persistence:
+      defaultClass: true
+      defaultClassReplicaCount: 1
+    defaultSettings:
+      taintToleration: freebox=true:NoSchedule; transient=true:NoSchedule
+      backupTarget: "nfs://192.168.1.40:/srv/media/backups/longhorn-backups"
+      backupTargetCredentialSecret: ""
+      guaranteedEngineManagerCPU: 5
+      guaranteedReplicaManagerCPU: 5
+
+      # Reduce concurrent operations
+      concurrentAutomaticEngineUpgradePerNodeLimit: 1
+      concurrentReplicaRebuildPerNodeLimit: 1
+      concurrentVolumeBackupRestorePerNodeLimit: 1
+
+      autoCleanupSystemGeneratedSnapshot: true
+      snapshotDataIntegrityCronjob: "0 4 * * 0"
+
+      backupCompressionMethod: lz4
+      backupConcurrentLimit: 1

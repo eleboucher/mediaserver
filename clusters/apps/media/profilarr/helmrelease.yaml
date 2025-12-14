@@ -1,0 +1,109 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: profilarr
+  namespace: media
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: "4.5.0"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      profilarr:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        initContainers:
+          migrate-data:
+            image:
+              repository: alpine
+              tag: latest
+            command:
+              - "/bin/sh"
+              - "-c"
+            args:
+              - |
+                echo "Checking for migration..."
+                # If the new Longhorn volume is empty, copy data from the old HostPath
+                echo "Longhorn volume is empty. Migrating data..."
+                cp -av /host-config/. /config/
+                echo "Migration Complete!"
+        containers:
+          app:
+            image:
+              repository: santiagosayshey/profilarr
+              tag: beta@sha256:864486f403195b2ae3277335ac46457db587de983c5a1814c93bb384a0d3252c
+            env:
+              - name: TZ
+                value: "Europe/Paris"
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 6868
+                  initialDelaySeconds: 10
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 30
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 6868
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+    service:
+      app:
+        controller: profilarr
+        ports:
+          http:
+            port: 6868
+            protocol: TCP
+    ingress:
+      app:
+        enabled: true
+        className: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: profilarr.erwanleboucher.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: profilarr-tls
+            hosts:
+              - profilarr.erwanleboucher.dev
+    persistence:
+      host-config:
+        type: persistentVolumeClaim
+        existingClaim: profilarr
+        globalMounts:
+          - path: /host-config
+      config:
+        type: persistentVolumeClaim
+        storageClass: "local-path"
+        volumeName: profilarr-config
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        globalMounts:
+          - path: /config

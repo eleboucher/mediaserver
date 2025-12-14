@@ -1,0 +1,10 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: kubernetes-sig-node-feature-discovery
+  namespace: kube-system
+spec:
+  interval: 30m
+  url: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+  timeout: 3m
