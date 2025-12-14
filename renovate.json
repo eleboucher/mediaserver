@@ -1,0 +1,43 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":timezone(Europe/Paris)",
+    ":label(renovate)",
+    ":semanticPrefixFix",
+    ":separateMultipleMajorReleases",
+    ":automergePr",
+    ":automergeStableNonMajor",
+    ":automergeDigest",
+    ":skipStatusChecks"
+  ],
+  "timezone": "Europe/Paris",
+  "labels": ["dependencies"],
+  "flux": {
+    "fileMatch": ["clusters/.+\\.ya?ml$"]
+  },
+  "helm-values": {
+    "fileMatch": ["clusters/.+\\.ya?ml$"]
+  },
+  "kubernetes": {
+    "fileMatch": ["clusters/.+\\.ya?ml$"]
+  },
+  "packageRules": [
+    {
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<revision>\\d+)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\//"]
+    },
+    {
+      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\/bazarr/"]
+    },
+    {
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>ubu\\d+)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\/jellyfin/"]
+    },
+    {
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>r\\d)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\/qbittorrent/"]
+    }
+  ]
+}

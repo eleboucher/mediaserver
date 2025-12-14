@@ -1,0 +1,31 @@
+---
+repos:
+  - repo: local
+    hooks:
+      - id: sops-check-encryption
+        name: SOPS Encryption Check
+        entry: ./check-sops-encryption.sh
+        language: system
+        files: ^clusters/.+\.sops\.yaml$
+      - id: ensure-helmrelease-schema
+        name: Ensure HelmRelease Schema
+        # Runs the script we created above
+        entry: python3 pre-commit/ensure_helmrelease_schema.py
+        language: python
+        # Only trigger for files named helmrelease.yaml
+        files: ^clusters/.+.yaml$
+        # Run on file modification
+        types:
+          - file
+      - id: yamllint
+        name: YAML Lint
+        entry: yamllint
+        language: system
+        exclude: ^config/
+        files: .+\.ya?ml$
+      - id: yamlfmt
+        name: YAML Format
+        entry: yamlfmt
+        language: system
+        exclude: ^config/
+        files: .+\.ya?ml$

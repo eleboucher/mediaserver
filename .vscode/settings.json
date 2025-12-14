@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/values.schema.json": "file:///Users/erwan.leboucher/dev/mediaserver/clusters/apps/media/sonarr/helmrelease.yaml"
+  }
+}

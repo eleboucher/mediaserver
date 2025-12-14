@@ -1,0 +1,15 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - jellyfin
+  - sonarr
+  - radarr
+  - prowlarr
+  - bazarr
+  - jellyseerr
+  - flaresolverr
+  - wizarr
+  - profilarr
+  - cleanuparr
+  - namespace.yaml

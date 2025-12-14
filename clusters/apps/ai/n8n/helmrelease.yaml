@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: n8n
+  namespace: ai
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: "4.5.0"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      n8n:
+        type: deployment
+        replicas: 1
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: docker.n8n.io/n8nio/n8n
+              tag: 2.0.3
+            env:
+              - name: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+                value: "true"
+              - name: N8N_RUNNERS_ENABLED
+                value: "true"
+              - name: TZ
+                value: "Europe/Paris"
+              - name: VUE_APP_URL_BASE_API
+                value: "https://n8n.erwanleboucher.dev/"
+    service:
+      app:
+        controller: n8n
+        ports:
+          http:
+            port: 5678
+            protocol: TCP
+    ingress:
+      app:
+        enabled: true
+        className: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: n8n.erwanleboucher.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: n8n-tls
+            hosts:
+              - n8n.erwanleboucher.dev
+    persistence:
+      config:
+        enabled: true
+        storageClass: "longhorn"
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        globalMounts:
+          - path: /home/node/.n8n
