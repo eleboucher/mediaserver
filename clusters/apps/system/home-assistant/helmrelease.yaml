@@ -22,6 +22,16 @@ spec:
         type: deployment
         replicas: 1
         strategy: Recreate
+        initContainers:
+          migrate:
+            image:
+              repository: alpine
+              tag: latest
+            command:
+              - /bin/sh
+              - -c
+              - |
+                cp -av /migration/* /config
         pod:
           # Use host network for device discovery
           hostNetwork: true
@@ -33,7 +43,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-assistant/home-assistant
-              tag: 2025.12.2@sha256:60dd3a329324b92017b7c8665648d65a9568a5a4205e93cad67ab9dec432f2d1
+              tag: 2025.12.3
             env:
               - name: TZ
                 value: "Europe/Paris"
@@ -100,7 +110,14 @@ spec:
             hosts:
               - home.erwanleboucher.dev
     persistence:
-
+      migration:
+        enabled: true
+        type: nfs
+        server: 10.0.0.2
+        path: /home/homeserver/mediaserver/config/homeassistant
+        globalMounts:
+          - path: /migration
+            readOnly: true
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"
