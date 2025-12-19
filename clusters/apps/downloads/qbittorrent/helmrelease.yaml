@@ -22,6 +22,7 @@ spec:
         type: deployment
         replicas: 1
         strategy: Recreate
+
         pod:
           nodeSelector:
             kubernetes.io/hostname: le-havre
@@ -198,7 +199,6 @@ spec:
             hosts:
               - qbit.erwanleboucher.dev
     persistence:
-
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"

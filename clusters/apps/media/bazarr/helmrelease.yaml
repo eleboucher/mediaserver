@@ -22,8 +22,6 @@ spec:
         type: deployment
         replicas: 1
         pod:
-          nodeSelector:
-            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
@@ -93,6 +91,7 @@ spec:
             hosts:
               - bazarr.erwanleboucher.dev
     persistence:
+
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"

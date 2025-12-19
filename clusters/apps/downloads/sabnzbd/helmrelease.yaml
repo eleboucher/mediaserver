@@ -21,32 +21,12 @@ spec:
       sabnzbd:
         type: deployment
         replicas: 1
-        initContainers:
-          migrate:
-            image:
-              repository: alpine
-              tag: latest
-            command:
-              - /bin/sh
-              - -c
-              - |
-                cp -av /migration/* /config
         pod:
           nodeSelector:
             kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
-          affinity:
-            nodeAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 100
-                  preference:
-                    matchExpressions:
-                      - key: kubernetes.io/hostname
-                        operator: In
-                        values:
-                          - k3s-mac
           tolerations:
             - key: "transient"
               operator: "Exists"
@@ -117,14 +97,6 @@ spec:
             hosts:
               - sabnzbd.erwanleboucher.dev
     persistence:
-      migration:
-        enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /home/homeserver/mediaserver/config/sabnzbd
-        globalMounts:
-          - path: /migration
-            readOnly: true
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"

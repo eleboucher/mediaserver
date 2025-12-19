@@ -21,9 +21,8 @@ spec:
       sonarr:
         type: deployment
         replicas: 1
+        strategy: Recreate
         pod:
-          nodeSelector:
-            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
@@ -93,7 +92,6 @@ spec:
             hosts:
               - sonarr.erwanleboucher.dev
     persistence:
-
       config:
         enabled: true
         type: persistentVolumeClaim
@@ -109,3 +107,4 @@ spec:
         path: /srv/media
         globalMounts:
           - path: /data
+

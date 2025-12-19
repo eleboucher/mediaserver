@@ -21,6 +21,7 @@ spec:
       jellyseerr:
         type: deployment
         replicas: 1
+        strategy: Recreate
         initContainers:
           migrate:
             image:
@@ -33,8 +34,6 @@ spec:
                 cp -av /migration/* /app/config
 
         pod:
-          nodeSelector:
-            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"

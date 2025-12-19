@@ -21,10 +21,8 @@ spec:
       cleanuparr:
         type: deployment
         replicas: 1
-
+        strategy: Recreate
         pod:
-          nodeSelector:
-            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
@@ -95,14 +93,6 @@ spec:
             hosts:
               - cleanuparr.erwanleboucher.dev
     persistence:
-      migration:
-        enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /home/homeserver/mediaserver/config/cleanuparr
-        globalMounts:
-          - path: /migration
-            readOnly: true
       config:
         enabled: true
         type: persistentVolumeClaim

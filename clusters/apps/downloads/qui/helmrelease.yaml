@@ -22,7 +22,6 @@ spec:
         type: deployment
         replicas: 1
         strategy: Recreate
-
         pod:
           securityContext:
             fsGroup: 1000
@@ -94,6 +93,7 @@ spec:
             hosts:
               - qui.erwanleboucher.dev
     persistence:
+
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"

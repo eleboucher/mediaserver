@@ -32,8 +32,7 @@ spec:
     service:
       type: LoadBalancer
       loadBalancerIP: 192.168.1.62
-      # Preserve client IPs
-      externalTrafficPolicy: Local
+      externalTrafficPolicy: Cluster
     ports:
       web:
         port: 80

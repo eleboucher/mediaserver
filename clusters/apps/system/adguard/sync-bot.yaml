@@ -20,9 +20,9 @@ spec:
           env:
             # Connect using internal ClusterIP DNS names
             - name: ORIGIN_URL
-              value: "http://adguard-primary-adguard-home.adguard.svc.cluster.local"
+              value: "http://adguard-primary-adguard-home:3000"
             - name: REPLICA_URL
-              value: "http://adguard-backup-adguard-home.adguard.svc.cluster.local"
+              value: "http://adguard-backup-adguard-home:3000"
             - name: CRON
               value: "*/5 * * * *" # Sync every 5 minutes
             - name: LOG_LEVEL

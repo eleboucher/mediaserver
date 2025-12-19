@@ -21,10 +21,8 @@ spec:
       radarr:
         type: deployment
         replicas: 1
-
+        strategy: Recreate
         pod:
-          nodeSelector:
-            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
@@ -94,14 +92,6 @@ spec:
             hosts:
               - radarr.erwanleboucher.dev
     persistence:
-      migration:
-        enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /home/homeserver/mediaserver/config/radarr
-        globalMounts:
-          - path: /migration
-            readOnly: true
       config:
         enabled: true
         type: persistentVolumeClaim

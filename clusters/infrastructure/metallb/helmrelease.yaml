@@ -19,5 +19,9 @@ spec:
     speaker:
       frr:
         enabled: false
-      memberlist:
-        mlBindAddrOverride: ""
+      tolerateMaster: true
+      extraEnvVars:
+        - name: METALLB_ML_BIND_ADDR
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP

@@ -13,6 +13,9 @@ kind: L2Advertisement
 metadata:
   name: l2-advert
   namespace: metallb-system
-# spec:
-#   ipAddressPools:
-#     - first-pool
+spec:
+  ipAddressPools:
+    - first-pool
+  interfaces:
+    - enp3s0
+    - enx6c1ff75c0394

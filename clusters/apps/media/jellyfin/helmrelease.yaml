@@ -21,7 +21,7 @@ spec:
       jellyfin:
         type: deployment
         replicas: 1
-
+        strategy: Recreate
         pod:
           nodeSelector:
             kubernetes.io/hostname: kharkiv
@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: lscr.io/linuxserver/jellyfin
-              tag: 10.11.5ubu2404-ls13
+              tag: 10.11.4ubu2404-ls10@sha256:234ea8d508b2cba26054d0dac9d4c0353435dce483e8b266947d473629774559
             env:
               - name: PUID
                 value: "1000"
@@ -103,7 +103,6 @@ spec:
             hosts:
               - watch.erwanleboucher.dev
     persistence:
-
       config:
         enabled: true
         type: persistentVolumeClaim
@@ -113,10 +112,8 @@ spec:
         globalMounts:
           - path: /config
       data:
-        enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /srv/media
+        type: hostPath
+        hostPath: /srv/media
         globalMounts:
           - path: /data
       transcode:
