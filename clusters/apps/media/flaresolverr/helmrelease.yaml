@@ -22,21 +22,6 @@ spec:
         type: deployment
         replicas: 1
         strategy: Recreate
-        initContainers:
-          migrate-data:
-            image:
-              repository: alpine
-              tag: latest
-            command:
-              - "/bin/sh"
-              - "-c"
-            args:
-              - |
-                echo "Checking for migration..."
-                # If the new Longhorn volume is empty, copy data from the old HostPath
-                echo "Longhorn volume is empty. Migrating data..."
-                cp -av /host-config/. /config/
-                echo "Migration Complete!"
         pod:
           securityContext:
             fsGroup: 1000
@@ -86,19 +71,4 @@ spec:
           http:
             port: 8191
             protocol: TCP
-    persistence:
-      host-config:
-        enabled: true
-        type: persistentVolumeClaim
-        existingClaim: flaresolverr
-        globalMounts:
-          - path: /host-config
-      config:
-        enabled: true
-        type: persistentVolumeClaim
-        storageClass: "local-path"
-        accessMode: ReadWriteOnce
-        volumeName: flaresolverr-config
-        size: 2Gi
-        globalMounts:
-          - path: /config
+

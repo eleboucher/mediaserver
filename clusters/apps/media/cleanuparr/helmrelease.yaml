@@ -23,20 +23,15 @@ spec:
         replicas: 1
         strategy: Recreate
         initContainers:
-          migrate-data:
+          migrate:
             image:
               repository: alpine
               tag: latest
             command:
-              - "/bin/sh"
-              - "-c"
-            args:
+              - /bin/sh
+              - -c
               - |
-                echo "Checking for migration..."
-                # If the new Longhorn volume is empty, copy data from the old HostPath
-                echo "Longhorn volume is empty. Migrating data..."
-                cp -av /host-config/. /config/
-                echo "Migration Complete!"
+                cp -av /migration/* /config
         pod:
           securityContext:
             fsGroup: 1000
@@ -108,23 +103,26 @@ spec:
             hosts:
               - cleanuparr.erwanleboucher.dev
     persistence:
-      host-config:
+      migration:
         enabled: true
-        type: persistentVolumeClaim
-        existingClaim: cleanuparr
+        type: nfs
+        server: 10.0.0.2
+        path: /home/homeserver/mediaserver/config/cleanuparr
         globalMounts:
-          - path: /host-config
+          - path: /migration
+            readOnly: true
       config:
         enabled: true
         type: persistentVolumeClaim
-        storageClass: "local-path"
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        volumeName: cleanuparr-config
         size: 2Gi
         globalMounts:
           - path: /config
-      downloads:
-        type: hostPath
-        hostPath: /srv/media
+      data:
+        enabled: true
+        type: nfs
+        server: 10.0.0.2
+        path: /srv/media
         globalMounts:
-          - path: /downloads
+          - path:  /downloads

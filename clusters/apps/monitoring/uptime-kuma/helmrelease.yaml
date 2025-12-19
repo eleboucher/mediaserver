@@ -21,17 +21,6 @@ spec:
         type: deployment
         replicas: 1
         strategy: Recreate
-        initContainers:
-          migrate:
-            image:
-              repository: alpine
-              tag: latest
-            command:
-              - /bin/sh
-              - -c
-              - |
-                cp -av /migration/* /app/data
-
         containers:
           app:
             image:
@@ -82,11 +71,4 @@ spec:
         size: 2Gi
         globalMounts:
           - path: /app/data
-      migration:
-        enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /home/homeserver/mediaserver/config/uptime-kuma
-        globalMounts:
-          - path: /migration
-            readOnly: true
+

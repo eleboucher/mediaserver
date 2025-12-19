@@ -23,20 +23,16 @@ spec:
         replicas: 1
         strategy: Recreate
         initContainers:
-          migrate-data:
+          migrate:
             image:
               repository: alpine
               tag: latest
             command:
-              - "/bin/sh"
-              - "-c"
-            args:
+              - /bin/sh
+              - -c
               - |
-                echo "Checking for migration..."
-                # If the new Longhorn volume is empty, copy data from the old HostPath
-                echo "Longhorn volume is empty. Migrating data..."
-                cp -av /host-config/. /config/
-                echo "Migration Complete!"
+                cp -av /migration/* /config
+
         containers:
           app:
             image:
@@ -94,15 +90,17 @@ spec:
             hosts:
               - profilarr.erwanleboucher.dev
     persistence:
-      host-config:
-        type: persistentVolumeClaim
-        existingClaim: profilarr
+      migration:
+        enabled: true
+        type: nfs
+        server: 10.0.0.2
+        path: /home/homeserver/mediaserver/config/sonarr
         globalMounts:
-          - path: /host-config
+          - path: /migration
+            readOnly: true
       config:
         type: persistentVolumeClaim
-        storageClass: "local-path"
-        volumeName: profilarr-config
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
         size: 2Gi
         globalMounts:
