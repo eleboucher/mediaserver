@@ -11,7 +11,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-client
   nfs:
-    server: 192.168.1.40
+    server: 10.0.0.2
     path: /srv/media
 ---
 apiVersion: v1

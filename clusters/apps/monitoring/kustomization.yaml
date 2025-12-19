@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - uptime-kuma
-  - grafana-k8s-monitoring
   - secret.sops.yaml
