@@ -5,5 +5,5 @@ namespace: cert-manager
 resources:
   - namespace.yaml
   - helmrelease.yaml
-  - clusterissuer.yaml
   - secret.sops.yaml
+  - clusterissuer.yaml

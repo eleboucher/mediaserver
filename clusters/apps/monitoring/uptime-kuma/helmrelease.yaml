@@ -15,50 +15,12 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bjw-s
-        namespace: flux-system
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: uptime-kuma
-            patch: |
-              - op: add
-                path: /spec/template/spec/hostAliases
-                value:
-                  - ip: "192.168.1.52"
-                    hostnames:
-                    - "dns.erwanleboucher.dev"
-                    - "sonar.erwanleboucher.dev"
-                    - "radarr.erwanleboucher.dev"
-                    - "qbit.erwanleboucher.dev"
-                    - "prowlarr.erwanleboucher.dev"
   values:
     controllers:
       uptimekuma:
         type: deployment
         replicas: 1
         strategy: Recreate
-
-        initContainers:
-          migrate-data:
-            image:
-              repository: alpine
-              tag: latest
-            command:
-              - "/bin/sh"
-              - "-c"
-            args:
-              - |
-                echo "Checking for migration..."
-                # If the new Longhorn volume is empty, copy data from the old HostPath
-                if [ ! -f "/app/config/config.xml" ]; then
-                  echo "Longhorn volume is empty. Migrating data..."
-                  cp -av /host-config/. /app/config/
-                  echo "Migration Complete!"
-                else
-                  echo "Volume has data. Skipping."
-                fi
         containers:
           app:
             image:
@@ -102,16 +64,9 @@ spec:
             hosts:
               - status.erwanleboucher.dev
     persistence:
-      host-config:
-        type: persistentVolumeClaim
-
-        existingClaim: uptime-kuma
-
-        globalMounts:
-          - path: /host-config
       config:
         type: persistentVolumeClaim
-        storageClass: "local-path"
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
         volumeName: uptime-kuma-config
         size: 2Gi
