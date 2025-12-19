@@ -6,4 +6,3 @@ resources:
   - home-assistant
   - cloudflared
   - homepage
-  - node-feature-discovery

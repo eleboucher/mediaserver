@@ -6,6 +6,7 @@ resources:
   # - traefik
   - helm-repos
   - intel-device-plugins-operator
+  - node-feature-discovery
   # - nfs
   - longhorn
   # - backup
