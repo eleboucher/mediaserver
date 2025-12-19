@@ -22,7 +22,6 @@ spec:
         type: deployment
         replicas: 1
         strategy: Recreate
-
         pod:
           nodeSelector:
             kubernetes.io/hostname: le-havre
@@ -99,8 +98,6 @@ spec:
                 value: "8081,9999"
               - name: FIREWALL_OUTBOUND_SUBNETS
                 value: "10.42.0.0/24,10.42.1.0/24,192.168.1.0/24,10.0.0.0/24"
-              - name: DNS_KEEP_NAMESERVER
-                value: "on"
               - name: DOT
                 value: "off"
             resources:
