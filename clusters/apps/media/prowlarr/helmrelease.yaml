@@ -21,18 +21,9 @@ spec:
       prowlarr:
         type: deployment
         replicas: 1
-        strategy: Recreate
-        initContainers:
-          migrate:
-            image:
-              repository: alpine
-              tag: latest
-            command:
-              - /bin/sh
-              - -c
-              - |
-                cp -av /migration/* /config
         pod:
+          nodeSelector:
+            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
@@ -110,11 +101,3 @@ spec:
         size: 2Gi
         globalMounts:
           - path: /config
-      migration:
-        enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /home/homeserver/mediaserver/config/prowlarr
-        globalMounts:
-          - path: /migration
-            readOnly: true
