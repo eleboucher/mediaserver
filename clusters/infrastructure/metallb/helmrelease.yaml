@@ -1,5 +1,5 @@
 ---
-sion: helm.toolkit.fluxcd.io/v2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: metallb
@@ -9,5 +9,15 @@ spec:
   chart:
     spec:
       chart: metallb
-      version: 'v0.15.3'
+      version: '0.15.3'
       interval: 12h
+      sourceRef:
+        kind: HelmRepository
+        name: metallb
+        namespace: metallb-system
+  values:
+    speaker:
+      frr:
+        enabled: false
+      memberlist:
+        mlBindAddrOverride: ""

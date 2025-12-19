@@ -9,21 +9,18 @@ spec:
   chart:
     spec:
       chart: adguard-home
-      version: "0.x.x" # Flux will grab the latest stable
+      version: "0.x.x"
       sourceRef:
         kind: HelmRepository
         name: gabe565
   values:
-    # 1. Pin to N150
     nodeSelector:
-      kubernetes.io/hostname: "home"
+      kubernetes.io/hostname: "le-havre"
     securityContext:
       capabilities:
         add:
           - NET_BIND_SERVICE
           - NET_RAW
-    # 2. Internal Services (ClusterIP only)
-    # MetalLB handles the public IP separately
     service:
       main:
         type: ClusterIP
@@ -48,28 +45,27 @@ spec:
             enabled: true
             port: 53
             protocol: UDP
-    # 3. Storage (HostPath on NVMe)
     persistence:
       config:
         enabled: true
-        storageClass: "local-path"
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 1Gi
+        size: 4Gi
       data:
         enabled: true
-        storageClass: "local-path"
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 10Gi
+        size: 4Gi
       tls:
         enabled: true
         type: secret
-        name: adguard-tls-secret
+        name: adguard-tls
         mountPath: /opt/adguardhome/ssl
         readOnly: true
     config: |-
       rewrites:
         - 'domain': "*.erwanleboucher.dev"
-          'answer': "192.168.1.52"
+          'answer': "192.168.1.62"
       tls:
         enabled: true
         server_name: dns.erwanleboucher.dev

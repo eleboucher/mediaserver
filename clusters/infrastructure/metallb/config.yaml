@@ -6,10 +6,13 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 192.168.1.52-192.168.1.56
+    - 192.168.1.62-192.168.1.66
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: l2-advert
   namespace: metallb-system
+# spec:
+#   ipAddressPools:
+#     - first-pool

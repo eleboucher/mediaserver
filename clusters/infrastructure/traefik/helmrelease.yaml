@@ -25,12 +25,13 @@ spec:
         namespace: traefik
       interval: 12h
   values:
-    # Single instance deployment (matching docker-compose)
     deployment:
       replicas: 1
+    nodeSelector:
+      kubernetes.io/hostname: le-havre
     service:
       type: LoadBalancer
-      loadBalancerIP: 192.168.1.52
+      loadBalancerIP: 192.168.1.62
       # Preserve client IPs
       externalTrafficPolicy: Local
     ports:

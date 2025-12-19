@@ -74,7 +74,6 @@ spec:
           metrics:
             port: 9090
             protocol: TCP
-    # Optional: ServiceMonitor for Prometheus monitoring
     serviceMonitor:
       app:
         enabled: false

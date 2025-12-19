@@ -5,4 +5,4 @@ resources:
   - adguard
   - home-assistant
   - cloudflared
-  - homepage
+  - namespace.yaml

@@ -23,19 +23,15 @@ spec:
         replicas: 1
         strategy: Recreate
         initContainers:
-          migrate-data:
+          migrate:
             image:
               repository: alpine
               tag: latest
             command:
-              - "/bin/sh"
-              - "-c"
-            args:
+              - /bin/sh
+              - -c
               - |
-                echo "Checking for migration..."
-                # If the new Longhorn volume is empty, copy data from the old HostPath
-                cp -av /host-config/. /config/
-                echo "Migration Complete!"
+                cp -av /migration/* /config
         pod:
           # Use host network for device discovery
           hostNetwork: true
@@ -114,15 +110,17 @@ spec:
             hosts:
               - home.erwanleboucher.dev
     persistence:
-      host-config:
-        type: persistentVolumeClaim
-        existingClaim: home-assistant-config
+      migration:
+        enabled: true
+        type: nfs
+        server: 10.0.0.2
+        path: /home/homeserver/mediaserver/config/homeassistant
         globalMounts:
-          - path: /host-config
+          - path: /migration
+            readOnly: true
       config:
         type: persistentVolumeClaim
-        storageClass: "local-path"
-        volumeName: home-assistant-config-local
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
         size: 4Gi
         globalMounts:

@@ -8,7 +8,7 @@ metadata:
     metallb.universe.tf/allow-shared-ip: "adguard-vip"
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.1.53
+  loadBalancerIP: 192.168.1.63
   externalTrafficPolicy: Cluster
   # ⚠️ This selector targets BOTH Helm Releases because they share the chart name
   selector:
@@ -36,7 +36,7 @@ metadata:
     metallb.universe.tf/allow-shared-ip: "adguard-web-vip"
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.1.54
+  loadBalancerIP: 192.168.1.64
   selector:
     app.kubernetes.io/name: adguard-home
   ports:

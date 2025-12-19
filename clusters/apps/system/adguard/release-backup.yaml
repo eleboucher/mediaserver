@@ -14,9 +14,8 @@ spec:
         kind: HelmRepository
         name: gabe565
   values:
-    # 1. Pin to Freebox
     nodeSelector:
-      kubernetes.io/hostname: "k3s"
+      kubernetes.io/hostname: "kharkiv"
     tolerations:
       - key: "freebox"
         operator: "Equal"
@@ -52,29 +51,28 @@ spec:
             enabled: true
             port: 53
             protocol: UDP
-    # 3. Storage (HostPath on Freebox VM Disk)
     persistence:
       config:
         enabled: true
-        storageClass: "local-path"
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 1Gi
+        size: 4Gi
       data:
         enabled: true
-        storageClass: "local-path"
+        storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 10Gi
+        size: 4Gi
       tls:
         enabled: true
         type: secret
-        name: adguard-tls-secret
+        name: adguard-tls
         mountPath: /opt/adguardhome/ssl
         readOnly: true
     # 4. Config (Same as primary)
     config: |-
       rewrites:
         - 'domain': "*.erwanleboucher.dev"
-          'answer': "192.168.1.52"
+          'answer': "192.168.1.62"
       tls:
         enabled: true
         server_name: dns.erwanleboucher.dev
