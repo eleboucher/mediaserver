@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -16,21 +17,6 @@ spec:
         name: bjw-s
         namespace: flux-system
   values:
-    defaultPodOptions:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - k3s-mac
-      tolerations:
-        - key: "transient"
-          operator: "Exists"
-          effect: "NoSchedule"
     controllers:
       ollama:
         type: deployment
@@ -53,7 +39,9 @@ spec:
             protocol: TCP
     persistence:
       config:
-        type: hostPath
-        hostPath: /opt/yams/config/ollama
+        enabled: true
+        storageClass: "longhorn"
+        accessMode: ReadWriteOnce
+        size: 10Gi
         globalMounts:
           - path: /config
