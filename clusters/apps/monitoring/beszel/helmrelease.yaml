@@ -39,7 +39,7 @@ spec:
 
     service:
       app:
-        controller: app
+        controller: beszel
         ports:
           http:
             port: 8090
@@ -117,7 +117,7 @@ spec:
 
     service:
       app:
-        controller: app
+        controller: beszel-agent-intel
         ports:
           http:
             port: 45876

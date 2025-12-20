@@ -68,7 +68,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: app
+        controller: bazarr
         ports:
           http:
             port: 6767

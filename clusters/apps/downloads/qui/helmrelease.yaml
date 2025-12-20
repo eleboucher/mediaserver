@@ -69,7 +69,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: app
+        controller: qui
         ports:
           http:
             port: 8080

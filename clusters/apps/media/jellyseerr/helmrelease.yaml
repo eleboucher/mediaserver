@@ -71,7 +71,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: app
+        controller: jellyseerr
         ports:
           http:
             port: 5055

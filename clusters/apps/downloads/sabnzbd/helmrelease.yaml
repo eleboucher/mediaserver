@@ -72,7 +72,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: app
+        controller: sabnzbd
         ports:
           http:
             port: 8080
@@ -115,3 +115,4 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /incomplete-downloads
+

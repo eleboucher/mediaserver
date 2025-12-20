@@ -60,7 +60,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: app
+        controller: profilarr
         ports:
           http:
             port: 6868

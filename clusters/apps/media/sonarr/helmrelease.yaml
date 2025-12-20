@@ -69,7 +69,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: app
+        controller: sonarr
         ports:
           http:
             port: 8989
@@ -109,3 +109,4 @@ spec:
         path: /
         globalMounts:
           - path: /data
+

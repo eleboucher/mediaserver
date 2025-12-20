@@ -68,7 +68,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: app
+        controller: prowlarr
         ports:
           http:
             port: 9696
@@ -101,3 +101,4 @@ spec:
         size: 2Gi
         globalMounts:
           - path: /config
+
