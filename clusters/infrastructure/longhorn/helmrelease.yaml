@@ -28,15 +28,15 @@ spec:
       defaultClassReplicaCount: 2
       defaultDataLocality: best-effort
     defaultSettings:
-      taintToleration: freebox=true:NoSchedule; transient=true:NoSchedule
-      backupTarget: "nfs://192.168.1.40:/srv/media/backups/longhorn-backups"
+      backupTarget: "nfs://10.0.0.2:/backups/longhorn-backups"
       backupTargetCredentialSecret: ""
       guaranteedEngineManagerCPU: 5
       guaranteedReplicaManagerCPU: 5
+      guaranteedInstanceManagerCPU: 5
+      v2DataEngine: false
       defaultReplicaCount: 2
       storageMinimalAvailablePercentage: 10
       replicaSoftAntiAffinity: true
-
       autoCleanupSystemGeneratedSnapshot: true
       snapshotDataIntegrityCronjob: "0 4 * * 0"
 

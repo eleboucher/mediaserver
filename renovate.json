@@ -1,33 +1,38 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
+  "extends": [
+    "config:best-practices",
+    ":timezone(Europe/Paris)",
+    ":label(renovate)",
+    ":semanticPrefixFix",
+    ":separateMultipleMajorReleases",
+    ":automergePr",
+    ":automergeStableNonMajor",
+    ":automergeDigest",
+    ":skipStatusChecks"
+  ],
   "timezone": "Europe/Paris",
   "labels": ["dependencies"],
-  "ignorePaths": ["clusters/**"],
   "packageRules": [
-  {
-      "description": "Fix LinuxServer.io qBittorrent version confusion (ignore year-based tags like 20.x)",
-      "matchPackageNames": ["lscr.io/linuxserver/qbittorrent", "linuxserver/qbittorrent"],
-      "allowedVersions": "<= 10.0.0"
+    {
+      // example: 1.31.2.4975-ls107
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<revision>\\d+)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\//"]
     },
     {
-      "description": "Group K3s minor/patch upgrades",
-      "matchManagers": ["flux", "kubernetes", "helmv3"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "k3s dependencies"
+      // example: v1.5.1-ls295
+      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\/bazarr/"]
     },
     {
-      "description": "Group pins and digests separately",
-      "matchUpdateTypes": ["pin", "digest"],
-      "groupName": "pinned dependencies",
-      "automerge": true
+      // example: 10.10.6ubu2404-ls53
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>ubu\\d+)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\/jellyfin/"]
     },
     {
-      "description": "Auto-merge stable patch updates",
-      "matchUpdateTypes": ["patch"],
-      "matchDatasources": ["docker"],
-      "automerge": true,
-      "automergeType": "pr"
+      // example: 5.0.3-r0-ls373
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>r\\d)-ls(?<build>\\d+)$",
+      "matchPackageNames": ["/^lscr.io\\/linuxserver\\/qbittorrent/"]
     }
   ]
 }
