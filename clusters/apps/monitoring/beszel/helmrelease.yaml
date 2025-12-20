@@ -98,6 +98,12 @@ spec:
               repository: henrygd/beszel-agent-intel
               tag: "0.17.0"
               pullPolicy: Always
+            env:
+              - name: KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: beszel-sops-secret
+                    key: TOKEN
             probes:
               liveness:
                 enabled: true
