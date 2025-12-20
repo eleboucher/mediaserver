@@ -22,7 +22,12 @@ spec:
         type: deployment
         replicas: 1
 
-
+        pod:
+          nodeSelector:
+            kubernetes.io/hostname: le-havre
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
         containers:
           app:
             image:
