@@ -13,6 +13,15 @@
   ],
   "timezone": "Europe/Paris",
   "labels": ["dependencies"],
+  "flux": {
+    "fileMatch": ["clusters/.+\\.ya?ml$"]
+  },
+  "helm-values": {
+    "fileMatch": ["clusters/.+\\.ya?ml$"]
+  },
+  "kubernetes": {
+    "fileMatch": ["clusters/.+\\.ya?ml$"]
+  },
   "packageRules": [
     {
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<revision>\\d+)-ls(?<build>\\d+)$",
