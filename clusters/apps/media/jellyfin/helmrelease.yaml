@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: lscr.io/linuxserver/jellyfin
-              tag: 10.11.4ubu2404-ls10@sha256:234ea8d508b2cba26054d0dac9d4c0353435dce483e8b266947d473629774559
+              tag: 10.11.5ubu2404-ls13@sha256:6e614901a5e9d04f03b2b84363fcc69285635d4149e23e4cac30b1c9a8ccddac
             env:
               - name: PUID
                 value: "1000"
