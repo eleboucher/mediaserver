@@ -91,7 +91,13 @@ spec:
             hosts:
               - bazarr.erwanleboucher.dev
     persistence:
-
+      data:
+        enabled: true
+        type: nfs
+        server: 10.0.0.2
+        path: /
+        globalMounts:
+          - path: /data
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"

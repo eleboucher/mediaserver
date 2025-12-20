@@ -21,17 +21,7 @@ spec:
       profilarr:
         type: deployment
         replicas: 1
-        strategy: Recreate
-        initContainers:
-          migrate:
-            image:
-              repository: alpine
-              tag: latest
-            command:
-              - /bin/sh
-              - -c
-              - |
-                cp -av /migration/* /config
+
 
         containers:
           app:
@@ -90,14 +80,7 @@ spec:
             hosts:
               - profilarr.erwanleboucher.dev
     persistence:
-      migration:
-        enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /home/homeserver/mediaserver/config/profilarr
-        globalMounts:
-          - path: /migration
-            readOnly: true
+
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"

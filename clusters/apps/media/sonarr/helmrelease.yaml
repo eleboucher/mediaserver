@@ -104,7 +104,7 @@ spec:
         enabled: true
         type: nfs
         server: 10.0.0.2
-        path: /srv/media
+        path: /
         globalMounts:
           - path: /data
 

@@ -112,8 +112,10 @@ spec:
         globalMounts:
           - path: /config
       data:
-        type: hostPath
-        hostPath: /srv/media
+        enabled: true
+        type: nfs
+        server: 10.0.0.2
+        path: /
         globalMounts:
           - path: /data
       transcode:
