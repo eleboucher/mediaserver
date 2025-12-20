@@ -15,22 +15,18 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
-      // example: 1.31.2.4975-ls107
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<revision>\\d+)-ls(?<build>\\d+)$",
       "matchPackageNames": ["/^lscr.io\\/linuxserver\\//"]
     },
     {
-      // example: v1.5.1-ls295
       "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-ls(?<build>\\d+)$",
       "matchPackageNames": ["/^lscr.io\\/linuxserver\\/bazarr/"]
     },
     {
-      // example: 10.10.6ubu2404-ls53
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>ubu\\d+)-ls(?<build>\\d+)$",
       "matchPackageNames": ["/^lscr.io\\/linuxserver\\/jellyfin/"]
     },
     {
-      // example: 5.0.3-r0-ls373
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>r\\d)-ls(?<build>\\d+)$",
       "matchPackageNames": ["/^lscr.io\\/linuxserver\\/qbittorrent/"]
     }

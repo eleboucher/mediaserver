@@ -203,7 +203,7 @@ spec:
         type: persistentVolumeClaim
         storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 2Gi
+        size: 4Gi
         globalMounts:
           - path: /config
       data:
@@ -213,6 +213,10 @@ spec:
         path: /
         globalMounts:
           - path: /data
+      incomplete:
+        type: emptyDir
+        globalMounts:
+          - path: /incomplete-downloads
       gluetun-data:
         type: emptyDir
         advancedMounts:
@@ -222,4 +226,3 @@ spec:
             port-forward:
               - path: /tmp/gluetun
                 readOnly: true
-
