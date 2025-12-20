@@ -67,9 +67,8 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: flaresolverr
+        controller: app
         ports:
           http:
             port: 8191
             protocol: TCP
-

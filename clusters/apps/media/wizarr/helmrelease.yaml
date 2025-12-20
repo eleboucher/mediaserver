@@ -66,7 +66,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: wizarr
+        controller: app
         ports:
           http:
             port: 5690

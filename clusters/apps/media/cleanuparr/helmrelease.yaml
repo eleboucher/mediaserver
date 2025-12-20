@@ -69,7 +69,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: cleanuparr
+        controller: app
         ports:
           http:
             port: 11011
@@ -108,4 +108,4 @@ spec:
         server: 10.0.0.2
         path: /
         globalMounts:
-          - path:  /downloads
+          - path: /downloads

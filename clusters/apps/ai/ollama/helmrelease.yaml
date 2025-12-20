@@ -32,7 +32,7 @@ spec:
                 value: "0"
     service:
       app:
-        controller: ollama
+        controller: app
         ports:
           http:
             port: 11434

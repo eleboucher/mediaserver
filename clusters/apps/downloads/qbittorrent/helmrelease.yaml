@@ -174,7 +174,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: qbittorrent
+        controller: app
         ports:
           http:
             port: 8081

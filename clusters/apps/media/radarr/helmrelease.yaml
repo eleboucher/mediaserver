@@ -68,7 +68,7 @@ spec:
                   failureThreshold: 3
     service:
       app:
-        controller: radarr
+        controller: app
         ports:
           http:
             port: 7878
