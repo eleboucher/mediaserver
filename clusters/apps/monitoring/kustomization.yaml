@@ -5,5 +5,3 @@ resources:
   - namespace.yaml
   - uptime-kuma
   - secret.sops.yaml
-  - kube-prometheus-stack
-  - victoria-logs
