@@ -38,8 +38,8 @@ spec:
           - secretName: vlogs-tls
             hosts:
               - vlogs.erwanleboucher.dev
-    serviceMonitor:
-      enabled: true
+      serviceMonitor:
+        enabled: true
     dashboards:
       enabled: true
       labels:
