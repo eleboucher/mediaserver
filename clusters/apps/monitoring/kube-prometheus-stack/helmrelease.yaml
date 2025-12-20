@@ -19,6 +19,9 @@ spec:
       name: discord-webhook
       valuesKey: webhook-url
       targetPath: alertmanager.config.receivers[1].discord_configs[0].webhook_url
+    - kind: ConfigMap
+      name: flux-kube-state-metrics-config
+      valuesKey: kube-state-metrics-config.yaml
   values:
     alertmanager:
       enabled: true
