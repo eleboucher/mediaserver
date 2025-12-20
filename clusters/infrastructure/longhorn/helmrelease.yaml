@@ -15,34 +15,56 @@ spec:
       version: v1.10.1
   interval: 1m0s
   values:
-    longhornManager:
-      tolerations:
-        - key: "freebox"
-          operator: "Exists"
-          effect: "NoSchedule"
-        - key: "transient"
-          operator: "Exists"
-          effect: "NoSchedule"
     persistence:
       defaultClass: true
       defaultClassReplicaCount: 2
       defaultDataLocality: best-effort
+      disableRevisionCounter: "true"
+    csi:
+      attacherReplicaCount: 2
+      provisionerReplicaCount: 2
+      resizerReplicaCount: 2
+      snapshotterReplicaCount: 2
     defaultSettings:
-      backupTarget: "nfs://10.0.0.2:/backups/longhorn-backups"
+      backupTarget: "nfs://10.0.0.2:/backups/longhorn-backups?nfsOptions=nfsvers=4.2"
       backupTargetCredentialSecret: ""
-      guaranteedEngineManagerCPU: 5
-      guaranteedReplicaManagerCPU: 5
-      guaranteedInstanceManagerCPU: 5
+
+      guaranteedInstanceManagerCPU: '{"v1":"5","v2":"5"}'
+
       v2DataEngine: false
-      defaultReplicaCount: 2
-      replicaSoftAntiAffinity: true
-      storageMinimalAvailablePercentage: 10
-      storageOverProvisioningPercentage: 100
-      autoCleanupSystemGeneratedSnapshot: true
-      autoDeletePodWhenVolumeDetachedUnexpectedly: true
+
+      # Storage settings
+      storageMinimalAvailablePercentage: "10"
+      storageOverProvisioningPercentage: "100"
+
+      # Replication
+      defaultReplicaCount: "2"
+      replicaSoftAntiAffinity: "true"
+      replicaZoneSoftAntiAffinity: "true"
+
+      # Cleanup and maintenance
+      autoCleanupSystemGeneratedSnapshot: "true"
+      autoDeletePodWhenVolumeDetachedUnexpectedly: "true"
+      autoCleanupSnapshotWhenDeleteBackup: "true"
       snapshotDataIntegrityCronjob: "0 4 * * 0"
 
-      # Backup schedule (optional - backup all volumes weekly)
-      recurringJobSelector: '[{"name": "weekly-backup", "isGroup": true}]'
-      concurrentReplicaRebuildPerNodeLimit: 2
-      concurrentVolumeBackupRestorePerNodeLimit: 2
+      concurrentReplicaRebuildPerNodeLimit: "2"
+      concurrentVolumeBackupRestorePerNodeLimit: "2"
+
+      orphanResourceAutoDeletion: "replica-data;instance"
+
+    longhornUI:
+      replicas: 1
+
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      host: longhorn.erwanleboucher.dev
+      tls: true
+      tlsSecret: longhorn-tls
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-production
+
+    metrics:
+      serviceMonitor:
+        enabled: true
