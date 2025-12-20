@@ -102,7 +102,7 @@ spec:
               - name: KEY
                 valueFrom:
                   secretKeyRef:
-                    name: beszel-sops-secret
+                    name: beszel-token
                     key: TOKEN
             probes:
               liveness:
