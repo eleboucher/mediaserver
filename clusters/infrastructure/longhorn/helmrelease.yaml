@@ -35,8 +35,14 @@ spec:
       guaranteedInstanceManagerCPU: 5
       v2DataEngine: false
       defaultReplicaCount: 2
-      storageMinimalAvailablePercentage: 10
       replicaSoftAntiAffinity: true
+      storageMinimalAvailablePercentage: 10
+      storageOverProvisioningPercentage: 100
       autoCleanupSystemGeneratedSnapshot: true
+      autoDeletePodWhenVolumeDetachedUnexpectedly: true
       snapshotDataIntegrityCronjob: "0 4 * * 0"
 
+      # Backup schedule (optional - backup all volumes weekly)
+      recurringJobSelector: '[{"name": "weekly-backup", "isGroup": true}]'
+      concurrentReplicaRebuildPerNodeLimit: 2
+      concurrentVolumeBackupRestorePerNodeLimit: 2
