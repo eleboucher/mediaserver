@@ -33,7 +33,7 @@ spec:
                       name: renovate-env
                       key: GITHUB_COM_TOKEN
                 - name: RENOVATE_REPOSITORIES
-                  value: "github.com/eleboucher/mediaserver"
+                  value: "eleboucher/mediaserver"
                 - name: RENOVATE_GIT_AUTHOR
                   valueFrom:
                     secretKeyRef:
