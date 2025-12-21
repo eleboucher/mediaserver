@@ -11,3 +11,4 @@ resources:
   - backup
   - metallb
   - snapshot-controller
+  - system-upgrade-controller
