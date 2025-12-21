@@ -27,10 +27,7 @@ spec:
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
-          tolerations:
-            - key: "transient"
-              operator: "Exists"
-              effect: "NoSchedule"
+
         containers:
           app:
             image:

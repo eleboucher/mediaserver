@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: speedtest-tracker
+  name: beszel
   namespace: monitoring
 spec:
   interval: 30m
@@ -17,23 +17,15 @@ spec:
         namespace: flux-system
   values:
     controllers:
-      speedtest-tracker:
+      beszel:
         type: deployment
         replicas: 1
         containers:
           app:
             image:
-              repository: lscr.io/linuxserver/speedtest-tracker
+              repository: henrygd/beszel
               tag: "0.17.0@sha256:185142e6c91bd44c77fef6cd31784aee0f782eb1d7193c3ee34a9902a936621c"
               pullPolicy: Always
-            env:
-              - name: APP_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: speedtest-token
-                    key: app_key
-              - name: DB_CONNECTION
-                value: "sqlite"
             probes:
               liveness:
                 enabled: true
@@ -47,10 +39,10 @@ spec:
 
     service:
       app:
-        controller: speedtest-tracker
+        controller: beszel
         ports:
           http:
-            port: 8080
+            port: 8090
     ingress:
       app:
         enabled: true
@@ -59,7 +51,7 @@ spec:
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           cert-manager.io/cluster-issuer: "letsencrypt-production"
         hosts:
-          - host: speedtest.erwanleboucher.dev
+          - host: monitor.erwanleboucher.dev
             paths:
               - path: /
                 pathType: Prefix
@@ -67,9 +59,9 @@ spec:
                   identifier: app
                   port: http
         tls:
-          - secretName: speedtest-tracker-tls
+          - secretName: beszel-tls
             hosts:
-              - speedtest.erwanleboucher.dev
+              - monitor.erwanleboucher.dev
     persistence:
       config:
         type: persistentVolumeClaim
@@ -77,4 +69,68 @@ spec:
         accessMode: ReadWriteOnce
         size: 2Gi
         globalMounts:
-          - path: /config
+          - path: /beszel_data
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: beszel-agent-intel
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: "4.5.0"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      beszel-agent-intel:
+        type: daemonset
+        pod:
+          hostNetwork: true
+        containers:
+          app:
+            securityContext:
+              privileged: true
+              capabilities:
+                add:
+                  - CAP_PERFMON
+            image:
+              repository: henrygd/beszel-agent-intel
+              tag: "0.17.0@sha256:ed944888731daae9d12c9daaac270745832f13a7eb1ac17b77215a5415190b35"
+              pullPolicy: Always
+            env:
+              - name: HUB_URL
+                value: "http://beszel:8090"
+              - name: KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: beszel-token
+                    key: KEY
+              - name: TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: beszel-token
+                    key: TOKEN
+              - name: LISTEN
+                value: "45876"
+            ports:
+              - containerPort: 45876
+                hostPort: 45876
+
+    persistence:
+      dri:
+        type: hostPath
+        hostPath: /dev/dri
+        globalMounts:
+          - path: /dev/dri
+    service:
+      app:
+        controller: beszel-agent-intel
+        ports:
+          http:
+            port: 45876
