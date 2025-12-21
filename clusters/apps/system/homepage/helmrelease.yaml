@@ -88,20 +88,37 @@ spec:
                     href: https://n8n.erwanleboucher.dev
                     description: Workflows
               - Profilarr:
-                  - href: https://profilarr.erwanleboucher.dev
+                  - icon: profilarr.png
+                    href: https://profilarr.erwanleboucher.dev
                     description: Profile Manager
+              - Cleanuparr:
+                  - icon: cleanuparr.png
+                    href: https://cleanuparr.erwanleboucher.dev
+                    description: Cleanup Manager
+              - Qui:
+                  - icon: qui.png
+                    href: https://qui.erwanleboucher.dev
+                    description: Download Manager
           settings.yaml: |
             title: Erwan's Home Lab
+            useEqualHeights: true
+            color: slate
+            statusStyle: "dot"
+            disableCollapse: true
+            headerStyle: boxedWidgets
             layout:
               Media:
                 style: row
-                columns: 4
+                columns: 3
+              Download:
+                style: row
+                columns: 2
               Automation:
                 style: row
-                columns: 4
+                columns: 3
               System:
                 style: row
-                columns: 4
+                columns: 3
             providers:
               longhorn:
                 url: https://longhorn.erwanleboucher.dev
@@ -142,16 +159,6 @@ spec:
                     type: jellyseerr
                     url: http://jellyseerr.media:5055
                     key: '{{ "{{" }}HOMEPAGE_VAR_JELLYSEERR_KEY{{ "}}" }}'
-
-            - Automation:
-              - Home Assistant:
-                  icon: home-assistant.png
-                  href: https://home.erwanleboucher.dev
-                  description: Home Automation
-                  widget:
-                    type: homeassistant
-                    url: http://home-assistant.system:8123
-                    key: '{{ "{{" }}HOMEPAGE_VAR_HASS_KEY{{ "}}" }}'
               - Sonarr:
                   icon: sonarr.png
                   href: https://sonarr.erwanleboucher.dev
@@ -184,16 +191,34 @@ spec:
                     type: prowlarr
                     url: http://prowlarr.media:9696
                     key: '{{ "{{" }}HOMEPAGE_VAR_PROWLARR_KEY{{ "}}" }}'
+
+            - Downloads:
+              - SABnzbd:
+                  icon: sabnzbd.png
+                  href: https://sabnzbd.erwanleboucher.dev
+                  description: NZB Downloader
+                  widget:
+                    type: sabnzbd
+                    url: http://sabnzbd.downloads:8080
+                    key: '{{ "{{" }}HOMEPAGE_VAR_SABNZBD_KEY{{ "}}" }}'
               - qBittorrent:
                   icon: qbittorrent.png
                   href: https://qbit.erwanleboucher.dev
-                  description: Downloader
+                  description: Torrent Downloader
                   widget:
                     type: qbittorrent
                     url: http://qbittorrent.downloads:8081
                     username: '{{ "{{" }}HOMEPAGE_VAR_QBIT_USER{{ "}}" }}'
                     password: '{{ "{{" }}HOMEPAGE_VAR_QBIT_PASS{{ "}}" }}'
-
+            - Automation:
+              - Home Assistant:
+                  icon: home-assistant.png
+                  href: https://home.erwanleboucher.dev
+                  description: Home Automation
+                  widget:
+                    type: homeassistant
+                    url: http://home-assistant.system:8123
+                    key: '{{ "{{" }}HOMEPAGE_VAR_HASS_KEY{{ "}}" }}'
             - System:
               - AdGuard Home:
                   icon: adguard-home.png
@@ -213,7 +238,7 @@ spec:
                     password: '{{ "{{" }}HOMEPAGE_VAR_BESZEL_PASS{{ "}}" }}'
                     version: 2
               - Uptime Kuma:
-                  icon: uptimekuma.png
+                  icon: uptime-kuma.png
                   href: https://status.erwanleboucher.dev
                   description: Monitoring
                   widget:
