@@ -107,6 +107,9 @@ spec:
             disableCollapse: true
             headerStyle: boxedWidgets
             layout:
+              Monitoring:
+                style: row
+                columns: 3
               Media:
                 style: row
                 columns: 3
@@ -121,7 +124,7 @@ spec:
                 columns: 3
             providers:
               longhorn:
-                url: https://longhorn.erwanleboucher.dev
+                url: http://longhorn-frontend.longhorn-system
           widgets.yaml: |
             - kubernetes:
                 cluster:
@@ -135,13 +138,42 @@ spec:
                   cpu: true
                   memory: true
                   showLabel: true
-            - resources:
-                backend: resources
-                expanded: true
-                cpu: true
-                memory: true
-                network: default
+            - longhorn:
+                  expanded: true
+                  total: true
+                  labels: true
+                  nodes: true
           services.yaml: |
+            - Monitoring:
+              - Speedtest Tracker:
+                  icon: speedtest-tracker.png
+                  href: https://speedtest.erwanleboucher.dev
+                  description: Internet Speed Tests
+                  widget:
+                    type: speedtest
+                    version: 2
+                    url: http://speedtest-tracker.monitoring
+                    key: '{{ "{{" }}HOMEPAGE_VAR_SPEEDTEST_KEY{{ "}}" }}'
+                    bitratePrecision: 3
+              - Beszel:
+                  icon: beszel.png
+                  href: https://monitor.erwanleboucher.dev
+                  description: Monitoring
+                  widget:
+                    type: beszel
+                    url: http://beszel.monitoring:8090
+                    username: '{{ "{{" }}HOMEPAGE_VAR_BESZEL_USER{{ "}}" }}'
+                    password: '{{ "{{" }}HOMEPAGE_VAR_BESZEL_PASS{{ "}}" }}'
+                    version: 2
+              - Uptime Kuma:
+                  icon: uptime-kuma.png
+                  href: https://status.erwanleboucher.dev
+                  description: Monitoring
+                  widget:
+                    type: uptimekuma
+                    url: http://uptime-kuma.monitoring:3001
+                    slug: default
+
             - Media:
               - Jellyfin:
                   icon: jellyfin.png
@@ -227,24 +259,7 @@ spec:
                   widget:
                     type: adguard
                     url: http://adguard-primary-internal.adguard:3000
-              - Beszel:
-                  icon: beszel.png
-                  href: https://monitor.erwanleboucher.dev
-                  description: Monitoring
-                  widget:
-                    type: beszel
-                    url: http://beszel.monitoring:8090
-                    username: '{{ "{{" }}HOMEPAGE_VAR_BESZEL_USER{{ "}}" }}'
-                    password: '{{ "{{" }}HOMEPAGE_VAR_BESZEL_PASS{{ "}}" }}'
-                    version: 2
-              - Uptime Kuma:
-                  icon: uptime-kuma.png
-                  href: https://status.erwanleboucher.dev
-                  description: Monitoring
-                  widget:
-                    type: uptimekuma
-                    url: http://uptime-kuma.monitoring:3001
-                    slug: default
+
     persistence:
       config:
         type: configMap
