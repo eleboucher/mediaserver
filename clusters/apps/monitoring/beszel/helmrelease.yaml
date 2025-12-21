@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: henrygd/beszel
-              tag: "0.17.0"
+              tag: "0.17.0@sha256:185142e6c91bd44c77fef6cd31784aee0f782eb1d7193c3ee34a9902a936621c"
               pullPolicy: Always
             probes:
               liveness:
@@ -101,7 +101,7 @@ spec:
                   - CAP_PERFMON
             image:
               repository: henrygd/beszel-agent-intel
-              tag: "0.17.0"
+              tag: "0.17.0@sha256:ed944888731daae9d12c9daaac270745832f13a7eb1ac17b77215a5415190b35"
               pullPolicy: Always
             env:
               - name: HUB_URL
