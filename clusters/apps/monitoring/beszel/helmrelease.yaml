@@ -94,27 +94,40 @@ spec:
           hostNetwork: true
         containers:
           app:
+            securityContext:
+              privileged: true
+              capabilities:
+                add:
+                  - CAP_PERFMON
             image:
               repository: henrygd/beszel-agent-intel
               tag: "0.17.0"
               pullPolicy: Always
             env:
+              - name: HUB_URL
+                value: "http://beszel:8090"
               - name: KEY
                 valueFrom:
                   secretKeyRef:
                     name: beszel-token
+                    key: KEY
+              - name: TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: beszel-token
                     key: TOKEN
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
+              - name: LISTEN
+                value: "45876"
+            ports:
+              - containerPort: 45876
+                hostPort: 45876
 
+    persistence:
+      dri:
+        type: hostPath
+        hostPath: /dev/dri
+        globalMounts:
+          - path: /dev/dri
     service:
       app:
         controller: beszel-agent-intel
