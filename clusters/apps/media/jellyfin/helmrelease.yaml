@@ -108,14 +108,13 @@ spec:
         type: persistentVolumeClaim
         storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 5Gi
+        size: 20Gi
         globalMounts:
           - path: /config
       data:
         enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /
+        type: hostPath
+        hostPath: /srv/media
         globalMounts:
           - path: /data
       transcode:

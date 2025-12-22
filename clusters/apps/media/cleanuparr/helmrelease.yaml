@@ -23,7 +23,7 @@ spec:
         replicas: 1
         pod:
           nodeSelector:
-            kubernetes.io/hostname: le-havre
+            kubernetes.io/hostname: kharkiv
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
