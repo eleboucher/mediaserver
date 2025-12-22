@@ -8,5 +8,4 @@ resources:
   - beszel
   - speedtest-tracker
   - victoria-metrics-k8s-stack
-  - victoria-logs
   - grafana
