@@ -103,9 +103,8 @@ spec:
           - path: /config
       data:
         enabled: true
-        type: nfs
-        server: 10.0.0.2
-        path: /
+        type: hostPath
+        hostPath: /srv/media
         globalMounts:
           - path: /data
       incomplete:
