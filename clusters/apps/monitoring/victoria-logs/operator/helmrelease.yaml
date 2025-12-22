@@ -1,0 +1,15 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vls-collector
+  namespace: monitoring
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: victoria-logs-single
+  values:
+    nameOverride: *app
+    remoteWrite:
+      - url: http://vls-server:9428
