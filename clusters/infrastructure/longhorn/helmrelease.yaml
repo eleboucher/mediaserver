@@ -26,7 +26,7 @@ spec:
       resizerReplicaCount: 2
       snapshotterReplicaCount: 2
     defaultSettings:
-      backupTarget: "nfs://10.0.0.2:/backups/longhorn-backups?nfsOptions=nfsvers=4.2"
+      backupTarget: "nfs://10.0.0.1/backups/longhorn-backups?nfsOptions=nfsvers=4.2"
       backupTargetCredentialSecret: ""
 
       guaranteedInstanceManagerCPU: '{"v1":"5","v2":"5"}'
