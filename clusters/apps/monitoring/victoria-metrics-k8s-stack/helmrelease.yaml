@@ -15,7 +15,10 @@ spec:
     defaultRules:
       rules:
         etcd: false
-
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
     kubeEtcd:
       enabled: false
     grafana:
@@ -35,3 +38,9 @@ spec:
         enabled: true
         size: 10Gi
         storageClass: longhorn
+
+    vmagent:
+      spec:
+        inlineRelabelConfig:
+          - action: labeldrop
+            regex: "feature_node_kubernetes_io_.*"
