@@ -80,6 +80,7 @@ spec:
                 message: '{{ template "discord.message" . }}'
     vmagent:
       spec:
+        scrapeInterval: 60s
         nodeSelector:
           kubernetes.io/hostname: le-havre
         inlineRelabelConfig:
