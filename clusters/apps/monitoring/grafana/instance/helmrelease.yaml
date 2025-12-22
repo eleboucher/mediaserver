@@ -10,6 +10,8 @@ spec:
     kind: OCIRepository
     name: grafana
   values:
+    nodeSelector:
+      kubernetes.io/hostname: le-havre
     plugins:
       - victoriametrics-logs-datasource
     admin:

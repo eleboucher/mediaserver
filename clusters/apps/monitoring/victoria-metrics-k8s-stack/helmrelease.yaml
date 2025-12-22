@@ -34,6 +34,8 @@ spec:
     alertmanager:
       enabled: true
       spec:
+        nodeSelector:
+          kubernetes.io/hostname: le-havre
         secrets:
           - discord-webhook
 
@@ -78,6 +80,16 @@ spec:
                 message: '{{ template "discord.message" . }}'
     vmagent:
       spec:
+        nodeSelector:
+          kubernetes.io/hostname: le-havre
         inlineRelabelConfig:
           - action: labeldrop
             regex: "feature_node_kubernetes_io_.*"
+    vmsingle:
+      spec:
+        nodeSelector:
+          kubernetes.io/hostname: le-havre
+    vmalert:
+      spec:
+        nodeSelector:
+          kubernetes.io/hostname: le-havre
