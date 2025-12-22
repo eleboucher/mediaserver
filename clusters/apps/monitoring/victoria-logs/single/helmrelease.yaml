@@ -21,3 +21,5 @@ spec:
       enabled: true
       labels:
         grafana_dashboard: "1"
+      grafanaOperator:
+        enabled: true
