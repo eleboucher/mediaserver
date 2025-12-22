@@ -31,6 +31,51 @@ spec:
     defaultDatasources:
       grafanaOperator:
         enabled: true
+    alertmanager:
+      enabled: true
+      spec:
+        secrets:
+          - discord-webhook
+
+      templateFiles:
+        discord.tmpl: |-
+          {{ define "discord.title" }}
+          [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
+          {{ end }}
+
+          {{ define "discord.message" }}
+          {{ range .Alerts }}
+          **Alert:** {{ .Annotations.summary }}
+          **Description:** {{ .Annotations.description }}
+          **Severity:** {{ .Labels.severity }}
+          **Active:** {{ .StartsAt }}
+
+          {{ end }}
+          {{ end }}
+
+      config:
+        global:
+          resolve_timeout: 5m
+        route:
+          group_by:
+            - "alertname"
+            - "job"
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 12h
+          receiver: "null"
+          routes:
+            - match_re:
+                severity: "warning|critical"
+              receiver: "discord"
+
+        receivers:
+          - name: "null"
+          - name: "discord"
+            discord_configs:
+              - webhook_url_file: /etc/vm/secrets/discord-webhook/webhook-url
+                title: '{{ template "discord.title" . }}'
+                message: '{{ template "discord.message" . }}'
     vmagent:
       spec:
         inlineRelabelConfig:
