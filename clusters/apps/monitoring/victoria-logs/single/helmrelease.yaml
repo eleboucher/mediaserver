@@ -11,7 +11,11 @@ spec:
     name: victoria-logs-single
   values:
     nameOverride: *app
+
     server:
+      spec:
+        nodeSelector:
+          kubernetes.io/hostname: le-havre
       retentionPeriod: 7d
       persistence:
         enabled: true
