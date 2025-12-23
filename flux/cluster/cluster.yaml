@@ -8,7 +8,7 @@ spec:
   decryption:
     provider: sops
   interval: 1h
-  path: ./cluster
+  path: ./clusters
   patches:
     - # Add Sops decryption to all Kustomizations
       patch: |-
