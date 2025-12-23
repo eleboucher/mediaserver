@@ -6,6 +6,7 @@ resources:
   - gotk-sync.yaml
   - secret.sops.yaml
   - discord-alert.yaml
+  - flux-operator
 patches:
   - target:
       kind: Kustomization
