@@ -12,3 +12,4 @@ resources:
   - metallb
   - snapshot-controller
   - system-upgrade-controller
+  - reloader
