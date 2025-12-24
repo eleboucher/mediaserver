@@ -11,7 +11,7 @@ spec:
     substitute:
       APP: jellyfin
       APP_NAMESPACE: media
-  prune: true
+  prune: false # Will enable after migration complete
   sourceRef:
     kind: GitRepository
     name: flux-system
