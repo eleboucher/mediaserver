@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - github.yaml
   - secret.sops.yaml
+  - ingress.yaml
