@@ -21,6 +21,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: adguard-ha-web
+                name: adguard-primary-internal
                 port:
                   number: 3000
