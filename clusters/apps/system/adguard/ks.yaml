@@ -10,12 +10,12 @@ spec:
   postBuild:
     substitute:
       APP: adguard
-      APP_NAMESPACE: system
+      APP_NAMESPACE: adguard
   prune: false # Will enable after migration complete
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: system
-  timeout: 5m
+  targetNamespace: adguard
+  timeout: 10m
   wait: false
