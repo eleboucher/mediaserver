@@ -92,7 +92,6 @@ spec:
             hosts:
               - wizarr.erwanleboucher.dev
     persistence:
-
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"
