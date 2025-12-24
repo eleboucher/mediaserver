@@ -5,3 +5,5 @@ resources:
   - repository.yaml
   - helmrelease.yaml
   - secret.sops.yaml
+  - alerts
+  - receiver
