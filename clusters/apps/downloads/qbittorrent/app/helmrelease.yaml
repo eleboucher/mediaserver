@@ -35,7 +35,7 @@ spec:
           gluetun:
             image:
               repository: qmcgaw/gluetun
-              tag: v3.40.4@sha256:e10584de1f82d8999e5e6c3111901d9d56a2eed21151fb96af060f390bbdfba8
+              tag: v3.41.0
             probes:
               startup:
                 enabled: false
