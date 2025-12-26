@@ -38,6 +38,13 @@ spec:
       spec:
         nodeSelector:
           kubernetes.io/hostname: le-havre
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
         secrets:
           - discord-webhook
 
@@ -85,6 +92,13 @@ spec:
         scrapeInterval: 60s
         nodeSelector:
           kubernetes.io/hostname: le-havre
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
         inlineRelabelConfig:
           - action: labeldrop
             regex: "feature_node_kubernetes_io_.*"
@@ -92,7 +106,21 @@ spec:
       spec:
         nodeSelector:
           kubernetes.io/hostname: le-havre
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
     vmalert:
       spec:
         nodeSelector:
           kubernetes.io/hostname: le-havre
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi

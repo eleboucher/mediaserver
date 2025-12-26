@@ -33,6 +33,13 @@ spec:
             env:
               - name: OLLAMA_KEEP_ALIVE
                 value: "0"
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                cpu: 2000m
+                memory: 4Gi
     service:
       app:
         controller: ollama

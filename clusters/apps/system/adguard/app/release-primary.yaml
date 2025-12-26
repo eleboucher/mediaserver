@@ -18,6 +18,13 @@ spec:
       reloader.stakater.com/auto: "true"
     nodeSelector:
       kubernetes.io/hostname: "le-havre"
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
     securityContext:
       capabilities:
         add:
