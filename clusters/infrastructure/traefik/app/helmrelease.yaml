@@ -45,8 +45,8 @@ spec:
     # Enable dashboard API
     api:
       dashboard: true
-      insecure: true
-
+    additionalArguments:
+      - "--api.insecure=true"
     # Enable logging
     logs:
       general:
@@ -72,7 +72,7 @@ spec:
           type: ClusterIP
           selector:
             app.kubernetes.io/name: traefik
-            app.kubernetes.io/instance: traefik-default
+            app.kubernetes.io/instance: traefik-traefik
           ports:
             - port: 8080
               name: traefik
