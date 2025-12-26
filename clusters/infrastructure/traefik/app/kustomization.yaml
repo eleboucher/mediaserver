@@ -5,4 +5,5 @@ namespace: traefik
 resources:
   - namespace.yaml
   - helmrelease.yaml
-  # - dashboard-ingress.yaml
+  - authelia-middleware.yaml
+  - dashboard-ingress.yaml

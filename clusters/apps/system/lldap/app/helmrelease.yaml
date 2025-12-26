@@ -35,6 +35,14 @@ spec:
                 value: "17170"
               - name: LLDAP_LDAP_PORT
                 value: "3890"
+              - name: LLDAP_LDAPS_PORT
+                value: "6360"
+              - name: LLDAP_LDAPS_OPTIONS__ENABLED
+                value: "true"
+              - name: LLDAP_LDAPS_OPTIONS__CERT_FILE
+                value: "/certs/tls.crt"
+              - name: LLDAP_LDAPS_OPTIONS__KEY_FILE
+                value: "/certs/tls.key"
               - name: LLDAP_LDAP_BASE_DN
                 value: "dc=erwanleboucher,dc=dev"
               - name: LLDAP_JWT_SECRET
@@ -86,6 +94,9 @@ spec:
           ldap:
             port: 3890
             protocol: TCP
+          ldaps:
+            port: 6360
+            protocol: TCP
     ingress:
       app:
         enabled: true
@@ -113,3 +124,9 @@ spec:
         size: 1Gi
         globalMounts:
           - path: /data
+      certs:
+        type: secret
+        name: lldap-ldaps-tls
+        globalMounts:
+          - path: /certs
+            readOnly: true

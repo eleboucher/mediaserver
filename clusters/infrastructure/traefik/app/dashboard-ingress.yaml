@@ -23,6 +23,9 @@ spec:
   routes:
     - match: Host(`traefik.erwanleboucher.dev`)
       kind: Rule
+      middlewares:
+        - name: authelia
+          namespace: traefik
       services:
         - name: api@internal
           kind: TraefikService

@@ -16,10 +16,25 @@ spec:
         name: metallb
         namespace: metallb-system
   values:
+    controller:
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
     speaker:
       frr:
         enabled: false
       tolerateMaster: true
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
       extraEnvVars:
         - name: METALLB_ML_BIND_ADDR
           valueFrom:
