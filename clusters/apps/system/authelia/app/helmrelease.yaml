@@ -15,8 +15,6 @@ spec:
         name: authelia
         namespace: flux-system
   values:
-    domain: erwanleboucher.dev
-
     pod:
       kind: Deployment
       replicas: 1
@@ -57,14 +55,10 @@ spec:
             skip_verify: true
             minimum_version: TLS1.2
           base_dn: dc=erwanleboucher,dc=dev
-          username_attribute: uid
           additional_users_dn: ou=people
           users_filter: (&({username_attribute}={input})(objectClass=person))
           additional_groups_dn: ou=groups
           groups_filter: (member={dn})
-          group_name_attribute: cn
-          mail_attribute: mail
-          display_name_attribute: displayName
           user: uid=admin,ou=people,dc=erwanleboucher,dc=dev
 
       session:
