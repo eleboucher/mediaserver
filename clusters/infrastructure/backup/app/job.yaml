@@ -47,6 +47,12 @@ spec:
                   --verbose \
                   --delete-during
 
+                rclone sync /data/backups/homeassistant gdrive:homeassistant-backups \
+                  --transfers 32 \
+                  --checkers 32 \
+                  --fast-list \
+                  --verbose \
+                  --delete-during
                 echo "✅ Offsite Sync Complete!"
 
             resources:
