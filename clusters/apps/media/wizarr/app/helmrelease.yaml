@@ -43,6 +43,8 @@ spec:
                 value: "false"
               - name: TZ
                 value: "Europe/Paris"
+              - name: GUNICORN_WORKERS
+                value: "2"
             resources:
               requests:
                 cpu: 200m
