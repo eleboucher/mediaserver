@@ -104,6 +104,7 @@ spec:
         annotations:
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           cert-manager.io/cluster-issuer: "letsencrypt-production"
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-authelia@kubernetescrd
         hosts:
           - host: ldap.erwanleboucher.dev
             paths:
