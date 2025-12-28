@@ -41,7 +41,8 @@ spec:
       allowRecurringJobWhileVolumeDetached: true
       # Replication for resilience
       defaultReplicaCount: "2"
-      replicaDiskSoftAntiAffinity: true
+      replicaSoftAntiAffinity: true
+      replicaDiskSoftAntiAffinity: false
       replicaZoneSoftAntiAffinity: false
       createDefaultDiskLabeledNodes: true
       orphanAutoDeletion: true
