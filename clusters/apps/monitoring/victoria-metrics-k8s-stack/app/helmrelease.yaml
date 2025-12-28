@@ -37,7 +37,7 @@ spec:
       enabled: true
       spec:
         nodeSelector:
-          kubernetes.io/hostname: le-havre
+          kubernetes.io/hostname: kharkiv
         resources:
           requests:
             cpu: 25m
@@ -91,7 +91,7 @@ spec:
       spec:
         scrapeInterval: 60s
         nodeSelector:
-          kubernetes.io/hostname: le-havre
+          kubernetes.io/hostname: kharkiv
         resources:
           requests:
             cpu: 50m
@@ -105,7 +105,7 @@ spec:
     vmsingle:
       spec:
         nodeSelector:
-          kubernetes.io/hostname: le-havre
+          kubernetes.io/hostname: kharkiv
         resources:
           requests:
             cpu: 100m
@@ -116,7 +116,7 @@ spec:
     vmalert:
       spec:
         nodeSelector:
-          kubernetes.io/hostname: le-havre
+          kubernetes.io/hostname: kharkiv
         resources:
           requests:
             cpu: 25m

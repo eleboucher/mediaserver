@@ -64,8 +64,6 @@ spec:
     # Enable dashboard API
     api:
       dashboard: true
-    additionalArguments:
-      - "--api.insecure=true"
     # Enable logging
     logs:
       general:

@@ -57,6 +57,7 @@ spec:
       tlsSecret: longhorn-tls
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-production
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-authelia@kubernetescrd
 
     metrics:
       serviceMonitor:

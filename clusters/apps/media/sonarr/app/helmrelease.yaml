@@ -43,7 +43,7 @@ spec:
                 value: "Europe/Paris"
             resources:
               requests:
-                memory: 512Mi
+                memory: 768Mi
               limits:
                 memory: 2Gi
             probes:
