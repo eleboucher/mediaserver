@@ -45,6 +45,8 @@ spec:
                 value: "1000"
               - name: TZ
                 value: "Europe/Paris"
+              - name: DOCKER_MODS
+                value: linuxserver/mods:jellyfin-opencl-intel
             securityContext:
               privileged: true
             resources:
