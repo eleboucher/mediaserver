@@ -70,8 +70,8 @@ spec:
         expiration: 1h
         remember_me: 1M
         cookies:
-          - domain: erwanleboucher.dev
-            authelia_url: https://auth.erwanleboucher.dev
+          - subdomain: auth
+            domain: erwanleboucher.dev
             default_redirection_url: https://dash.erwanleboucher.dev
 
       storage:

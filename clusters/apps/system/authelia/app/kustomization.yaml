@@ -4,9 +4,3 @@ kind: Kustomization
 resources:
   - secret.sops.yaml
   - helmrelease.yaml
-
-patches:
-  - path: configmap-patch.yaml
-    target:
-      kind: ConfigMap
-      name: authelia
