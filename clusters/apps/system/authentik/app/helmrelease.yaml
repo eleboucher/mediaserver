@@ -1,0 +1,83 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: system
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: authentik
+      version: "2025.10.3"
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+  values:
+    global:
+      deploymentAnnotations:
+        reloader.stakater.com/auto: "true"
+
+    authentik:
+      secret_key: file:///authentik-creds/AUTHENTIK_SECRET_KEY
+      error_reporting:
+        enabled: false
+      postgresql:
+        host: "authentik-postgres-rw"
+        port: 5432
+        name: "authentik"
+        user: "authentik"
+        password: file:///authentik-creds/AUTHENTIK_POSTGRES_PASSWORD
+
+    server:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+      volumes:
+        - name: authentik-secrets
+          secret:
+            secretName: authentik-secrets
+      volumeMounts:
+        - name: authentik-secrets
+          mountPath: /authentik-creds
+          readOnly: true
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - authentik.erwanleboucher.dev
+        tls:
+          - secretName: authentik-tls
+            hosts:
+              - authentik.erwanleboucher.dev
+
+    worker:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+      volumes:
+        - name: authentik-secrets
+          secret:
+            secretName: authentik-secrets
+      volumeMounts:
+        - name: authentik-secrets
+          mountPath: /authentik-creds
+          readOnly: true
+
+    redis:
+      enabled: false
+
+    postgresql:
+      enabled: false

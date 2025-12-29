@@ -9,3 +9,4 @@ resources:
   - homepage/ks.yaml
   - lldap/ks.yaml
   - authelia
+  - authentik/ks.yaml
