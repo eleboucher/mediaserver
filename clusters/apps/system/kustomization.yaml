@@ -11,3 +11,4 @@ resources:
   - authelia
   - authentik/ks.yaml
   - mosquitto/ks.yaml
+  - smtp-relay/ks.yaml
