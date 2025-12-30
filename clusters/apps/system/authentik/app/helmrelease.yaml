@@ -28,6 +28,9 @@ spec:
         name: "authentik"
         user: "authentik"
         password: file:///authentik-creds/AUTHENTIK_POSTGRES_PASSWORD
+      web:
+        workers: 1
+        threads: 2
 
     server:
       replicas: 1
