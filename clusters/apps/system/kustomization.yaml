@@ -10,3 +10,4 @@ resources:
   - lldap/ks.yaml
   - authelia
   - authentik/ks.yaml
+  - mosquitto/ks.yaml
