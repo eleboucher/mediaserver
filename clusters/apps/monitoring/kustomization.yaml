@@ -7,6 +7,4 @@ resources:
   - secret.sops.yaml
   - beszel/ks.yaml
   - speedtest-tracker/ks.yaml
-  - victoria-metrics-k8s-stack/ks.yaml
-  - grafana/ks.yaml
   - prometheus/ks.yaml
