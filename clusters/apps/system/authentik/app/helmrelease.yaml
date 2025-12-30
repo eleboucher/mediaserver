@@ -22,6 +22,11 @@ spec:
       secret_key: file:///authentik-creds/AUTHENTIK_SECRET_KEY
       error_reporting:
         enabled: false
+      email:
+        host: smtp-relay.system.svc.cluster.local
+        port: 25
+        from: "Auth <auth@erwanleboucher.dev>"
+
       postgresql:
         host: "authentik-postgres-rw"
         port: 5432
