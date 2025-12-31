@@ -16,6 +16,3 @@ metadata:
 spec:
   ipAddressPools:
     - first-pool
-  interfaces:
-    - enp3s0
-    - enx6c1ff75c0394
