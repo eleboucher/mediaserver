@@ -8,7 +8,7 @@ spec:
   interval: 6h
   path: ./clusters/apps/system/cloudflared/app
   dependsOn:
-    - name: traefik
+    - name: envoy-gateway
     - name: longhorn
     - name: reloader
   postBuild:

@@ -8,7 +8,7 @@ spec:
   interval: 30m
   path: ./clusters/apps/downloads/qbittorrent/app
   dependsOn:
-    - name: traefik
+    - name: envoy-gateway
     - name: longhorn
     - name: reloader
   postBuild:
