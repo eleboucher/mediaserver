@@ -73,8 +73,16 @@ spec:
         readOnly: true
     config: |-
       rewrites:
+        - 'domain': "request.erwanleboucher.dev"
+          'answer': "192.168.1.64"
+        - 'domain': "home.erwanleboucher.dev"
+          'answer': "192.168.1.64"
+        - 'domain': "wizarr.erwanleboucher.dev"
+          'answer': "192.168.1.64"
+        - 'domain': "watch.erwanleboucher.dev"
+          'answer': "192.168.1.64"
         - 'domain': "*.erwanleboucher.dev"
-          'answer': "192.168.1.62"
+          'answer': "192.168.1.65"
       tls:
         enabled: true
         server_name: dns.erwanleboucher.dev
