@@ -22,7 +22,7 @@ rules:
       - get
       - list
   - apiGroups:
-      - traefik.io
+      - envoy-gateway.io
     resources:
       - ingressroutes
     verbs:

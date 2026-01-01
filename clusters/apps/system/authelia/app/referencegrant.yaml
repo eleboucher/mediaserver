@@ -1,0 +1,24 @@
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: authelia-service-grant
+  namespace: system
+spec:
+  from:
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: envoy-gateway
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: longhorn-system
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: system
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: network
+  to:
+    - group: ""
+      kind: Service
+      name: authelia

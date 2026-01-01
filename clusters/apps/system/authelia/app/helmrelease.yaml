@@ -28,18 +28,6 @@ spec:
           cpu: 500m
           memory: 256Mi
 
-    ingress:
-      enabled: true
-      className: traefik
-      annotations:
-        cert-manager.io/cluster-issuer: "letsencrypt-production"
-      rulesOverride:
-        - host: auth.erwanleboucher.dev
-          path: /
-      tls:
-        enabled: true
-        secret: authelia-tls
-
     configMap:
       theme: auto
       default_2fa_method: "totp"

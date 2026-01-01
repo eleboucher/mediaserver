@@ -46,14 +46,7 @@ spec:
       replicas: 2
 
     ingress:
-      enabled: true
-      ingressClassName: traefik
-      host: longhorn.erwanleboucher.dev
-      tls: true
-      tlsSecret: longhorn-tls
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-production
-        traefik.ingress.kubernetes.io/router.middlewares: traefik-authelia@kubernetescrd
+      enabled: false # Using standalone HTTPRoute for Envoy Gateway
 
     metrics:
       serviceMonitor:

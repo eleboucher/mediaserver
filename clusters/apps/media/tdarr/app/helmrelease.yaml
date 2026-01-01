@@ -1,0 +1,127 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/app-template-4.5.0/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app tdarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: "4.5.0"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups:
+          - 44 # video group
+          - 992 # render group for /dev/dri
+    controllers:
+      tdarr:
+        containers:
+          app:
+            image:
+              repository: haveagitgat/tdarr
+              tag: 2.58.02@sha256:20a5656c4af4854e1877046294f77113f949d27e35940a9a65f231423d063207
+            env:
+              TZ: "Europe/Paris"
+              PUID: 1000
+              PGID: 1000
+              serverBindIP: true
+              serverIP: 0.0.0.0
+              serverPort: &serverPort 8266
+              webUIPort: &port 8265
+              internalNode: "false"
+              inContainer: "true"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/status
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+      server:
+        controller: *app
+        type: LoadBalancer
+        loadBalancerIP: 192.168.169.117
+        externalTrafficPolicy: Local
+        ports:
+          server:
+            port: *serverPort
+
+    ingress:
+      app:
+        enabled: true
+        className: envoy-gateway
+        annotations:
+          envoy-gateway.ingress.kubernetes.io/router.entrypoints: websecure
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: &hostName tdarr.erwanleboucher.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - secretName: tdarr-tls
+            hosts:
+              - *hostName
+
+    persistence:
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: "longhorn"
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        advancedMounts:
+          tdarr:
+            app:
+              - path: /app/configs
+                subPath: config
+              - path: /app/server
+                subPath: server
+      data:
+        enabled: true
+        type: hostPath
+        hostPath: /srv/media
+        globalMounts:
+          - path: /data
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache

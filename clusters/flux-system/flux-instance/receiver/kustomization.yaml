@@ -5,3 +5,4 @@ resources:
   - github.yaml
   - secret.sops.yaml
   - ingress.yaml
+  - httproute.yaml

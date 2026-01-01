@@ -1,0 +1,66 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-gateway
+  namespace: network
+spec:
+  gatewayClassName: envoy
+  infrastructure:
+    annotations:
+      metallb.universe.tf/loadBalancerIPs: "192.168.1.62"
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: wildcard-tls
+            namespace: network
+    - name: dns-over-tls
+      protocol: TCP
+      port: 853
+      allowedRoutes:
+        namespaces:
+          from: All
+        kinds:
+          - kind: TCPRoute
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyPatchPolicy
+metadata:
+  name: envoy-gateway-compression
+  namespace: network
+spec:
+  type: JSONPatch
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: envoy-gateway
+  jsonPatches:
+    # Add zstd compression for HTTPS listener
+    - type: type.googleapis.com/envoy.config.listener.v3.Listener
+      name: network/envoy-gateway/https
+      operation:
+        op: add
+        path: /default_filter_chain/filters/0/typed_config/http_filters/0
+        value:
+          name: envoy.filters.http.compressor
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.compressor.v3.Compressor
+            compressor_library:
+              name: envoy.compression.zstd.compressor
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.compression.zstd.compressor.v3.Zstd
+            response_direction_config:
+              remove_accept_encoding_header: true

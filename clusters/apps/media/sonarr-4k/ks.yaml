@@ -1,0 +1,25 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: sonarr-4k
+  namespace: flux-system
+spec:
+  interval: 1h
+  path: ./clusters/apps/media/sonarr-4k/app
+  dependsOn:
+    - name: envoy-gateway
+    - name: longhorn
+    - name: reloader
+  postBuild:
+    substitute:
+      APP: sonarr-4k
+      APP_NAMESPACE: media
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: media
+  timeout: 5m
+  wait: false

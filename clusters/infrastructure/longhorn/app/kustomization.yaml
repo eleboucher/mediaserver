@@ -7,3 +7,5 @@ resources:
   - namespace.yaml
   - secret.sops.yaml
   - snapshotvolumeclass.yaml
+  - httproute.yaml
+  - securitypolicy.yaml

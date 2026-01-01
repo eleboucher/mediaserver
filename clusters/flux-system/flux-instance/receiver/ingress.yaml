@@ -5,10 +5,10 @@ metadata:
   name: webhook-receiver
   namespace: flux-system
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    envoy-gateway.ingress.kubernetes.io/router.entrypoints: websecure
     cert-manager.io/cluster-issuer: "letsencrypt-production"
 spec:
-  ingressClassName: traefik
+  ingressClassName: envoy-gateway
   rules:
     - host: wsflux.erwanleboucher.dev
       http:

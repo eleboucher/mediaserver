@@ -10,3 +10,5 @@ resources:
   - loadbalancer.yaml
   - sync-bot.yaml
   - ingress.yaml
+  - httproute.yaml
+  - tcproute.yaml

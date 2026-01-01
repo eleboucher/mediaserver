@@ -6,9 +6,9 @@ metadata:
   namespace: adguard
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    envoy-gateway.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
-  ingressClassName: traefik
+  ingressClassName: envoy-gateway
   tls:
     - hosts:
         - dns.erwanleboucher.dev

@@ -8,7 +8,7 @@ spec:
   interval: 1h
   path: ./clusters/apps/media/flaresolverr/app
   dependsOn:
-    - name: traefik
+    - name: envoy-gateway
     - name: longhorn
     - name: reloader
   postBuild:

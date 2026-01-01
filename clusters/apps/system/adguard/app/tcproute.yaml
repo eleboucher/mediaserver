@@ -1,0 +1,16 @@
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: adguard-dns-over-tls
+  namespace: adguard
+spec:
+  parentRefs:
+    - name: primary-gateway
+      namespace: network
+      sectionName: dns-over-tls
+  rules:
+    - backendRefs:
+        - name: adguard-primary-internal
+          port: 853
+          weight: 1
