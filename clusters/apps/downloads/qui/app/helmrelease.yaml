@@ -84,7 +84,12 @@ spec:
         hostnames:
           - qui.erwanleboucher.dev
     persistence:
-
+      data:
+        enabled: true
+        type: hostPath
+        hostPath: /srv/media
+        globalMounts:
+          - path: /data
       config:
         type: persistentVolumeClaim
         storageClass: "longhorn"
