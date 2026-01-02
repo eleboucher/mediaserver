@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - cert-manager/ks.yaml
   - helm-repos/ks.yaml
+  - external-dns/ks.yaml
   - intel-device-plugins-operator/ks.yaml
   - node-feature-discovery/ks.yaml
   - longhorn/ks.yaml

@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - flux-operator
   - flux-instance
+  - cluster-vars.sops.yaml
