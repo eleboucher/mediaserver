@@ -27,63 +27,69 @@ spec:
         containers:
           app:
             image:
-              repository: cloudflare/cloudflared
+              repository: mirror.gcr.io/cloudflare/cloudflared
               tag: 2025.11.1@sha256:89ee50efb1e9cb2ae30281a8a404fed95eb8f02f0a972617526f8c5b417acae2
             args:
               - tunnel
-              - --metrics
-              - 0.0.0.0:9090
               - run
             env:
-              - name: TUNNEL_TOKEN
-                valueFrom:
-                  secretKeyRef:
-                    name: cloudflared-token
-                    key: TUNNEL_TOKEN
+              NO_AUTOUPDATE: true
+              TUNNEL_METRICS: 0.0.0.0:8080
+              TUNNEL_ORIGIN_ENABLE_HTTP2: true
+              TUNNEL_TRANSPORT_PROTOCOL: quic
+              TUNNEL_POST_QUANTUM: true
+            envFrom:
+              - secretRef:
+                  name: cloudflared-token
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
-                cpu: 50m
-                memory: 64Mi
+                cpu: 10m
               limits:
-                cpu: 200m
                 memory: 256Mi
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /ready
-                    port: 9090
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
-                  timeoutSeconds: 3
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /ready
-                    port: 9090
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
-                  timeoutSeconds: 3
-                  failureThreshold: 3
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
     service:
       app:
-        controller: cloudflared
         ports:
-          metrics:
-            port: 9090
-            protocol: TCP
-    serviceMonitor:
-      app:
-        enabled: true
-        serviceName: cloudflared
-        endpoints:
-          - port: metrics
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
+          http:
+            port: *port
+    configMaps:
+      config:
+        data:
+          config.yaml: |-
+            ingress:
+              - hostname: "*.erwanleboucher.dev"
+                originRequest:
+                  http2Origin: true
+                  keepAliveTimeout: 3600s
+                  originServerName: external.erwanleboucher.dev
+                  tcpKeepAlive: 7200s
+                service: https://envoy-external.network.svc.cluster.local:443
+              - service: http_status:404
+    persistence:
+      config-file:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /etc/cloudflared/config.yaml
+            subPath: config.yaml

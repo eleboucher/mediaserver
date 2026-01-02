@@ -43,11 +43,13 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: envoy-external
+  annotations:
+    external-dns.alpha.kubernetes.io/target: &hostname external.erwanleboucher.dev
 spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      metallb.io/loadBalancerIPs: 192.168.1.64
+      external-dns.alpha.kubernetes.io/target: *hostname
   listeners:
     - name: http
       protocol: HTTP
