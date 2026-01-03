@@ -14,3 +14,4 @@ resources:
   - snapshot-controller/ks.yaml
   - system-upgrade-controller/ks.yaml
   - reloader/ks.yaml
+  - descheduler/ks.yaml
