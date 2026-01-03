@@ -7,3 +7,4 @@ resources:
   - helmrelease.yaml
   - secret.sops.yaml
   - clusterissuer.yaml
+  - clusterissuer-selfsigned.yaml
