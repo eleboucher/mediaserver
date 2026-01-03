@@ -69,7 +69,7 @@ spec:
             env:
               IPV6_DISABLED: "true"
               TZ: "Europe/Paris"
-              FIREWALL_INPUT_PORTS: "8081,9999"
+              FIREWALL_INPUT_PORTS: "8080,9999"
               FIREWALL_OUTBOUND_SUBNETS: "10.42.0.0/24,10.42.1.0/24,192.168.1.0/24,10.0.0.0/24"
               DOT: "off"
               VPN_PORT_FORWARDING: "on"
@@ -92,7 +92,7 @@ spec:
                 memory: 64Mi
             env:
               QBITTORRENT_SERVER: localhost
-              QBITTORRENT_PORT: "8081"
+              QBITTORRENT_PORT: "8080"
               PORT_FORWARDED: "/tmp/gluetun/forwarded_port"
               HTTP_S: "http"
           # qBittorrent application container
@@ -111,7 +111,6 @@ spec:
               runAsUser: 1000
             env:
               TZ: "Europe/Paris"
-              WEBUI_PORT: "8081"
             resources:
               requests:
                 cpu: 200m
@@ -126,7 +125,7 @@ spec:
                 spec:
                   httpGet:
                     path: /
-                    port: 8081
+                    port: 8080
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -137,7 +136,7 @@ spec:
         controller: qbittorrent
         ports:
           http:
-            port: 8081
+            port: 8080
             protocol: TCP
     route:
       app:
@@ -151,7 +150,7 @@ spec:
         type: persistentVolumeClaim
         storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 50Gi
+        size: 2Gi
         globalMounts:
           - path: /config
       data:

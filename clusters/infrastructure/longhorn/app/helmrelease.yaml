@@ -17,7 +17,6 @@ spec:
   values:
     annotations:
       reloader.stakater.com/auto: "true"
-
     persistence:
       defaultClass: true
       defaultClassReplicaCount: 2
@@ -43,18 +42,4 @@ spec:
       backupCompressionMethod: "lz4"
 
     longhornUI:
-      replicas: 2
-
-    ingress:
-      enabled: true
-      ingressClassName: traefik
-      host: longhorn.erwanleboucher.dev
-      tls: true
-      tlsSecret: longhorn-tls
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-production
-        traefik.ingress.kubernetes.io/router.middlewares: traefik-authelia@kubernetescrd
-
-    metrics:
-      serviceMonitor:
-        enabled: false
+      replicas: 1
