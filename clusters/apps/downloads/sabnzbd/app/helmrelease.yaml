@@ -40,6 +40,7 @@ spec:
               tag: 4.5.5
             env:
               TZ: "Europe/Paris"
+              CROSS_SEED_HOST: cross-seed.downloads.svc.cluster.local:2468
               SABNZBD__PORT: &port 8080
               SABNZBD__HOST_WHITELIST_ENTRIES: >-
                 sabnzbd,
@@ -48,6 +49,9 @@ spec:
                 sabnzbd.downloads.svc.cluster,
                 sabnzbd.downloads.svc.cluster.local,
                 sabnzbd.erwanleboucher.dev
+            envFrom:
+              - secretRef:
+                  name: sabnzbd-secret
             resources:
               requests:
                 cpu: 150m
@@ -96,6 +100,10 @@ spec:
         hostPath: /srv/media
         globalMounts:
           - path: /data
+      scripts:
+        type: configMap
+        defaultMode: 0775
+        name: sabnzbd-scripts
       incomplete:
         type: emptyDir
         globalMounts:
