@@ -32,13 +32,18 @@ spec:
         containers:
           app:
             image:
-              repository: lscr.io/linuxserver/bazarr
-              tag: v1.5.3-ls329@sha256:001875e61839c8a50743f0bc0fa4da2a55ed8a038b9b5ed0dd2c663dd3d0bfc7
+              repository: ghcr.io/home-operations/bazarr
+              tag: 1.5.3
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: true
+              runAsGroup: 1000
+              runAsNonRoot: true
+              runAsUser: 1000
             env:
-              - name: PUID
-                value: "1000"
-              - name: PGID
-                value: "1000"
               - name: TZ
                 value: "Europe/Paris"
             resources:

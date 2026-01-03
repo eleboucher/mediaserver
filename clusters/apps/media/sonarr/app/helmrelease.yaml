@@ -29,22 +29,27 @@ spec:
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
         containers:
           app:
             image:
-              repository: lscr.io/linuxserver/sonarr
-              tag: 4.0.16.2944-ls300@sha256:8b9f2138ec50fc9e521960868f79d2ad0d529bc610aef19031ea8ff80b54c5e0
+              repository: ghcr.io/home-operations/sonarr
+              tag: 4.0.16.2946
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: true
             env:
-              - name: PUID
-                value: "1000"
-              - name: PGID
-                value: "1000"
               - name: TZ
                 value: "Europe/Paris"
             resources:
               requests:
-                cpu: 50m
-                memory: 768Mi
+                cpu: 20m
+                memory: 384Mi
               limits:
                 cpu: 500m
                 memory: 2Gi

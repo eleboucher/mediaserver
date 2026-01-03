@@ -28,55 +28,52 @@ spec:
             kubernetes.io/hostname: kharkiv
           securityContext:
             fsGroup: 1000
-            fsGroupChangePolicy: "OnRootMismatch"
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
 
         containers:
           app:
             image:
-              repository: lscr.io/linuxserver/sabnzbd
-              tag: 4.5.5-ls238@sha256:1c7be873e575c2ff8f699a5fafc79b34630baeeafcb46ad8a5ac75cef38057a5
+              repository: ghcr.io/home-operations/sabnzbd
+              tag: 4.5.5
             env:
-              - name: PUID
-                value: "1000"
-              - name: PGID
-                value: "1000"
-              - name: TZ
-                value: "Europe/Paris"
+              TZ: "Europe/Paris"
+              SABNZBD__PORT: &port 8080
+              SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                sabnzbd,
+                sabnzbd.downloads,
+                sabnzbd.downloads.svc,
+                sabnzbd.downloads.svc.cluster,
+                sabnzbd.downloads.svc.cluster.local,
+                sabnzbd.erwanleboucher.dev
             resources:
               requests:
                 cpu: 150m
                 memory: 512Mi
               limits:
-                cpu: 800m
+                cpu: 1
                 memory: 2Gi
             probes:
-              startup:
+              readiness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /
-                    port: 8080
-                  initialDelaySeconds: 10
-                  periodSeconds: 5
-                  timeoutSeconds: 3
-                  failureThreshold: 30
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /
-                    port: 8080
-                  periodSeconds: 30
-                  timeoutSeconds: 5
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
                   failureThreshold: 3
+              liveness: *probes
     service:
       app:
         controller: sabnzbd
         ports:
           http:
-            port: 8080
+            port: *port
             protocol: TCP
     route:
       app:
