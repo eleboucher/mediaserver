@@ -10,3 +10,4 @@ resources:
   - monitoring
   - selfhosted
   - database
+  - security
