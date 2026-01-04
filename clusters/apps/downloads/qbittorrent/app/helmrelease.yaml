@@ -31,7 +31,6 @@ spec:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
         containers:
-          # Gluetun VPN container (network provider)
           gluetun:
             image:
               repository: qmcgaw/gluetun
