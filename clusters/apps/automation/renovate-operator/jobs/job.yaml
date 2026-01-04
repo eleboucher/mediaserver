@@ -1,0 +1,62 @@
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: GithubAccessToken
+metadata:
+  name: github-auth-token
+spec:
+  appID: "2594290"
+  installID: "102625202"
+  auth:
+    privateKey:
+      secretRef:
+        name: owl-bot-pem # reference secret from step 1.
+        key: private_key_pem
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: github-auth-token
+spec:
+  refreshInterval: "30m0s"
+  target:
+    name: renovate-secret
+    template:
+      type: Opaque
+      engineVersion: v2
+      data:
+        GITHUB_COM_TOKEN: "{{ .token }}"
+        GITHUB_COM_USER: ZWxlYm91Y2hlcgo=
+        RENOVATE_TOKEN: "{{ .token }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: GithubAccessToken
+          name: github-auth-token
+---
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: mediaserver
+  namespace: renovate
+spec:
+  discoveryFilter: eleboucher/*
+  extraEnv:
+    - name: LOG_LEVEL
+      value: debug
+    - name: RENOVATE_ENDPOINT
+      value: https://api.github.com/
+    - name: RENOVATE_PLATFORM
+      value: github
+    - name: RENOVATE_PLATFORM_COMMIT
+      value: "true"
+  image: ghcr.io/renovatebot/renovate:42.59.1
+  parallelism: 5
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  schedule: 0 * * * *
+  secretRef: renovate-secret
+  webhook:
+    enabled: true
