@@ -54,5 +54,15 @@ alerting:
       failure-threshold: 5
       success-threshold: 3
 
+ui:
+  title: Status | Gatus
+  header: Status
+  logo: https://avatars.githubusercontent.com/u/10486029
+  link: https://github.com/eleboucher
+  buttons:
+    - name: Github
+      link: https://github.com/eleboucher
+    - name: Homelab
+      link: https://github.com/eleboucher/mediaserver
 web:
   port: ${GATUS_WEB_PORT}
