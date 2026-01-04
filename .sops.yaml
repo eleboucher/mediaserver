@@ -2,5 +2,9 @@
 creation_rules:
   - path_regex: clusters/.*/.*\.yaml
     encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
     age: >-
       age120vrfse9e0hexvlr70rensn2myph7r0n9yevr5dvgur0l8gf2dxqpmut7v
+stores:
+  yaml:
+    indent: 2
