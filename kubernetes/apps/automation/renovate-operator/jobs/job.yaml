@@ -58,5 +58,3 @@ spec:
       memory: 128Mi
   schedule: 0 * * * *
   secretRef: renovate-secret
-  webhook:
-    enabled: true
