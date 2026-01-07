@@ -1,12 +1,24 @@
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
-kind: Alert
+kind: Provider
 metadata:
-  name: alertmanager
+  name: discord
   namespace: flux-system
 spec:
+  type: discord
+  secretRef:
+    name: discord-webhook-secrets
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: discord-info-alert
+  namespace: flux-system
+spec:
+  eventMetadata:
+    cluster: "default"
   providerRef:
-    name: alertmanager
+    name: discord
   eventSeverity: error
   eventSources:
     - kind: FluxInstance
@@ -21,8 +33,3 @@ spec:
       name: "*"
     - kind: OCIRepository
       name: "*"
-  exclusionList:
-    - error.*lookup.*github
-    - dial.*tcp.*timeout
-    - waiting.*socket
-  suspend: false
