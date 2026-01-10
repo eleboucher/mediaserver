@@ -11,4 +11,5 @@ resources:
   - flaresolverr/ks.yaml
   - wizarr/ks.yaml
   - profilarr/ks.yaml
+  - streamystats/ks.yaml
   - namespace.yaml
