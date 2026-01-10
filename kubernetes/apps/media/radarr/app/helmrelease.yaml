@@ -92,6 +92,6 @@ spec:
       data:
         enabled: true
         type: hostPath
-        hostPath: /srv/media
+        hostPath: /var/mnt/media
         globalMounts:
           - path: /data

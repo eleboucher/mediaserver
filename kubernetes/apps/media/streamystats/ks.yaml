@@ -11,7 +11,11 @@ spec:
   path: ./kubernetes/apps/media/streamystats/app
   dependsOn:
     - name: envoy-gateway
+      namespace: network
     - name: longhorn
+      namespace: kube-system
+    - name: external-secrets
+      namespace: security
   prune: true
   postBuild:
     substitute:

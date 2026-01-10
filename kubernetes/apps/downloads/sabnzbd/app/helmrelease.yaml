@@ -52,7 +52,7 @@ spec:
             resources:
               requests:
                 cpu: 150m
-                memory: 512Mi
+                memory: 256Mi
               limits:
                 cpu: 1
                 memory: 2Gi
@@ -94,7 +94,7 @@ spec:
       data:
         enabled: true
         type: hostPath
-        hostPath: /srv/media
+        hostPath: /var/mnt/media
         globalMounts:
           - path: /data
       incomplete:

@@ -9,7 +9,9 @@ spec:
   path: ./kubernetes/apps/media/profilarr/app
   dependsOn:
     - name: envoy-gateway
+      namespace: network
     - name: longhorn
+      namespace: kube-system
   postBuild:
     substitute:
       APP: profilarr

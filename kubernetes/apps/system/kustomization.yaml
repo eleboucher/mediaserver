@@ -4,9 +4,10 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - adguard/ks.yaml
-  - home-assistant/ks.yaml
+  # - home-assistant/ks.yaml
   - cloudflared/ks.yaml
   - homepage/ks.yaml
   - lldap/ks.yaml
-  - mosquitto/ks.yaml
-  - smtp-relay/ks.yaml
+  # - mosquitto/ks.yaml
+  # - smtp-relay/ks.yaml
+  - nfs-server/ks.yaml

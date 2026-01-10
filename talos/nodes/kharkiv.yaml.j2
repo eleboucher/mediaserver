@@ -1,0 +1,41 @@
+---
+machine:
+  type: controlplane
+  certSANs:
+    - 127.0.0.1
+    - 192.168.1.41
+  network:
+    interfaces:
+      - deviceSelector:
+          hardwareAddr: 38:05:25:35:3b:9a
+        addresses:
+          - 192.168.1.41/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.1.254
+        mtu: 1500
+        dhcp: false
+    nameservers:
+      - 1.1.1.1
+      - 1.0.0.1
+    disableSearchDomain: true
+  install:
+    diskSelector:
+      serial: 50026B73842F7F3C
+cluster:
+  apiServer:
+    certSANs:
+      - 127.0.0.1
+      - 192.168.1.41
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: "off"
+hostname: kharkiv
+---
+apiVersion: v1alpha1
+kind: ExistingVolumeConfig
+name: media
+discovery:
+  volumeSelector:
+    match: volume.label == "media"

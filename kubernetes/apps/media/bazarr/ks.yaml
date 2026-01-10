@@ -9,7 +9,9 @@ spec:
   path: ./kubernetes/apps/media/bazarr/app
   dependsOn:
     - name: envoy-gateway
+      namespace: network
     - name: longhorn
+      namespace: kube-system
   postBuild:
     substitute:
       APP: bazarr
