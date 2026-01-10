@@ -30,6 +30,7 @@ spec:
   path: ./kubernetes/apps/automation/renovate-operator/jobs
   dependsOn:
     - name: renovate-operator
+    - name: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository

@@ -169,10 +169,9 @@ spec:
       ha-dns:
         controller: adguard-home
         type: LoadBalancer
-        loadBalancerIP: 192.168.1.63
         externalTrafficPolicy: Cluster
         annotations:
-          metallb.universe.tf/allow-shared-ip: "adguard-vip"
+          lbipam.cilium.io/ips: "192.168.1.63"
         ports:
           dns-tcp:
             port: 53
@@ -205,11 +204,3 @@ spec:
         rules:
           - backendRefs:
               - identifier: replica
-
-    persistence:
-      tls:
-        type: secret
-        name: adguard-tls
-        globalMounts:
-          - path: /opt/adguardhome/ssl
-            readOnly: true

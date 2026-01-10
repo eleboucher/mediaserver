@@ -1,0 +1,24 @@
+---
+customization:
+  extraKernelArgs:
+    - -init_on_alloc
+    - -init_on_free
+    - -selinux
+    - apparmor=0
+    - i915.enable_guc=3
+    - init_on_alloc=0
+    - init_on_free=0
+    - mitigations=off
+    - security=none
+    - sysctl.kernel.kexec_load_disabled=1
+    - talos.auditd.disabled=1
+  systemExtensions:
+        officialExtensions:
+            - siderolabs/btrfs
+            - siderolabs/i915
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
+            - siderolabs/nfs-utils
+            - siderolabs/nfsd
+            - siderolabs/tailscale
+            - siderolabs/util-linux-tools

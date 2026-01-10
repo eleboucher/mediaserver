@@ -7,10 +7,6 @@ metadata:
 spec:
   interval: 1h
   path: ./kubernetes/apps/security/external-secrets/app
-  postBuild:
-    substitute:
-      APP: external-secrets
-      APP_NAMESPACE: security
   prune: true
   sourceRef:
     kind: GitRepository
@@ -30,10 +26,6 @@ spec:
   path: ./kubernetes/apps/security/external-secrets/store
   dependsOn:
     - name: external-secrets
-  postBuild:
-    substitute:
-      APP: external-secrets
-      APP_NAMESPACE: security
   prune: true
   sourceRef:
     kind: GitRepository

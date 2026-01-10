@@ -1,78 +1,14 @@
+.private/
+.pytest_cache/
+.task/
+.venv/
+*.crt
+*.env
+*.iso
+*.key
+.decrypted~*
 .DS_Store
-docker-compose.override.yml
-secrets.env
-
-# --- Netdata (The source of your current error) ---
-# We ONLY want the config folder. Ignore lib (database) and cache.
-log/
-
-# Ignore the SQLite databases (Binary files = Bad for Git)
-# We only want the config.xml
-*.db
-*.db-shm
-*.db-wal
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
-.
-
-
-# --- Home Assistant ---
-config/homeassistant/home-assistant_v2.db
-config/homeassistant/home-assistant.log
-config/homeassistant/tts/
-config/homeassistant/.storage/
-.torrent
-.fastresume
-backups/
-db/
-.zip
-.tar
-.tar.gz
-.tar.bz2
-
-
-config/qbittorrent/qBittorrent/backup/
-config/qbittorrent/incomplete/
-*.mdb
-*.pid
-
-
-# --- Noise Filtering (New) ---
-# Block Sentry (Crash reporting temp files)
-**/Sentry/
-**/__processing/
-
-# Block Logs (n8n, etc)
-**/*.log
-**/logs/
-
-# Block Locks (qBittorrent/Database locks)
-**/lockfile
-**/*.lock
-
-*.db-wal
-*.db-shm
-*.sqlite-wal
-*.sqlite-shm
-
-# Temp Config Files (qBittorrent)
-*qBittorrent-data.conf.*
-*qBittorrent.conf.*
-
-
-*.pyc
-config/ollama/*
-
-config/qbittorrent/*
-.env
-config/adguard/work/data/*
-config/open-webui/*
-
-
-*.tar.gz
-
-config/sabnzbd/Downloads/*
-config/wizarr/database/*
-config/checkmk
-config/netdata
+Brewfile.lock.json
+Thumbs.db
+kubeconfig
+talosconfig

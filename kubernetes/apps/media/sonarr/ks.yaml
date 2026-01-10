@@ -9,7 +9,9 @@ spec:
   path: ./kubernetes/apps/media/sonarr/app
   dependsOn:
     - name: envoy-gateway
+      namespace: network
     - name: longhorn
+      namespace: kube-system
   postBuild:
     substitute:
       APP: sonarr

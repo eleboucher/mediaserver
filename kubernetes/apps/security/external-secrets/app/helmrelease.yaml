@@ -11,7 +11,6 @@ spec:
   values:
     replicaCount: 2
     leaderElect: true
-    certController:
     webhook:
       replicaCount: 2
     bitwarden-sdk-server:
