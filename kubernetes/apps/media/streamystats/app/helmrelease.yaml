@@ -1,0 +1,146 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: streamystats
+spec:
+  interval: 1h
+  maxHistory: 1
+  chart:
+    spec:
+      chart: app-template
+      version: "4.5.0"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      frontend:
+        strategy: RollingUpdate
+        initContainers: &init
+          migrate:
+            image:
+              repository: docker.io/fredrikburmester/streamystats-v2-migrate
+              tag: v2.16.0
+            env: &env
+              NODE_ENV: production
+              SESSION_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: streamystats-secret
+                    key: SESSION_SECRET
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: &pg postgres-streamystats-app
+                    key: uri
+              POSTGRES_DB:
+                valueFrom:
+                  secretKeyRef:
+                    name: *pg
+                    key: dbname
+              POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *pg
+                    key: user
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *pg
+                    key: password
+            securityContext: &sec
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+        containers:
+          main:
+            image:
+              repository: docker.io/fredrikburmester/streamystats-v2-nextjs
+              tag: v2.16.0
+            env:
+              !!merge <<: *env
+              JOB_SERVER_URL: http://streamystats-job-server
+            ports:
+              - containerPort: 3000
+                name: http
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health
+                    port: http
+              readiness: *probes
+            securityContext: *sec
+            resources:
+              requests:
+                cpu: 100m
+                memory: 112Mi
+              limits:
+                memory: 1Gi
+      job-server:
+        strategy: RollingUpdate
+        initContainers: *init
+        containers:
+          main:
+            image:
+              repository: docker.io/fredrikburmester/streamystats-v2-job-server
+              tag: v2.16.0
+            env:
+              !!merge <<: *env
+              HOST: 0.0.0.0
+            ports:
+              - containerPort: 3005
+                name: http
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: http
+              readiness: *probes
+            securityContext: *sec
+            resources:
+              requests:
+                cpu: 100m
+                memory: 112Mi
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      hostUsers: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: {type: RuntimeDefault}
+    service:
+      frontend:
+        controller: frontend
+        ports:
+          http:
+            port: 80
+            targetPort: 3000
+      job-server:
+        controller: job-server
+        ports:
+          http:
+            port: 80
+            targetPort: 3005
+    route:
+      main:
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        hostnames:
+          - streamystats.erwanleboucher.dev
+        rules:
+          - backendRefs:
+              - identifier: frontend
+                port: 80
