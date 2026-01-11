@@ -13,6 +13,8 @@ spec:
     bandwidthManager:
       enabled: true
       bbr: true
+    ipv6:
+      enabled: false
     bpf:
       datapathMode: netkit
       masquerade: true
@@ -50,8 +52,7 @@ spec:
       algorithm: maglev
       mode: "dsr"
       serviceTopology: true
-    localRedirectPolicies:
-      enabled: true
+    localRedirectPolicies: true
     operator:
       dashboards:
         enabled: true
