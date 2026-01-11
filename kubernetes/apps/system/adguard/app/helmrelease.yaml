@@ -171,7 +171,7 @@ spec:
         type: LoadBalancer
         externalTrafficPolicy: Cluster
         annotations:
-          lbipam.cilium.io/ips: "192.168.1.63"
+          lbipam.cilium.io/ips: "192.168.1.62"
         ports:
           dns-tcp:
             port: 53

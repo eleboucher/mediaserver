@@ -54,11 +54,9 @@ spec:
               requests:
                 cpu: 1000m
                 memory: 1Gi
-                gpu.intel.com/i915: "1"
               limits:
                 cpu: 4000m
                 memory: 8Gi
-                gpu.intel.com/i915: "1"
             probes:
               liveness: &probes
                 enabled: true
@@ -111,8 +109,8 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /cache
-      dri:
+      render-device:
         type: hostPath
-        hostPath: /dev/dri
+        hostPath: /dev/dri/renderD128
         globalMounts:
-          - path: /dev/dri
+          - path: /dev/dri/renderD128
