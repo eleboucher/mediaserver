@@ -18,6 +18,6 @@ spec:
     - bitwarden-sdk-server.security.svc
     - bitwarden-sdk-server.security.svc.cluster.local
   issuerRef:
-    name: selfsigned
+    name: internal-ca
     kind: ClusterIssuer
     group: cert-manager.io
