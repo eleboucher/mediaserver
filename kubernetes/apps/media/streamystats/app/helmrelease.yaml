@@ -43,12 +43,12 @@ spec:
               POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
-                    name: *pg
-                    key: user
+                    name: streamystats-cnpg-secret
+                    key: username
               POSTGRES_PASSWORD:
                 valueFrom:
                   secretKeyRef:
-                    name: *pg
+                    name: streamystats-cnpg-secret
                     key: password
             securityContext: &sec
               allowPrivilegeEscalation: false
