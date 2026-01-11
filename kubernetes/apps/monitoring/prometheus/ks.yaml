@@ -9,6 +9,7 @@ spec:
   path: ./kubernetes/apps/monitoring/prometheus/app
   dependsOn:
     - name: longhorn
+      namespace: kube-system
   postBuild:
     substitute:
       APP: prometheus

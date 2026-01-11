@@ -22,6 +22,10 @@ machine:
   install:
     diskSelector:
       serial: 50026B73842F7F3C
+  udev:
+    rules:
+      # Intel GPU - allow video group access to render devices
+      - SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
 cluster:
   apiServer:
     certSANs:
