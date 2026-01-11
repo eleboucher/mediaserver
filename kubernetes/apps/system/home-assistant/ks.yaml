@@ -10,8 +10,6 @@ spec:
   dependsOn:
     - name: envoy-gateway
       namespace: network
-    - name: longhorn
-      namespace: kube-system
   postBuild:
     substitute:
       APP: home-assistant
