@@ -4,9 +4,9 @@ machine:
   network:
     interfaces:
       - deviceSelector:
-          hardwareAddr: 52:54:00:34:27:93
+          hardwareAddr: BC:24:11:20:7D:2E
         addresses:
-          - 192.168.1.166/24
+          - 192.168.1.7/24
         routes:
           - network: 0.0.0.0/0
             gateway: 192.168.1.254
@@ -17,8 +17,7 @@ machine:
       - 1.0.0.1
     disableSearchDomain: true
   install:
-    diskSelector:
-      serial: vdisk1
+    disk: /dev/sda
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
