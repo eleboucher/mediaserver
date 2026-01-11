@@ -9,6 +9,7 @@ spec:
   path: ./kubernetes/apps/monitoring/speedtest-tracker/app
   dependsOn:
     - name: longhorn
+      namespace: kube-system
   postBuild:
     substitute:
       APP: speedtest-tracker
