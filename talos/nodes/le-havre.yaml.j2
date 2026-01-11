@@ -1,0 +1,26 @@
+---
+machine:
+  type: worker
+  network:
+    interfaces:
+      - deviceSelector:
+          hardwareAddr: 52:54:00:34:27:93
+        addresses:
+          - 192.168.1.166/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.1.254
+        mtu: 1500
+        dhcp: false
+    nameservers:
+      - 1.1.1.1
+      - 1.0.0.1
+    disableSearchDomain: true
+  install:
+    diskSelector:
+      serial: vdisk1
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: "off"
+hostname: le-havre
