@@ -3,45 +3,30 @@
   "extends": [
     "config:recommended",
     "docker:enableMajor",
-    ":timezone(Europe/Paris)",
     ":dependencyDashboard",
+    "github>eleboucher/mediaserver//.renovate/customManagers.json5",
+    "github>eleboucher/mediaserver//.renovate/groups.json5",
+    "github>eleboucher/mediaserver//.renovate/overrides.json5",
+    "github>eleboucher/mediaserver//.renovate/packageRules.json5",
     ":label(renovate)",
     ":automergeBranch",
     ":automergeStableNonMajor",
     ":automergeDigest",
     ":disableRateLimiting",
     ":semanticCommits",
-    ":skipStatusChecks"
+    ":skipStatusChecks",
+    ":timezone(Europe/Paris)"
   ],
   "timezone": "Europe/Paris",
   "labels": ["dependencies"],
   "minimumReleaseAge": "3 days",
   "flux": {
-    "managerFilePatterns": ["/kubernetes/.+\\.ya?ml$/"]
+    "managerFilePatterns": ["/\\.yaml(?:\\.j2)?$/"]
   },
   "helm-values": {
-    "managerFilePatterns": ["/kubernetes/.+\\.ya?ml$/"]
+    "managerFilePatterns": ["/\\.yaml(?:\\.j2)?$/"]
   },
   "kubernetes": {
-    "managerFilePatterns": ["/kubernetes/.+\\.ya?ml$/"]
-  },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Process OCI dependencies",
-      "managerFilePatterns": ["/^kubernetes/.+\\.yaml(?:\\.j2)?$/"],
-      "matchStrings": ["oci://(?<depName>[^:]+):(?<currentValue>\\S+)"],
-      "datasourceTemplate": "docker"
-    }
-  ],
-  "packageRules": [
-    {
-      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<revision>\\d+)-ls(?<build>\\d+)$",
-      "matchPackageNames": ["/^lscr.io\\/linuxserver\\//"]
-    },
-    {
-      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>ubu\\d+)-ls(?<build>\\d+)$",
-      "matchPackageNames": ["/^lscr.io\\/linuxserver\\/jellyfin/"]
-    }
-  ]
+    "managerFilePatterns": ["/\\.yaml(?:\\.j2)?$/"]
+  }
 }
