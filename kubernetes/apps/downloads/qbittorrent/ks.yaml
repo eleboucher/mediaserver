@@ -5,7 +5,7 @@ metadata:
   name: qbittorrent
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 1h
   path: ./kubernetes/apps/downloads/qbittorrent/app
   dependsOn:
     - name: longhorn

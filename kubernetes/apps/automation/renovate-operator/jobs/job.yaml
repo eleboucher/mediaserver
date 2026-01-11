@@ -17,7 +17,7 @@ kind: ExternalSecret
 metadata:
   name: github-auth-token
 spec:
-  refreshInterval: "30m0s"
+  refreshInterval: 1h
   target:
     name: renovate-secret
     template:

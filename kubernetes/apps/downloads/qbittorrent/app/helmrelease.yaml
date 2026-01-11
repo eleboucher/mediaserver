@@ -7,7 +7,7 @@ metadata:
   name: qbittorrent
   namespace: downloads
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: app-template

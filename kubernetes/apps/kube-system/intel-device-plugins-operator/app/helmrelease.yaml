@@ -5,7 +5,7 @@ metadata:
   name: device-plugins-operator
   namespace: intel-device-plugins
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: intel-device-plugins-operator
@@ -21,7 +21,7 @@ metadata:
   name: gpu-device-plugin
   namespace: intel-device-plugins
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: intel-device-plugins-gpu

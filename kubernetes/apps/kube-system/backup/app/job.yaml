@@ -6,7 +6,7 @@ metadata:
   name: longhorn-sync
   namespace: backup
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: app-template

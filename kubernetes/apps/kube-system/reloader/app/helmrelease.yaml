@@ -8,7 +8,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: reloader
-  interval: 30m
+  interval: 1h
   values:
     fullnameOverride: reloader
     reloader:

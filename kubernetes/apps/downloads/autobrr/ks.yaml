@@ -5,7 +5,7 @@ metadata:
   name: autobrr
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 1h
   path: ./kubernetes/apps/downloads/autobrr/app
   dependsOn:
     - name: envoy-gateway

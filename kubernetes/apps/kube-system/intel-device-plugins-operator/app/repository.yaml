@@ -5,6 +5,6 @@ metadata:
   name: intel
   namespace: intel-device-plugins
 spec:
-  interval: 30m
+  interval: 1h
   url: https://intel.github.io/helm-charts/
   timeout: 3m

@@ -13,7 +13,7 @@ spec:
         kind: HelmRepository
         name: longhorn-repo
       version: v1.10.1
-  interval: 30m
+  interval: 1h
   values:
     annotations:
       reloader.stakater.com/auto: "true"
