@@ -5,5 +5,5 @@ metadata:
   name: piraeus-helm-charts
   namespace: kube-system
 spec:
-  interval: 30m
+  interval: 1h
   url: https://piraeus.io/helm-charts/

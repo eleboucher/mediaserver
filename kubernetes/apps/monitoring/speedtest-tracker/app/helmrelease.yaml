@@ -6,7 +6,7 @@ metadata:
   name: speedtest-tracker
   namespace: monitoring
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: app-template

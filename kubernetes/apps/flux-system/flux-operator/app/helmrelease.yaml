@@ -8,7 +8,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: flux-operator
-  interval: 30m
+  interval: 1h
   values:
     web:
       httpRoute:
