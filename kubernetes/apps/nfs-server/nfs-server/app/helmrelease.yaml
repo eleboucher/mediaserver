@@ -16,7 +16,6 @@ spec:
         replicas: 1
         strategy: RollingUpdate
         pod:
-          priorityClassName: nfs-critical
           hostNetwork: true
           securityContext:
             runAsUser: 0
@@ -47,21 +46,7 @@ spec:
               limits:
                 cpu: 500m
                 memory: 512Mi
-            probes:
-              startup:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - sh
-                      - -c
-                      - "showmount -e localhost | grep -q /media"
-              readiness: &probes
-                enabled: true
-                type: TCP
-                port: 2049
-              liveness: *probes
+
     service:
       app:
         controller: nfs-server
