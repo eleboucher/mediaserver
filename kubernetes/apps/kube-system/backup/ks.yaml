@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: backup
-  namespace: flux-system
 spec:
   interval: 12h
   components:
@@ -17,6 +16,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: backup
+  targetNamespace: kube-system
   timeout: 10m
   wait: false
