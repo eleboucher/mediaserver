@@ -2,21 +2,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: longhorn-release
-  namespace: longhorn-system
+  name: longhorn
 spec:
-  chart:
-    spec:
-      chart: longhorn
-      reconcileStrategy: ChartVersion
-      sourceRef:
-        kind: HelmRepository
-        name: longhorn-repo
-      version: v1.10.1
+  chartRef:
+    kind: OCIRepository
+    name: longhorn
   interval: 1h
   values:
-    annotations:
-      reloader.stakater.com/auto: "true"
     persistence:
       defaultClass: true
       defaultClassReplicaCount: 2
@@ -29,6 +21,7 @@ spec:
       defaultDataPath: /var/mnt/longhorn
       defaultLonghornStaticStorageClass: longhorn
       createDefaultDiskLabeledNodes: true
+      restoreVolumeRecurringJobs: true
       guaranteedEngineManagerCPU: "30"
       guaranteedReplicaManagerCPU: "30"
       defaultDataLocality: best-effort

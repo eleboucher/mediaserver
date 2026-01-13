@@ -17,6 +17,7 @@ spec:
     - name: nfs-server
       namespace: nfs-server
     - name: nfs-csi-driver
+      namespace: kube-system
   postBuild:
     substitute:
       APP: radarr

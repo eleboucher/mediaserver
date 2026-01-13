@@ -17,6 +17,7 @@ spec:
     - name: external-secrets
       namespace: security
     - name: cloudnative-pg
+      namespace: database
   prune: true
   postBuild:
     substitute:
