@@ -12,10 +12,6 @@ spec:
       namespace: network
     - name: longhorn
       namespace: kube-system
-  postBuild:
-    substitute:
-      APP: adguard
-      APP_NAMESPACE: adguard
   prune: true
   sourceRef:
     kind: GitRepository

@@ -2,12 +2,13 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: ollama
+  name: node-feature-discovery
 spec:
-  interval: 15m
+  interval: 30m
+  timeout: 60s
+  url: oci://ghcr.io/home-operations/charts-mirror/node-feature-discovery
+  ref:
+    tag: 0.18.0
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
-  ref:
-    tag: 4.6.0
-  url: oci://ghcr.io/bjw-s-labs/helm/app-template

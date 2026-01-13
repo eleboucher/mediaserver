@@ -17,7 +17,7 @@ spec:
       APP_NAMESPACE: system
     substituteFrom:
       - kind: Secret
-        name: cluster-vars
+        name: cloudflared-token
   prune: true
   sourceRef:
     kind: GitRepository
