@@ -12,6 +12,9 @@ spec:
     - name: longhorn
       namespace: kube-system
   prune: true
+  postBuild:
+    substitute:
+      APP_NAMESPACE: kube-system
   sourceRef:
     kind: GitRepository
     name: flux-system
