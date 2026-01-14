@@ -7,7 +7,7 @@ spec:
   accessModes:
     - ReadWriteMany
   storageClassName: nfs-media
-  volumeName: nfs-media
+  volumeName: nfs-media-${APP_NAMESPACE}
   resources:
     requests:
       storage: 500Gi
