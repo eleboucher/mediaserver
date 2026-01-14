@@ -1,0 +1,60 @@
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alertmanager
+spec:
+  route:
+    receiver: discord
+    repeatInterval: 12h
+    routes:
+      - receiver: blackhole
+        matchers:
+          - name: alertname
+            value: InfoInhibitor
+            matchType: =
+      - receiver: discord
+        matchers:
+          - name: severity
+            value: critical
+            matchType: =
+    groupBy:
+      - alertname
+      - cluster
+      - job
+    groupInterval: 5m
+    groupWait: 1m
+
+  inhibitRules:
+    - equal:
+        - alertname
+        - namespace
+      sourceMatch:
+        - name: severity
+          value: critical
+          matchType: =
+      targetMatch:
+        - name: severity
+          value: warning
+          matchType: =
+
+  receivers:
+    - name: blackhole
+    - name: discord
+      discordConfigs:
+        - title: |-
+            [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ if eq .Status "firing" }}{{ if eq .CommonLabels.severity "critical" }}🔥{{ else if eq .CommonLabels.severity "warning" }}⚠️{{ else }}ℹ️{{ end }}{{ else }}✅{{ end }} {{ if ne .CommonAnnotations.summary ""}}{{ .CommonAnnotations.summary }} {{ else if ne .CommonAnnotations.message ""}}{{ .CommonAnnotations.message }} {{ else if ne .CommonAnnotations.description ""}}{{ .CommonAnnotations.description }} {{ else }}{{ .CommonLabels.alertname }}{{ end }}
+          message: |-
+            {{ range .Alerts -}}
+              **Alert:** {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+
+            {{ if ne .Annotations.summary ""}}**Summary:** {{ .Annotations.summary }} {{ else if ne .Annotations.message ""}}**Message:** {{ .Annotations.message }} {{ else if ne .Annotations.description ""}}**Description:** {{ .Annotations.description }}{{ end }}
+
+            🏷 Labels:
+              {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+              {{ end }}
+            {{ end }}
+          sendResolved: true
+          apiURL:
+            name: discord-webhook
+            key: WEBHOOK_URL
