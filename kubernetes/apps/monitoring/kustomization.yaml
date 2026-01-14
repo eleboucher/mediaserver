@@ -7,8 +7,8 @@ components:
 
 resources:
   - namespace.yaml
-  - secret.sops.yaml
+  - externalsecret.yaml
   - beszel/ks.yaml
   - speedtest-tracker/ks.yaml
-  - prometheus/ks.yaml
+  - kube-prometheus-stack/ks.yaml
   - gatus/ks.yaml

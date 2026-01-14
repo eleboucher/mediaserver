@@ -2,19 +2,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prometheus
-  namespace: flux-system
+  name: &app kube-prometheus-stack
 spec:
   interval: 1h
-  path: ./kubernetes/apps/monitoring/prometheus/app
-  dependsOn:
-    - name: longhorn
-      namespace: kube-system
+  path: ./kubernetes/apps/monitoring/kube-prometheus-stack/app
   postBuild:
     substitute:
-      APP: prometheus
-      APP_NAMESPACE: monitoring
+      APP: *app
+    substituteFrom:
+      - kind: Secret
+        name: discord-webhook
   prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
