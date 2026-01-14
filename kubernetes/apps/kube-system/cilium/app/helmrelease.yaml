@@ -54,15 +54,20 @@ spec:
       enabled: true
     operator:
       dashboards:
-        enabled: false
+        enabled: true
       prometheus:
-        enabled: false
-      replicas: 1
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      replicas: 2
       rollOutPods: true
     pmtuDiscovery:
       enabled: true
     prometheus:
-      enabled: false
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        trustCRDsExist: true
     rollOutCiliumPods: true
     routingMode: native
     securityContext:
