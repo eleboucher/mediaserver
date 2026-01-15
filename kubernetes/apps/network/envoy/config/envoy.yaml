@@ -96,7 +96,7 @@ spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      lbipam.cilium.io/ips: "192.168.1.65"
+      lbipam.cilium.io/ips: "192.168.69.10"
       cert-manager.io/cluster-issuer: letsencrypt-production
       external-dns.alpha.kubernetes.io/target: *hostname
   listeners:

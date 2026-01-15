@@ -8,17 +8,17 @@ default:
     just -l tofu
 
 [doc('Initialize tofu configuration')]
-init args:
+init *args:
     tofu -chdir="{{ tofu_dir }}" init {{ args }}
 
 [doc('Plan tofu-managed infrastructure changes')]
-plan args:
+plan *args:
     tofu -chdir="{{ tofu_dir }}" plan {{ args }}
 
 [doc('Apply tofu configuration')]
-apply args:
+apply *args:
     tofu -chdir="{{ tofu_dir }}" apply {{ args }}
 
 [doc('Destroy tofu-managed infrastructure')]
-destroy args:
+destroy *args:
     tofu -chdir="{{ tofu_dir }}" destroy {{ args }}
