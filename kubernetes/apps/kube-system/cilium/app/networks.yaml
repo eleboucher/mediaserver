@@ -1,26 +1,60 @@
 ---
+
 apiVersion: cilium.io/v2alpha1
 kind: CiliumLoadBalancerIPPool
 metadata:
   name: pool
 spec:
   allowFirstLastIPs: "No"
-  blocks:
-    - cidr: "192.168.1.0/24"
+  cidrs:
+    - cidr: "192.168.69.0/24"
+
 ---
-apiVersion: cilium.io/v2alpha1
-kind: CiliumL2AnnouncementPolicy
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
 metadata:
-  name: l2-policy
+  name: l3-bgp-advertisement
+  labels:
+    advertise: bgp
 spec:
-  loadBalancerIPs: true
-  # NOTE: interfaces might need to be set if you have more than one active NIC on your hosts
-  # interfaces:
-  #   - ^eno[0-9]+
-  #   - ^eth[0-9]+
+  advertisements:
+    - advertisementType: Service
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchExpressions:
+          - {key: somekey, operator: NotIn, values: ["never-used-value"]}
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPPeerConfig
+metadata:
+  name: l3-bgp-peer-config
+spec:
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchLabels:
+          advertise: bgp
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: l3-bgp-cluster-config
+spec:
   nodeSelector:
     matchLabels:
       kubernetes.io/os: linux
+  bgpInstances:
+    - name: cilium
+      localASN: 65002
+      peers:
+        - name: mikrotik
+          peerASN: 65001
+          peerAddress: 192.168.1.2
+          peerConfigRef:
+            name: l3-bgp-peer-config
 ---
 apiVersion: v1
 kind: Service
@@ -28,7 +62,7 @@ metadata:
   name: kube-api
   annotations:
     external-dns.alpha.kubernetes.io/hostname: k8s.erwanleboucher.dev
-    lbipam.cilium.io/ips: 192.168.1.41
+    lbipam.cilium.io/ips: 192.168.69.120
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local

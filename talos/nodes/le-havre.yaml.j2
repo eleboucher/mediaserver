@@ -9,13 +9,14 @@ machine:
           - 192.168.1.7/24
         routes:
           - network: 0.0.0.0/0
-            gateway: 192.168.1.254
+            gateway: 192.168.1.2
         mtu: 1500
         dhcp: false
-    nameservers:
-      - 1.1.1.1
-      - 1.0.0.1
-      - 9.9.9.9
+      - deviceSelector:
+          hardwareAddr: BC:24:11:3B:39:33
+        addresses:
+          - 10.20.0.7/24
+        mtu: 9000
     disableSearchDomain: true
   install:
     disk: /dev/sda
