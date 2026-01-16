@@ -87,12 +87,18 @@ spec:
                     href: https://qui.erwanleboucher.dev
                     description: Download Manager
           settings.yaml: |
-            title: Erwan's Home Lab
+            title: Home Lab
             useEqualHeights: true
-            color: slate
-            statusStyle: "dot"
+            color: zinc
+            background:
+              image: https://images.unsplash.com/photo-1544511916-0148ccdeb877?w=1920
+              blur: md
+              opacity: 30
+            theme: dark
+            statusStyle: dot
             disableCollapse: true
-            headerStyle: boxedWidgets
+            headerStyle: clean
+            cardBlur: md
             layout:
               Monitoring:
                 style: row
@@ -100,23 +106,35 @@ spec:
               Media:
                 style: row
                 columns: 3
-              Download:
+              Downloads:
                 style: row
                 columns: 2
               Automation:
                 style: row
-                columns: 3
-              System:
-                style: row
-                columns: 3
+                columns: 1
             providers:
               longhorn:
                 url: http://longhorn-frontend.kube-system
           widgets.yaml: |
             - datetime:
-              text_size: xl
-              format:
-                timeStyle: short
+                text_size: xl
+                format:
+                  dateStyle: long
+                  timeStyle: short
+            - openmeteo:
+                label: Paris
+                latitude: 48.8534
+                longitude: 2.3488
+                timezone: Europe/Paris
+                units: metric
+                cache: 5
+            - openmeteo:
+                label: Kharkiv
+                latitude: 49.9808
+                longitude: 36.2527
+                timezone: Europe/Kiev
+                units: metric
+                cache: 5
             - kubernetes:
                 cluster:
                   show: true
@@ -125,29 +143,12 @@ spec:
                   showLabel: true
                   label: "cluster"
                 nodes:
-                  show: true
-                  cpu: true
-                  memory: true
-                  showLabel: true
+                  show: false
             - longhorn:
-                  expanded: true
-                  total: true
-                  labels: true
-                  nodes: true
-            - openmeteo:
-              label: Paris # optional
-              latitude: 48.8575
-              longitude: 2.3514
-              timezone: Europe/Paris # optional
-              units: metric # or imperial
-              cache: 5 # Time in minutes to cache API responses, to stay within limits
-            - openmeteo:
-              label: Kharkiv # optional
-              latitude: 50.0020
-              longitude: 36.3074
-              timezone: Europe/Kiev # optional
-              units: metric # or imperial
-              cache: 5 # Time in minutes to cache API responses, to stay within limits
+                expanded: false
+                total: true
+                labels: false
+                nodes: false
           services.yaml: |
             - Monitoring:
               - Speedtest Tracker:
@@ -191,7 +192,7 @@ spec:
                   description: Router Management
                   widget:
                     type: mikrotik
-                    url: https://router.erwanleboucher.dev
+                    url: http://192.168.1.2
                     username: '{{ "{{" }}HOMEPAGE_VAR_MIKROTIK_USER{{ "}}" }}'
                     password: '{{ "{{" }}HOMEPAGE_VAR_MIKROTIK_PASS{{ "}}" }}'
 
@@ -270,7 +271,7 @@ spec:
                   description: Home Automation
                   widget:
                     type: homeassistant
-                    url: http://home-assistant.system:8123
+                    url: http://home-assistant-external.system:8123
                     key: '{{ "{{" }}HOMEPAGE_VAR_HASS_KEY{{ "}}" }}'
 
     persistence:
