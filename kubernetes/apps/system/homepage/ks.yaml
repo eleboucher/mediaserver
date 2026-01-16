@@ -7,13 +7,6 @@ metadata:
 spec:
   interval: 6h
   path: ./kubernetes/apps/system/homepage/app
-  dependsOn:
-    - name: envoy-gateway
-      namespace: network
-    - name: longhorn
-      namespace: kube-system
-    - name: external-secrets
-      namespace: security
   postBuild:
     substitute:
       APP: homepage
