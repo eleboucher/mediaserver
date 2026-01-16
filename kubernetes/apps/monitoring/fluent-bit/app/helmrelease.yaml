@@ -42,6 +42,7 @@ spec:
           k8s-logging.parser on
           k8s-logging.exclude on
           namespace_labels off
+          Buffer_Size 1Mb
           annotations off
 
         [FILTER]
