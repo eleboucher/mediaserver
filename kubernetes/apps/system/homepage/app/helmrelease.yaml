@@ -78,18 +78,10 @@ spec:
               - Cloudflare:
                   - icon: cloudflare.png
                     href: https://dash.cloudflare.com/
-              - n8n:
-                  - icon: n8n.png
-                    href: https://n8n.erwanleboucher.dev
-                    description: Workflows
               - Profilarr:
                   - icon: profilarr.png
                     href: https://profilarr.erwanleboucher.dev
                     description: Profile Manager
-              - Cleanuparr:
-                  - icon: cleanuparr.png
-                    href: https://cleanuparr.erwanleboucher.dev
-                    description: Cleanup Manager
               - Qui:
                   - icon: qui.png
                     href: https://qui.erwanleboucher.dev
@@ -119,8 +111,12 @@ spec:
                 columns: 3
             providers:
               longhorn:
-                url: http://longhorn-frontend.longhorn-system
+                url: http://longhorn-frontend.kube-system
           widgets.yaml: |
+            - datetime:
+              text_size: xl
+              format:
+                timeStyle: short
             - kubernetes:
                 cluster:
                   show: true
@@ -138,6 +134,20 @@ spec:
                   total: true
                   labels: true
                   nodes: true
+            - openmeteo:
+              label: Paris # optional
+              latitude: 48.8575
+              longitude: 2.3514
+              timezone: Europe/Paris # optional
+              units: metric # or imperial
+              cache: 5 # Time in minutes to cache API responses, to stay within limits
+            - openmeteo:
+              label: Kharkiv # optional
+              latitude: 50.0020
+              longitude: 36.3074
+              timezone: Europe/Kiev # optional
+              units: metric # or imperial
+              cache: 5 # Time in minutes to cache API responses, to stay within limits
           services.yaml: |
             - Monitoring:
               - Speedtest Tracker:
@@ -160,14 +170,30 @@ spec:
                     username: '{{ "{{" }}HOMEPAGE_VAR_BESZEL_USER{{ "}}" }}'
                     password: '{{ "{{" }}HOMEPAGE_VAR_BESZEL_PASS{{ "}}" }}'
                     version: 2
-              - Uptime Kuma:
-                  icon: uptime-kuma.png
+              - Gatus:
+                  icon: gatus.png
                   href: https://status.erwanleboucher.dev
                   description: Monitoring
                   widget:
-                    type: uptimekuma
-                    url: http://uptime-kuma.monitoring:3001
+                    type: gatus
+                    url: http://gatus.monitoring
                     slug: default
+              - Prometheus:
+                  icon: prometheus.png
+                  href: https://prometheus.erwanleboucher.dev
+                  description: Metrics
+                  widget:
+                    type: prometheus
+                    url: http://prometheus-operated.monitoring:9090
+              - Mikrotik:
+                  icon: mikrotik.png
+                  href: https://router.erwanleboucher.dev
+                  description: Router Management
+                  widget:
+                    type: mikrotik
+                    url: https://router.erwanleboucher.dev
+                    username: '{{ "{{" }}HOMEPAGE_VAR_MIKROTIK_USER{{ "}}" }}'
+                    password: '{{ "{{" }}HOMEPAGE_VAR_MIKROTIK_PASS{{ "}}" }}'
 
             - Media:
               - Jellyfin:
@@ -246,14 +272,6 @@ spec:
                     type: homeassistant
                     url: http://home-assistant.system:8123
                     key: '{{ "{{" }}HOMEPAGE_VAR_HASS_KEY{{ "}}" }}'
-            - System:
-              - AdGuard Home:
-                  icon: adguard-home.png
-                  href: https://dns.erwanleboucher.dev
-                  description: DNS Sinkhole
-                  widget:
-                    type: adguard
-                    url: http://adguard-primary-internal.adguard:3000
 
     persistence:
       config:
