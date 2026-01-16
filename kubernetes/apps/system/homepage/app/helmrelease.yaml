@@ -67,17 +67,28 @@ spec:
           kubernetes.yaml: |
             mode: cluster
           bookmarks.yaml: |
-            - Resources:
+            - Development:
+              - GitHub:
+                  - icon: github.png
+                    href: https://github.com/erwanleboucher/mediaserver
+                    description: Repository
+              - Cloudflare:
+                  - icon: cloudflare.png
+                    href: https://dash.cloudflare.com/
+                    description: DNS & Tunnel
+              - Flux:
+                  - icon: flux-cd.png
+                    href: https://flux.erwanleboucher.dev
+                    description: GitOps
+              - Renovate:
+                  - icon: renovate.png
+                    href: https://renovate.erwanleboucher.dev
+                    description: Dependency Updates
+            - Tools:
               - BentoPDF:
                   - icon: bentopdf.png
                     href: https://pdf.erwanleboucher.dev
                     description: PDF Manager
-              - GitHub:
-                  - icon: github.png
-                    href: https://github.com/erwanleboucher/mediaserver
-              - Cloudflare:
-                  - icon: cloudflare.png
-                    href: https://dash.cloudflare.com/
               - Profilarr:
                   - icon: profilarr.png
                     href: https://profilarr.erwanleboucher.dev
@@ -108,7 +119,7 @@ spec:
                 columns: 3
               Downloads:
                 style: row
-                columns: 2
+                columns: 3
               Automation:
                 style: row
                 columns: 1
@@ -151,16 +162,6 @@ spec:
                 nodes: false
           services.yaml: |
             - Monitoring:
-              - Speedtest Tracker:
-                  icon: speedtest-tracker.png
-                  href: https://speedtest.erwanleboucher.dev
-                  description: Internet Speed Tests
-                  widget:
-                    type: speedtest
-                    version: 2
-                    url: http://speedtest-tracker.monitoring
-                    key: '{{ "{{" }}HOMEPAGE_VAR_SPEEDTEST_KEY{{ "}}" }}'
-                    bitratePrecision: 3
               - Beszel:
                   icon: beszel.png
                   href: https://monitor.erwanleboucher.dev
@@ -195,6 +196,19 @@ spec:
                     url: http://192.168.1.2
                     username: '{{ "{{" }}HOMEPAGE_VAR_MIKROTIK_USER{{ "}}" }}'
                     password: '{{ "{{" }}HOMEPAGE_VAR_MIKROTIK_PASS{{ "}}" }}'
+              - Cloudflared:
+                  icon: cloudflare.png
+                  href: https://one.dash.cloudflare.com/
+                  description: Tunnel Status
+                  widget:
+                    type: cloudflared
+                    accountid: '{{ "{{" }}HOMEPAGE_VAR_CF_ACCOUNT_ID{{ "}}" }}'
+                    tunnelid: '{{ "{{" }}HOMEPAGE_VAR_CF_TUNNEL_ID{{ "}}" }}'
+                    key: '{{ "{{" }}HOMEPAGE_VAR_CF_API_KEY{{ "}}" }}'
+              - Alertmanager:
+                  icon: alertmanager.png
+                  href: https://alertmanager.erwanleboucher.dev
+                  description: Alert Management
 
             - Media:
               - Jellyfin:
@@ -245,6 +259,14 @@ spec:
                     type: prowlarr
                     url: http://prowlarr.media:9696
                     key: '{{ "{{" }}HOMEPAGE_VAR_PROWLARR_KEY{{ "}}" }}'
+              - Wizarr:
+                  icon: wizarr.png
+                  href: https://wizarr.erwanleboucher.dev
+                  description: User Invitations
+              - Streamystats:
+                  icon: jellyfin.png
+                  href: https://streamystats.erwanleboucher.dev
+                  description: Jellyfin Statistics
 
             - Downloads:
               - SABnzbd:
@@ -264,6 +286,14 @@ spec:
                     url: http://qbittorrent.downloads:8080
                     username: '{{ "{{" }}HOMEPAGE_VAR_QBIT_USER{{ "}}" }}'
                     password: '{{ "{{" }}HOMEPAGE_VAR_QBIT_PASS{{ "}}" }}'
+              - Autobrr:
+                  icon: autobrr.png
+                  href: https://autobrr.erwanleboucher.dev
+                  description: Torrent Automation
+                  widget:
+                    type: autobrr
+                    url: http://autobrr.downloads
+                    key: '{{ "{{" }}HOMEPAGE_VAR_AUTOBRR_KEY{{ "}}" }}'
             - Automation:
               - Home Assistant:
                   icon: home-assistant.png
