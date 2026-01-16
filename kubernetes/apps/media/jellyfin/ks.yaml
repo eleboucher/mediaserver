@@ -5,6 +5,8 @@ metadata:
   name: jellyfin
   namespace: flux-system
 spec:
+  components:
+    - ../../../../components/gpu
   interval: 1h
   path: ./kubernetes/apps/media/jellyfin/app
   dependsOn:
