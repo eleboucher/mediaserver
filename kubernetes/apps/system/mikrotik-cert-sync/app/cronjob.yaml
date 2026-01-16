@@ -1,0 +1,86 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mikrotik-cert-sync
+  namespace: system
+spec:
+  schedule: "0 3 * * 0" # Weekly on Sunday at 3 AM
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          serviceAccountName: mikrotik-cert-sync
+          restartPolicy: OnFailure
+          containers:
+            - name: cert-sync
+              image: alpine:3.21
+              env:
+                - name: ROUTER_HOST
+                  value: "192.168.1.2"
+                - name: ROUTER_USER
+                  value: "cert-sync"
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+
+                  echo "Installing dependencies..."
+                  apk add --no-cache curl openssl jq openssh-client
+
+                  echo "Setting up SSH key..."
+                  mkdir -p ~/.ssh
+                  cp /ssh-key/id_ed25519 ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
+
+                  echo "Fetching certificate from Kubernetes secret..."
+                  KUBE_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+                  KUBE_CA=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+                  SECRET_JSON=$(curl -sS \
+                    --cacert $KUBE_CA \
+                    -H "Authorization: Bearer $KUBE_TOKEN" \
+                    "https://kubernetes.default.svc/api/v1/namespaces/network/secrets/erwanleboucher-dev-tls")
+
+                  if echo "$SECRET_JSON" | jq -e '.data["tls.crt"]' > /dev/null 2>&1; then
+                    echo "Extracting certificate..."
+                    echo "$SECRET_JSON" | jq -r '.data["tls.crt"]' | base64 -d > /tmp/router.crt
+                    echo "$SECRET_JSON" | jq -r '.data["tls.key"]' | base64 -d > /tmp/router.key
+                  else
+                    echo "ERROR: Failed to get certificate from secret"
+                    exit 1
+                  fi
+
+                  echo "Certificate info:"
+                  openssl x509 -in /tmp/router.crt -noout -subject -dates
+
+                  SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+                  echo "Uploading certificate to Mikrotik..."
+                  scp $SSH_OPTS /tmp/router.crt /tmp/router.key "${ROUTER_USER}@${ROUTER_HOST}:/"
+
+                  echo "Importing certificate on Mikrotik..."
+                  ssh $SSH_OPTS "${ROUTER_USER}@${ROUTER_HOST}" \
+                    '/certificate remove [find where name~"router"]; /certificate import file-name=router.crt passphrase=""; /certificate import file-name=router.key passphrase=""; /ip service set www-ssl certificate=router.crt_0'
+
+                  echo "Certificate sync completed successfully!"
+              volumeMounts:
+                - name: ssh-key
+                  mountPath: /ssh-key
+                  readOnly: true
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  memory: 128Mi
+          volumes:
+            - name: ssh-key
+              secret:
+                secretName: mikrotik-ssh-key
+                defaultMode: 0400
