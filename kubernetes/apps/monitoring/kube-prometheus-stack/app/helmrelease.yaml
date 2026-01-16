@@ -77,12 +77,12 @@ spec:
       fullnameOverride: kube-state-metrics
     grafana:
       enabled: false
-      # forceDeployDashboards: true
-      # operator:
-      #   dashboardsConfigMapRefEnabled: true
-      #   folder: observability
-      #   matchLabels:
-      #     grafana.internal/instance: grafana
+      forceDeployDashboards: true
+      operator:
+        dashboardsConfigMapRefEnabled: true
+        folder: monitoring
+        matchLabels:
+          grafana.internal/instance: grafana
     additionalPrometheusRulesMap:
       dockerhub-rules:
         groups:
