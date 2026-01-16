@@ -46,6 +46,8 @@ spec:
             securityContext:
               privileged: true
             resources:
+              claims:
+                - name: gpu
               requests:
                 cpu: 1000m
                 memory: 1Gi
@@ -65,6 +67,10 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+    defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: jellyfin-gpu
     service:
       app:
         controller: jellyfin

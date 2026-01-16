@@ -5,3 +5,4 @@ metadata:
   name: media
   labels:
     name: media
+    resource.kubernetes.io/admin-access: "true"
