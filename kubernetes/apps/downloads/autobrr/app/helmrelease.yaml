@@ -20,44 +20,58 @@ spec:
         pod:
           securityContext:
             fsGroup: 1000
-            fsGroupChangePolicy: "OnRootMismatch"
+            runAsUser: 1000
+            runAsNonRoot: true
 
         containers:
           app:
             image:
               repository: ghcr.io/autobrr/autobrr
-              tag: v1.71.0@sha256:db9794958a0f9db93059c1e9f06193a063ce3846d346d7a7c9eca607c6617c51
+              tag: v1.71.0
             env:
               AUTOBRR__HOST: 0.0.0.0
               AUTOBRR__PORT: &port 80
               AUTOBRR__CHECK_FOR_UPDATES: "false"
             resources:
               requests:
-                cpu: 25m
+                cpu: 10m
                 memory: 128Mi
               limits:
-                cpu: 200m
-                memory: 512Mi
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /api/healthz/liveness
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-              readiness: *probes
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/healthz/readiness
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
     service:
       app:
-        controller: autobrr
         ports:
           http:
             port: *port
-            protocol: TCP
     route:
       app:
         parentRefs:
@@ -73,7 +87,12 @@ spec:
         size: 2Gi
         globalMounts:
           - path: /config
-      incomplete:
+      tmpfs:
         type: emptyDir
-        globalMounts:
-          - path: /incomplete-downloads
+        advancedMounts:
+          autobrr:
+            app:
+              - path: /config/log
+                subPath: log
+              - path: /tmp
+                subPath: tmp

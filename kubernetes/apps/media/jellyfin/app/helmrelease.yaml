@@ -48,11 +48,10 @@ spec:
               claims:
                 - name: gpu
               requests:
-                cpu: 1000m
+                cpu: 1
                 memory: 1Gi
               limits:
-                cpu: 4000m
-                memory: 8Gi
+                memory: 10Gi
             probes:
               liveness: &probes
                 enabled: true

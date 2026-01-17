@@ -39,11 +39,10 @@ spec:
                 value: "Europe/London"
             resources:
               requests:
-                cpu: 100m
-                memory: 256Mi
+                cpu: 20m
+                memory: 128Mi
               limits:
-                cpu: 1000m
-                memory: 1Gi
+                memory: 500Mi
             probes:
               liveness: &probes
                 enabled: true
