@@ -30,6 +30,10 @@ spec:
       exclusive: false
     dashboards:
       enabled: true
+    devices:
+      - enp+
+      - ens+
+      - tailscale+
     enableIPv4BIGTCP: true
     endpointRoutes:
       enabled: true
