@@ -78,11 +78,10 @@ spec:
               tag: "1.3@sha256:679b7a92c494f93b78ad37ef24f3a261e73d0a1a52505ad4f1e39580eedfa14f"
             resources:
               requests:
-                cpu: 10m
-                memory: 32Mi
+                cpu: 200m
+                memory: 1Gi
               limits:
-                cpu: 100m
-                memory: 64Mi
+                memory: 6Gi
             env:
               QBITTORRENT_SERVER: localhost
               QBITTORRENT_PORT: "8080"

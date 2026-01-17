@@ -41,10 +41,9 @@ spec:
                 value: "1"
             resources:
               requests:
-                cpu: 200m
+                cpu: 15m
                 memory: 200Mi
               limits:
-                cpu: 400m
                 memory: 500Mi
             probes:
               liveness: &probes
