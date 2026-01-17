@@ -201,7 +201,7 @@ name: tailscale
 environment:
   - TS_AUTHKEY={{ ENV.TAILSCALE_AUTHKEY }}
   {% if ENV.IS_CONTROLLER %}
-  - TS_ROUTES=192.168.1.0/24,10.42.0.0/16,10.96.0.0/12
+  - TS_ROUTES=192.168.1.0/24,10.42.0.0/16,10.96.0.0/12,192.168.69.0/24
   - TS_EXTRA_ARGS=--advertise-exit-node
   {% endif %}
 
