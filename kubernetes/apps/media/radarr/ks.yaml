@@ -15,8 +15,6 @@ spec:
       namespace: network
     - name: longhorn
       namespace: kube-system
-    - name: nfs-server
-      namespace: nfs-server
     - name: nfs-csi-driver
       namespace: kube-system
   postBuild:

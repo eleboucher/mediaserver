@@ -22,8 +22,6 @@ spec:
           nodeSelector:
             kubernetes.io/hostname: kharkiv
           securityContext:
-            fsGroup: 1000
-            fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups:
               - 44 # video group
               - 992 # render group for /dev/dri

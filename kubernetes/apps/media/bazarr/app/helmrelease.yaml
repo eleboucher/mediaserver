@@ -21,8 +21,9 @@ spec:
           nodeSelector:
             kubernetes.io/hostname: kharkiv
           securityContext:
-            fsGroup: 1000
-            fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
         containers:
           app:
             image:

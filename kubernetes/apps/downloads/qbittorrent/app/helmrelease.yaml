@@ -19,8 +19,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          nodeSelector:
-            kubernetes.io/hostname: kharkiv
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
