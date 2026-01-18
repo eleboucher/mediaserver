@@ -15,3 +15,4 @@ resources:
   - fluent-bit/ks.yaml
   - victoria-logs/ks.yaml
   - mikrotik-exporter/ks.yaml
+  - headlamp/ks.yaml
