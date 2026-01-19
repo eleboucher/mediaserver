@@ -18,8 +18,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          nodeSelector:
-            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
