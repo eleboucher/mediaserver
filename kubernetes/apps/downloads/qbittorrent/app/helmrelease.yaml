@@ -58,17 +58,19 @@ spec:
               - secretRef:
                   name: vpn-config
             env:
-              IPV6_DISABLED: "true"
-              TZ: "Europe/Paris"
-              FIREWALL_INPUT_PORTS: "8080,9999"
-              FIREWALL_OUTBOUND_SUBNETS: "10.42.0.0/24,10.42.1.0/24,192.168.1.0/24,10.0.0.0/24"
               DOT: "off"
+              FIREWALL_INPUT_PORTS: "8080,8388,8888,9999"
+              FIREWALL_OUTBOUND_SUBNETS: "10.42.0.0/24,10.42.1.0/24,192.168.1.0/24,10.0.0.0/24"
+              HTTPPROXY: "on"
+              IPV6_DISABLED: "true"
+              PORT_FORWARD_ONLY: "on"
+              SERVER_COUNTRIES: "Netherlands"
+              SHADOWSOCKS: "on"
+              TZ: "Europe/Paris"
               VPN_PORT_FORWARDING: "on"
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
-              PORT_FORWARD_ONLY: "on"
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_TYPE: wireguard
-              SERVER_COUNTRIES: "Netherlands"
           port-forward:
             dependsOn: gluetun
             image:
@@ -128,6 +130,15 @@ spec:
           http:
             port: 8080
             protocol: TCP
+      proxy:
+        controller: qbittorrent
+        ports:
+          http-proxy:
+            port: 8888
+            protocol: TCP
+          shadowsocks:
+            port: 8388
+            protocol: TCP
     route:
       app:
         parentRefs:
@@ -135,6 +146,10 @@ spec:
             namespace: network
         hostnames:
           - qbit.erwanleboucher.dev
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 8080
     persistence:
       config:
         type: persistentVolumeClaim
