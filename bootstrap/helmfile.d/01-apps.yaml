@@ -48,6 +48,31 @@ releases:
     version: v1.19.2
     values:
       - ./templates/values.yaml.gotmpl
+    hooks:
+      - # Apply ClusterIssuers after cert-manager is ready
+        command: bash
+        args:
+          - -c
+          - |
+            # Wait for cert-manager CRDs
+            echo "Waiting for cert-manager CRDs..."
+            until kubectl get crd certificates.cert-manager.io clusterissuers.cert-manager.io &>/dev/null; do
+              echo "Waiting for CRDs..."
+              sleep 2
+            done
+            # Wait for cert-manager webhook to be ready
+            echo "Waiting for cert-manager webhook..."
+            kubectl wait --for=condition=Available deployment/cert-manager-webhook -n cert-manager --timeout=120s
+            # Apply ClusterIssuers
+            echo "Applying ClusterIssuers..."
+            kubectl apply -f ../../kubernetes/apps/cert-manager/cert-manager/app/clusterissuer-selfsigned.yaml
+            # Wait for internal-ca certificate to be ready
+            echo "Waiting for internal-ca certificate..."
+            kubectl wait --for=condition=Ready certificate/internal-ca -n cert-manager --timeout=120s
+            echo "ClusterIssuers ready!"
+        events:
+          - postsync
+        showlogs: true
     needs:
       - kube-system/cilium
 
@@ -59,6 +84,21 @@ releases:
       - ./templates/values.yaml.gotmpl
     needs:
       - cert-manager/cert-manager
+    hooks:
+      - # Create Certificate and wait for secret
+        command: bash
+        args:
+          - -c
+          - |
+            # Apply Certificate
+            kubectl apply -f ../../kubernetes/apps/security/external-secrets/cert/certificate.yaml
+            # Wait for secret to be created
+            echo "Waiting for bitwarden-tls-certs secret..."
+            kubectl wait --for=condition=Ready certificate/bitwarden-sdk-server -n security --timeout=120s
+            kubectl get secret bitwarden-tls-certs -n security
+        events:
+          - presync
+        showlogs: true
 
   - name: flux-operator
     namespace: flux-system

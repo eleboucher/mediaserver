@@ -29,7 +29,7 @@ spec:
         url: "https://github.com/eleboucher/mediaserver.git"
         ref: "refs/heads/main"
         path: "kubernetes/flux/cluster"
-        pullSecret: "flux-system"
+        pullSecret: "flux-system" # Not needed for public repo
       kustomize:
         patches:
           - # Increase the number of workers
