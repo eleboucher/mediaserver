@@ -58,15 +58,20 @@ wait:
 namespaces:
     just log info "Running stage..." "stage" "$0"
     find "{{ kubernetes_dir }}/apps" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r dir; do \
-        if ! kustomize build "$dir" | yq ea -e 'select(.kind == "Namespace")' | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -; then \
-            just log fatal "Failed to apply namespace" "stage" "$0" "namespace" "$(basename "$dir")"; \
+        namespaces=$(kustomize build "$dir" | yq ea 'select(.kind == "Namespace")'); \
+        if [ -n "$namespaces" ]; then \
+            if ! echo "$namespaces" | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -; then \
+                just log fatal "Failed to apply namespace" "stage" "$0" "namespace" "$(basename "$dir")"; \
+            fi; \
+        else \
+            just log info "No namespace resource found, skipping" "stage" "$0" "namespace" "$(basename "$dir")"; \
         fi; \
     done
 
 [doc('Apply Kubernetes resources')]
 resources:
     just log info "Running stage..." "stage" "$0"
-    if ! just template "{{ bootstrap_dir }}/secret.sops.yaml" | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -; then \
+    if ! sops -d "{{ bootstrap_dir }}/secret.sops.yaml" | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -; then \
         just log fatal "Failed to apply resources" "stage" "$0"; \
     fi;
 
