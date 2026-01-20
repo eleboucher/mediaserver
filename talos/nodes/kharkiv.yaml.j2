@@ -6,18 +6,31 @@ machine:
     - 192.168.1.41
   network:
     interfaces:
-      - interface: enp3s0
-        addresses:
-          - 192.168.1.41/24
-        routes:
-          - network: 0.0.0.0/0
-            gateway: 192.168.1.2
-        mtu: 1500
-        dhcp: false
-      - interface: enp2s0
-        addresses:
-          - 10.20.0.41/24
+      # LACP Bond (802.3ad) with VLANs
+      - interface: bond0
         mtu: 9000
+        bond:
+          interfaces:
+            - enp3s0
+            - enp2s0
+          mode: 802.3ad
+          lacpRate: fast
+          xmitHashPolicy: layer3+4
+          miimon: 100
+        vlans:
+          # VLAN 10 - Main network (Management)
+          - vlanId: 10
+            addresses:
+              - 192.168.1.41/24
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 192.168.1.2
+            mtu: 1500
+          # VLAN 20 - Storage network
+          - vlanId: 20
+            addresses:
+              - 10.20.0.41/24
+            mtu: 9000
     disableSearchDomain: true
   install:
     diskSelector:

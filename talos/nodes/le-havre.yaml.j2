@@ -3,20 +3,23 @@ machine:
   type: worker
   network:
     interfaces:
-      - deviceSelector:
-          hardwareAddr: bc:24:11:20:7d:2e
-        addresses:
-          - 192.168.1.7/24
-        routes:
-          - network: 0.0.0.0/0
-            gateway: 192.168.1.2
-        mtu: 1500
-        dhcp: false
-      - deviceSelector:
-          hardwareAddr: bc:24:11:3b:39:33
-        addresses:
-          - 10.20.0.7/24
+      # Single virtual NIC (LACP bonded at Proxmox host level)
+      - interface: ens18
         mtu: 9000
+        vlans:
+          # VLAN 10 - Main network (Management)
+          - vlanId: 10
+            addresses:
+              - 192.168.1.7/24
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 192.168.1.2
+            mtu: 1500
+          # VLAN 20 - Storage network
+          - vlanId: 20
+            addresses:
+              - 10.20.0.7/24
+            mtu: 9000
     disableSearchDomain: true
   install:
     disk: /dev/sda

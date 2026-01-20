@@ -11,11 +11,6 @@ spec:
   dependsOn:
     - name: cert-manager
       namespace: flux-system
-  healthChecks:
-    - apiVersion: cert-manager.io/v1
-      kind: Certificate
-      name: bitwarden-sdk-server
-      namespace: security
   prune: true
   sourceRef:
     kind: GitRepository
