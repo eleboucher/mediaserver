@@ -20,6 +20,11 @@ metrics:
     label: revision
     title: Flux
 
+  - name: mkt_version
+    query: label_replace(mktxp_system_uptime, "short_version", "$1", "version", "([^ ]+).*")
+    label: short_version
+    title: MikroTik
+
   - name: cluster_node_count
     query: count(count by (node) (kube_node_status_condition{condition="Ready"}))
     title: Nodes
