@@ -1,0 +1,28 @@
+---
+scrape_interval: "15m"
+
+requests:
+  - api_path: "/users/{{ .GITHUB_USER }}"
+    metrics:
+      - name: github_followers
+        path: "followers" # JSON path
+        help: "Total followers"
+      - name: github_public_repos
+        path: "public_repos"
+        help: "Public repositories"
+
+  - api_path: "/users/{{ .GITHUB_USER }}/repos?per_page=100"
+    metrics:
+      - name: github_stars_total
+        path: "#.stargazers_count"
+        help: "Sum of all stars"
+        aggregate: "sum" # sum, count, min, max
+
+  - api_path: "/graphql"
+    method: "POST"
+    body: |
+      { "query": "query { user(login: \"{{ .GITHUB_USER }}\") { contributionsCollection { contributionCalendar { totalContributions } } } }" }
+    metrics:
+      - name: gh_contributions_last_year
+        path: "data.user.contributionsCollection.contributionCalendar.totalContributions"
+        help: "Total contributions in the last year "
