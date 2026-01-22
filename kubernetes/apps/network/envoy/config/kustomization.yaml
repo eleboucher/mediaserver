@@ -5,3 +5,4 @@ resources:
   - envoy.yaml
   - certificate.yaml
   - podmonitor.yaml
+  - grafanadashboard.yaml

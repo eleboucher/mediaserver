@@ -5,4 +5,5 @@ namespace: network
 resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
-  - dnsendpoint.yaml
+  - ./dnsendpoint.yaml
+  - ./grafanadashboard.yaml
