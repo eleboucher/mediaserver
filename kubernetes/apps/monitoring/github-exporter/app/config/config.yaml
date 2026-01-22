@@ -1,5 +1,5 @@
 ---
-scrape_interval: "15m"
+scrape_interval: "1m"
 
 requests:
   - api_path: "/users/{{ .GITHUB_USER }}"
@@ -26,3 +26,16 @@ requests:
       - name: gh_contributions_year
         path: "data.user.contributionsCollection.contributionCalendar.totalContributions"
         help: "Total contributions in the last year "
+
+  - api_path: "/users/{{ .GITHUB_USER }}/events/public"
+    metrics:
+      - name: github_last_push_timestamp_seconds
+        path: '#(type=="PushEvent").created_at'
+        help: "Timestamp of the last push event"
+
+      - name: github_last_push_info
+        path: '#(type=="PushEvent").id'
+        help: "Information about the last push event"
+        labels:
+          repo: '#(type=="PushEvent").repo.name'
+          type: '#(type=="PushEvent").type'
