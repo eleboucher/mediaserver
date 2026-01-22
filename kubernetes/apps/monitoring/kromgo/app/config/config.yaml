@@ -33,6 +33,25 @@ metrics:
     query: sum(kube_pod_status_phase{phase="Running"})
     title: Pods
 
+  - name: gh_last_push_repo
+    query: label_replace(github_last_push_info, "short_repo", "$1", "repo", ".+/(.+)")
+    label: short_repo
+    title: Last Push
+
+  - name: gh_last_push_time
+    query: round((time() - github_last_push_timestamp_seconds), 0.1)
+    title: Ago
+    suffix: "h"
+    colors:
+      - color: "green"
+        min: 0
+        max: 24 # Green if < 24 hours
+      - color: "orange"
+        min: 24.1
+        max: 168 # Orange if < 1 week
+      - color: "red"
+        min: 168.1
+        max: 9999 # Red if older
   - name: gh_contributions_year
     query: avg (gh_contributions_year)
     title: GH Contributions (1y)
