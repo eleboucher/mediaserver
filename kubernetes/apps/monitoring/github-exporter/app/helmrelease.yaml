@@ -14,6 +14,7 @@ spec:
     controllers:
       github-exporter:
         type: statefulset
+
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -22,6 +23,7 @@ spec:
             image:
               repository: ghcr.io/eleboucher/github-exporter
               tag: latest
+              pullPolicy: Always
             env:
               GITHUB_USER: "eleboucher"
               GITHUB_TOKEN:
