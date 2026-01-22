@@ -17,3 +17,4 @@ resources:
   - mikrotik-exporter/ks.yaml
   - headlamp/ks.yaml
   - kromgo/ks.yaml
+  - github-exporter/ks.yaml
