@@ -83,9 +83,9 @@ metrics:
     colors:
       - color: "green"
         min: 0
-        max: 35
+        max: 49
       - color: "orange"
-        min: 36
+        min: 50
         max: 75
       - color: "red"
         min: 76
