@@ -11,3 +11,4 @@ resources:
   - mealie/ks.yaml
   - hypermind/ks.yaml
   - atuin/ks.yaml
+  - fizzbuzz/ks.yaml
