@@ -23,8 +23,8 @@ spec:
       defaultLonghornStaticStorageClass: longhorn
       createDefaultDiskLabeledNodes: true
       restoreVolumeRecurringJobs: true
-      guaranteedEngineManagerCPU: "30"
-      guaranteedReplicaManagerCPU: "30"
+      guaranteedEngineManagerCPU: "20"
+      guaranteedReplicaManagerCPU: "20"
       defaultDataLocality: best-effort
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       orphanAutoDeletion: true

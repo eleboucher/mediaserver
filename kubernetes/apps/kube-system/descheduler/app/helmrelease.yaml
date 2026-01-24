@@ -67,6 +67,9 @@ spec:
                 - RemovePodsViolatingInterPodAntiAffinity
                 - RemovePodsViolatingNodeAffinity
                 - RemovePodsViolatingNodeTaints
+    resources:
+      requests:
+        cpu: 50m
     service:
       enabled: true
     leaderElection:
