@@ -49,10 +49,8 @@ spec:
                   - NET_ADMIN
             resources:
               requests:
-                cpu: 100m
                 memory: 128Mi
               limits:
-                cpu: 500m
                 memory: 256Mi
             envFrom:
               - secretRef:
@@ -78,7 +76,6 @@ spec:
               tag: "1.3@sha256:679b7a92c494f93b78ad37ef24f3a261e73d0a1a52505ad4f1e39580eedfa14f"
             resources:
               requests:
-                cpu: 200m
                 memory: 1Gi
               limits:
                 memory: 6Gi
@@ -105,10 +102,8 @@ spec:
               TZ: "Europe/Paris"
             resources:
               requests:
-                cpu: 200m
                 memory: 1.5Gi
               limits:
-                cpu: 1000m
                 memory: 2Gi
             probes:
               liveness: &probes
