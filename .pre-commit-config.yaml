@@ -25,3 +25,11 @@ repos:
         language: system
         exclude: ^config/
         files: .+\.ya?ml$
+      - id: k8s-schema-hook
+        name: K8s Schema Hook
+        entry: hooks/k8s_yaml_schema.py --config .k8s-schema-hook.yaml
+        language: python
+        files: ^kubernetes/.+\.ya?ml$
+        additional_dependencies:
+          - jmespath
+          - ruamel.yaml
