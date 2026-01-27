@@ -9,6 +9,10 @@ spec:
     - "erwanleboucher.dev"
     - "*.erwanleboucher.dev"
   duration: 160h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-production
