@@ -11,4 +11,3 @@ resources:
   - mealie/ks.yaml
   - atuin/ks.yaml
   - fizzbuzz/ks.yaml
-  - libretranslate/ks.yaml
