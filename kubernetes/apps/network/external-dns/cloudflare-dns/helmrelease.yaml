@@ -14,11 +14,11 @@ spec:
     provider:
       name: cloudflare
     env:
-      - name: &name CF_API_TOKEN
+      - name: &nameToken CF_API_TOKEN
         valueFrom:
           secretKeyRef:
             name: &secret external-dns-secret
-            key: *name
+            key: *nameToken
       - name: &name CF_ZONE_ID
         valueFrom:
           secretKeyRef:
