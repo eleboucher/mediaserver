@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/cert-manager.io/clusterissuer_v1.json
 ---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/cert-manager.io/clusterissuer_v1.json
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -7,6 +8,7 @@ metadata:
 spec:
   selfSigned: {}
 ---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/cert-manager.io/clusterissuer_v1.json
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -15,6 +17,7 @@ spec:
   ca:
     secretName: internal-ca-secret
 ---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/cert-manager.io/certificate_v1.json
 # Create a self-signed root CA certificate
 apiVersion: cert-manager.io/v1
 kind: Certificate
