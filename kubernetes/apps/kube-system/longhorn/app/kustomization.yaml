@@ -8,3 +8,5 @@ resources:
   - ./httproute.yaml
   - ./snapshotvolumeclass.yaml
   - ./storageclass.yaml
+  - ./grafanadashboard.yaml
+  - ./prometheusrule.yaml
