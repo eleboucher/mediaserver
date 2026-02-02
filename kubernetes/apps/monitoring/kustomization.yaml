@@ -21,3 +21,4 @@ resources:
   - github-exporter/ks.yaml
   - blackbox-exporter/ks.yaml
   - silence-operator/ks.yaml
+  - node-exporter/ks.yaml
