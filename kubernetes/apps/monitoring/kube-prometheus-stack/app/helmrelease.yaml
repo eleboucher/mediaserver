@@ -42,7 +42,8 @@ spec:
         targetPort: 2381
     kubeProxy:
       enabled: false
-
+    nodeExporter:
+      enabled: false
     prometheus:
       route:
         main:
