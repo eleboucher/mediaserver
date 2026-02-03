@@ -39,15 +39,6 @@ spec:
                 cp /config-ro/rclone.conf /tmp/rclone.conf
                 chmod 600 /tmp/rclone.conf
 
-                rclone sync /data/backups/longhorn-backups gdrive:longhorn-backups \
-                  --transfers 16 \
-                  --checkers 16 \
-                  --fast-list \
-                  --delete-after \
-                  --log-level INFO \
-                  --stats 1m \
-                  --retries 3
-
                 rclone sync /data/backups/homeassistant gdrive:homeassistant-backups \
                   --transfers 16 \
                   --checkers 16 \
