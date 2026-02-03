@@ -77,7 +77,7 @@ spec:
                 - name: HOME
                   value: /tmp
                 - name: RCLONE_REMOTE_PATH
-                  value: "gdrive:volsync-kopia"
+                  value: "gdrive:{1KIiOW8UmpwUgS6WNqeDMxUYNlZU1n1AA}"
               envFrom:
                 - secretRef:
                     name: kopia-sync-secret
