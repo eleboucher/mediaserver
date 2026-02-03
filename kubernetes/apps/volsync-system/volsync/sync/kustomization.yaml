@@ -6,3 +6,4 @@ resources:
   - ./cronjob.yaml
   - ./externalsecret.yaml
   - ./secret.sops.yaml
+  - ./gdrive-service-account.sops.yaml
