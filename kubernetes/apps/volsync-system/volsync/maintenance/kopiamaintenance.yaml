@@ -9,4 +9,4 @@ spec:
   repository:
     repository: volsync-maintenance-secret
   trigger:
-    schedule: "30 3 * * *"
+    schedule: "30 3,15 * * *"
