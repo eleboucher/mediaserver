@@ -11,8 +11,6 @@
     "github>eleboucher/mediaserver//.renovate/grafanaDashboard.json5",
     ":label(renovate)",
     ":automergeBranch",
-    ":automergeStableNonMajor",
-    ":automergeDigest",
     ":disableRateLimiting",
     ":semanticCommits",
     ":skipStatusChecks",
