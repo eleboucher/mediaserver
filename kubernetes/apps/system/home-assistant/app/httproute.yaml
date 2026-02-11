@@ -8,9 +8,9 @@ metadata:
   namespace: system
 spec:
   parentRefs:
-    - name: envoy-external
+    - name: agentgateway-external
       namespace: network
-    - name: envoy-internal
+    - name: agentgateway-internal
       namespace: network
   hostnames:
     - home.erwanleboucher.dev

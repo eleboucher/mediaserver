@@ -8,7 +8,7 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/selfhosted/fizzbuzz/staging
   dependsOn:
-    - name: envoy-gateway
+    - name: agentgateway-gateway
       namespace: network
   postBuild:
     substitute:
@@ -32,7 +32,7 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/selfhosted/fizzbuzz/prod
   dependsOn:
-    - name: envoy-gateway
+    - name: agentgateway-gateway
       namespace: network
   postBuild:
     substitute:

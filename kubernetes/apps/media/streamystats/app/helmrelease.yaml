@@ -132,7 +132,7 @@ spec:
     route:
       main:
         parentRefs:
-          - name: envoy-external
+          - name: agentgateway-external
             namespace: network
         hostnames:
           - streamystats.erwanleboucher.dev

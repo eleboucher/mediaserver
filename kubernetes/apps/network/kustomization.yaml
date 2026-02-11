@@ -10,7 +10,7 @@ components:
 resources:
   - namespace.yaml
   - externalsecret.yaml
-  - envoy/ks.yaml
+  - agentgateway/ks.yaml
   - external-dns/ks.yaml
   - cloudflared/ks.yaml
   - echo/ks.yaml

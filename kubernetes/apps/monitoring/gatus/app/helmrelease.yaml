@@ -97,7 +97,7 @@ spec:
           - "{{ .Release.Name }}.erwanleboucher.dev"
           - status.erwanleboucher.dev
         parentRefs:
-          - name: envoy-internal
+          - name: agentgateway-internal
             namespace: network
     rbac:
       roles:
