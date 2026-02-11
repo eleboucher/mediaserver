@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/gateway.networking.k8s.io/gateway_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: agentgateway-internal
+  annotations:
+    external-dns.alpha.kubernetes.io/target: &loadBalancerIP "192.168.69.10"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    gatus.home-operations.com/endpoint: |-
+      group: internal
+      guarded: true
+      ui:
+        hide-hostname: true
+        hide-url: true
+spec:
+  gatewayClassName: agentgateway
+  addresses:
+    - type: IPAddress
+      value: *loadBalancerIP
+  infrastructure:
+    annotations:
+      external-dns.alpha.kubernetes.io/target: *loadBalancerIP
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      lbipam.cilium.io/ips: *loadBalancerIP
+    parametersRef:
+      name: agentgateway-params
+      group: agentgateway.dev
+      kind: AgentgatewayParameters
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.erwanleboucher.dev"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: erwanleboucher-dev-tls

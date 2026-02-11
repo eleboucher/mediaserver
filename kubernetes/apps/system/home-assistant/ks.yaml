@@ -10,7 +10,7 @@ spec:
   interval: 6h
   path: ./kubernetes/apps/system/home-assistant/app
   dependsOn:
-    - name: envoy-gateway
+    - name: agentgateway-gateway
       namespace: network
   postBuild:
     substitute:

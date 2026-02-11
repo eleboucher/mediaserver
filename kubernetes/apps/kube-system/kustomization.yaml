@@ -19,3 +19,4 @@ resources:
   - metrics-server/ks.yaml
   - nfs-csi-driver/ks.yaml
   - spegel/ks.yaml
+  - gateway-api-crds/ks.yaml

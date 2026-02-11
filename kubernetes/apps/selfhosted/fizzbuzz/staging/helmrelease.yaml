@@ -63,7 +63,7 @@ spec:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 404"]
         parentRefs:
-          - name: envoy-external
+          - name: agentgateway-external
             namespace: network
         hostnames:
           - fizzbuzz-staging.erwanleboucher.dev

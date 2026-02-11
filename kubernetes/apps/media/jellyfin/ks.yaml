@@ -15,7 +15,7 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/media/jellyfin/app
   dependsOn:
-    - name: envoy-gateway
+    - name: agentgateway-gateway
       namespace: network
     - name: longhorn
       namespace: kube-system
