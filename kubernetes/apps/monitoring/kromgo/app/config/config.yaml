@@ -47,7 +47,7 @@ metrics:
     title: GH Contributions (1y)
 
   - name: cluster_latency_over_7d
-    query: round(histogram_quantile(0.99, sum(rate(agentgateway_request_duration_seconds_bucket[7d])) by (le)) * 1000)
+    query: round(histogram_quantile(0.99, sum(rate(kgateway_request_duration_seconds_bucket[7d])) by (le)) * 1000)
     title: Gateway Latency
     suffix: "ms"
     colors:

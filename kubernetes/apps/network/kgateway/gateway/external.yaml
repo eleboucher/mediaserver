@@ -3,7 +3,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: agentgateway-external
+  name: kgateway-external
   annotations:
     external-dns.alpha.kubernetes.io/target: &hostname external.erwanleboucher.dev
     gatus.home-operations.com/endpoint: |-
@@ -11,14 +11,14 @@ metadata:
         dns-resolver: tcp://1.1.1.1:53
       group: external
 spec:
-  gatewayClassName: agentgateway
+  gatewayClassName: kgateway
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
     parametersRef:
-      name: agentgateway-params
-      group: agentgateway.dev
-      kind: AgentgatewayParameters
+      name: kgateway-params
+      group: gateway.kgateway.dev
+      kind: GatewayParameters
   listeners:
     - name: http
       protocol: HTTP
@@ -42,16 +42,16 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: agentgateway-external
+  name: kgateway-external
 spec:
-  jobLabel: agentgateway-external
+  jobLabel: kgateway-external
   namespaceSelector:
     matchNames:
       - network
   podMetricsEndpoints:
-    - port: metrics
+    - port: http-monitoring
       path: /metrics
       honorLabels: true
   selector:
     matchLabels:
-      app.kubernetes.io/name: agentgateway-external
+      app.kubernetes.io/name: kgateway-external

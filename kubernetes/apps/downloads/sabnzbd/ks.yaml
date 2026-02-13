@@ -14,7 +14,7 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/downloads/sabnzbd/app
   dependsOn:
-    - name: agentgateway-gateway
+    - name: kgateway-gateway
       namespace: network
     - name: longhorn
       namespace: kube-system

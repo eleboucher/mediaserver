@@ -8,9 +8,9 @@ metadata:
   namespace: system
 spec:
   parentRefs:
-    - name: agentgateway-external
+    - name: kgateway-external
       namespace: network
-    - name: agentgateway-internal
+    - name: kgateway-internal
       namespace: network
   hostnames:
     - home.erwanleboucher.dev

@@ -14,7 +14,7 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/media/bazarr/app
   dependsOn:
-    - name: agentgateway-gateway
+    - name: kgateway-gateway
       namespace: network
     - name: longhorn
       namespace: kube-system

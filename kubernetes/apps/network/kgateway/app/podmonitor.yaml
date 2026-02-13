@@ -3,9 +3,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: agentgateway
+  name: kgateway
 spec:
-  jobLabel: agentgateway
+  jobLabel: kgateway
   namespaceSelector:
     matchNames:
       - network
@@ -15,4 +15,4 @@ spec:
       honorLabels: true
   selector:
     matchLabels:
-      app.kubernetes.io/name: agentgateway
+      app.kubernetes.io/name: kgateway

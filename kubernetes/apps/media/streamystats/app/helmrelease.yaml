@@ -132,7 +132,7 @@ spec:
     route:
       main:
         parentRefs:
-          - name: agentgateway-external
+          - name: kgateway-external
             namespace: network
         hostnames:
           - streamystats.erwanleboucher.dev
