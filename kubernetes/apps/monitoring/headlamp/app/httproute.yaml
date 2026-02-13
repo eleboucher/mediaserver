@@ -9,7 +9,7 @@ spec:
   hostnames:
     - headlamp.erwanleboucher.dev
   parentRefs:
-    - name: agentgateway-internal
+    - name: kgateway-internal
       namespace: network
       sectionName: https
   rules:

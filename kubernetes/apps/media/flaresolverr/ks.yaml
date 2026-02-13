@@ -10,7 +10,7 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/media/flaresolverr/app
   dependsOn:
-    - name: agentgateway-gateway
+    - name: kgateway-gateway
       namespace: network
     - name: longhorn
       namespace: kube-system

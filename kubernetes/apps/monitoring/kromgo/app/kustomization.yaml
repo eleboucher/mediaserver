@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
-  - ./agentgatewaypolicy.yaml
+  - ./kgatewaypolicy.yaml
 configMapGenerator:
   - name: kromgo-configmap
     files:

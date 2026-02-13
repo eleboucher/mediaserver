@@ -1,7 +1,7 @@
 ---
-# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/agentgateway.dev/agentgatewaypolicy_v1alpha1.json
-apiVersion: agentgateway.dev/v1alpha1
-kind: AgentgatewayPolicy
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kgateway.dev/kgatewaypolicy_v1alpha1.json
+apiVersion: kgateway.dev/v1alpha1
+kind: kgatewayPolicy
 metadata:
   name: kromgo
   namespace: monitoring

@@ -71,7 +71,7 @@ spec:
         hostnames:
           - kopia.erwanleboucher.dev
         parentRefs:
-          - name: agentgateway-internal
+          - name: kgateway-internal
             namespace: network
     configMaps:
       config:
