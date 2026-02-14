@@ -33,7 +33,6 @@ spec:
     devices:
       - bond0+
       - ens18.10
-      - tailscale+
     enableIPv4BIGTCP: true
     endpointRoutes:
       enabled: true
@@ -53,6 +52,7 @@ spec:
     loadBalancer:
       algorithm: maglev
       mode: dsr
+      serviceTopology: true
     localRedirectPolicies:
       enabled: true
     operator:
