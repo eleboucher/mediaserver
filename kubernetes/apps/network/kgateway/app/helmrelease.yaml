@@ -13,3 +13,7 @@ spec:
   interval: 30m
   upgrade:
     crds: CreateReplace
+  values:
+    controller:
+      extraEnv:
+        KGW_ENABLE_GATEWAY_API_EXPERIMENTAL_FEATURES: "true"
