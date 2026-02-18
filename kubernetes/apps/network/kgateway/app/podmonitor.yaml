@@ -10,7 +10,7 @@ spec:
     matchNames:
       - network
   podMetricsEndpoints:
-    - port: metrics
+    - port: "9092"
       path: /metrics
       honorLabels: true
   selector:
