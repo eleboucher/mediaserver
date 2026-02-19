@@ -1,0 +1,140 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: paperless
+  interval: 30m
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      paperless:
+        forceRename: paperless
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 2.20.7
+            env:
+              # Configure application
+              PAPERLESS_SECRET_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: paperless-secret
+                    key: PAPERLESS_SECRET_KEY
+              PAPERLESS_URL: https://paperless.erwanleboucher.dev
+              PAPERLESS_PORT: "8000"
+              PAPERLESS_TIME_ZONE: "Europe/Paris"
+              PAPERLESS_TASK_WORKERS: "2"
+              PAPERLESS_OCR_LANGUAGES: fra+eng
+              PAPERLESS_OCR_LANGUAGE: fra+eng
+              # Configure folders
+              PAPERLESS_CONSUMPTION_DIR: /data/nas/paperless/incoming
+              PAPERLESS_DATA_DIR: /data/local/data
+              PAPERLESS_EXPORT_DIR: /data/nas/paperless/export
+              PAPERLESS_MEDIA_ROOT: /data/local/media
+              # Configure folder importer
+              PAPERLESS_CONSUMER_POLLING: "60"
+              PAPERLESS_CONSUMER_RECURSIVE: "true"
+              PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
+              # Configure redis integration
+              PAPERLESS_REDIS: redis://paperless-redis.selfhosted.svc.cluster.local:6379
+              # Configure user permissions
+              USERMAP_GID: "1000"
+              # Configure admin user
+              PAPERLESS_DBPASS:
+                secretKeyRef:
+                  name: postgres-paperless-app
+                  key: password
+              PAPERLESS_DBUSER:
+                secretKeyRef:
+                  name: postgres-paperless-app
+                  key: username
+              PAPERLESS_DBNAME:
+                secretKeyRef:
+                  name: postgres-paperless-app
+                  key: dbname
+              PAPERLESS_DBHOST: postgres-paperless-rw
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 25m
+                memory: 2Gi
+              limits:
+                memory: 6Gi
+
+      redis:
+        containers:
+          redis:
+            image:
+              repository: ghcr.io/valkey-io/valkey
+              tag: 9.0.2
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+
+    service:
+      app:
+        forceRename: paperless
+        primary: true
+        controller: paperless
+        ports:
+          http:
+            port: 8000
+      redis:
+        controller: redis
+        ports:
+          http:
+            port: 6379
+
+    persistence:
+      data:
+        existingClaim: paperless
+        advancedMounts:
+          paperless:
+            app:
+              - path: /data/local
+
+      nas:
+        enabled: true
+        type: persistentVolumeClaim
+        existingClaim: shared-media
+        globalMounts:
+          - path: /data/nas
+
+    route:
+      app:
+        hostnames:
+          - paperless.erwanleboucher.dev
+        parentRefs:
+          - name: kgateway-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
