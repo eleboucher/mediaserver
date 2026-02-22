@@ -7,7 +7,7 @@
       name: mediaserver
     - # namespace
       source: string
-      name: renovate
+      name: automation
     - # project
       source: payload
       name: repository.full_name
@@ -73,7 +73,7 @@
                     name: pull_request.state
               - match:
                   type: value
-                  value: bot-owl
+                  value: bot-owl[bot]
                   parameter:
                     source: payload
                     name: pull_request.user.login
@@ -99,7 +99,7 @@
                     name: pull_request.merged
               - match:
                   type: value
-                  value: bot-owl
+                  value: bot-owl[bot]
                   parameter:
                     source: payload
                     name: pull_request.user.login
