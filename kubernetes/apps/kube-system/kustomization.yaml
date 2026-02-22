@@ -17,6 +17,5 @@ resources:
   - cilium/ks.yaml
   - coredns/ks.yaml
   - metrics-server/ks.yaml
-  - nfs-csi-driver/ks.yaml
   - spegel/ks.yaml
   - gateway-api-crds/ks.yaml

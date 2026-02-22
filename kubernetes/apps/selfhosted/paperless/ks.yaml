@@ -12,7 +12,6 @@ spec:
     - ../../../../components/volsync
     - ../../../../components/cnpg
     - ../../../../components/nfs-scaler
-    - ../../../../components/nfs-media
   dependsOn:
     - name: longhorn
       namespace: kube-system
@@ -21,7 +20,6 @@ spec:
   postBuild:
     substitute:
       APP: paperless
-      APP_NAMESPACE: selfhosted
       APP_UID: "1000"
       APP_GID: "65542"
       VOLSYNC_CLAIM: paperless-data
