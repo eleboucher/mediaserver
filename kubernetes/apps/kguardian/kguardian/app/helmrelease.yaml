@@ -22,7 +22,7 @@ spec:
     controller:
       image:
         repository: ghcr.io/kguardian-dev/kguardian/controller
-        tag: v1.7.0
+        tag: v1.8.0
       excludedNamespaces:
         - kguardian
     database:
