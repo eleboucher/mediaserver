@@ -33,6 +33,33 @@
             minimumGroupSize: 2,
         },
         {
+          description: "kguardian group",
+          groupName: "kguardian",
+          matchDatasources: [
+            "docker"
+          ],
+          matchPackageNames: [
+            "/kguardian-dev/"
+          ],
+          group: {
+            commitMessageTopic: "{{{groupName}}} group",
+          }
+        },
+        {
+          description: "1Password Connect group",
+          groupName: "1Password Connect",
+          matchDatasources: [
+            "docker"
+          ],
+          matchPackageNames: [
+            "/1password/"
+          ],
+          group: {
+            commitMessageTopic: "{{{groupName}}} group",
+          },
+          minimumGroupSize: 2,
+        },
+        {
             description: "Kubernetes Group",
             groupName: "kubernetes",
             matchDatasources: [
@@ -51,19 +78,20 @@
             minimumGroupSize: 5,
         },
 
-        {
-            description: "Talos Group",
-            groupName: "talos",
+          {
+            description: "Talos group",
+            groupName: "Talos",
             matchDatasources: [
-                "docker"
+              "docker"
             ],
             matchPackageNames: [
-                "/installer/"
+              "/installer/",
+              "/talosctl/"
             ],
             group: {
-                commitMessageTopic: "{{{groupName}}} group",
+              commitMessageTopic: "{{{groupName}}} group",
             },
             minimumGroupSize: 2,
-        },
+          },
     ],
 }
