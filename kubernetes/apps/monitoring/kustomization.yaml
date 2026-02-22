@@ -21,3 +21,4 @@ resources:
   - blackbox-exporter/ks.yaml
   - silence-operator/ks.yaml
   - node-exporter/ks.yaml
+  - kube-state-metrics/ks.yaml
