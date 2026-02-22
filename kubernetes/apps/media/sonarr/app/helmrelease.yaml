@@ -76,9 +76,9 @@ spec:
         globalMounts:
           - path: /config
       data:
-        enabled: true
-        type: persistentVolumeClaim
-        existingClaim: shared-media
+        type: nfs
+        server: 192.168.1.40
+        path: /
         globalMounts:
           - path: /data
       tmp:

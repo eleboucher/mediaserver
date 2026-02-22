@@ -8,7 +8,6 @@ metadata:
   namespace: flux-system
 spec:
   components:
-    - ../../../../components/nfs-media
     - ../../../../components/volsync
     - ../../../../components/nfs-scaler
   interval: 1h
@@ -18,12 +17,9 @@ spec:
       namespace: network
     - name: longhorn
       namespace: kube-system
-    - name: nfs-csi-driver
-      namespace: kube-system
   postBuild:
     substitute:
       APP: radarr
-      APP_NAMESPACE: media
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_SCHEDULE: "10 1-23/2 * * *"
   prune: true

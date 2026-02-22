@@ -7,16 +7,11 @@ metadata:
   name: backup
 spec:
   interval: 12h
-  components:
-    - ../../../../components/nfs-media
   path: ./kubernetes/apps/kube-system/backup/app
   dependsOn:
     - name: longhorn
       namespace: kube-system
   prune: true
-  postBuild:
-    substitute:
-      APP_NAMESPACE: kube-system
   sourceRef:
     kind: GitRepository
     name: flux-system
