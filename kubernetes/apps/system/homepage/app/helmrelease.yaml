@@ -187,7 +187,7 @@ spec:
                   description: Metrics
                   widget:
                     type: prometheus
-                    url: http://prometheus-operated.monitoring:9090
+                    url: http://vmsingle-vm.monitoring.svc.cluster.local:8428
               - Grafana:
                   icon: grafana.png
                   href: https://grafana.erwanleboucher.dev
