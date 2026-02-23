@@ -107,7 +107,7 @@ spec:
       forceDeployDashboards: true
       operator:
         dashboardsConfigMapRefEnabled: true
-        folder: monitoring
+        folder: Kubernetes
         matchLabels:
           grafana.internal/instance: grafana
     additionalPrometheusRulesMap:
