@@ -6,7 +6,7 @@ metadata:
   name: volsync
 spec:
   interval: 1h
-  path: ./kubernetes/apps/volsync-system/volsync
+  path: ./kubernetes/apps/volsync-system/volsync/app
   dependsOn:
     - name: longhorn
       namespace: kube-system
