@@ -7,7 +7,6 @@ namespace: kube-system
 resources:
   - intel-gpu-resource-driver/ks.yaml
   - node-feature-discovery/ks.yaml
-  - longhorn/ks.yaml
   - backup/ks.yaml
   - snapshot-controller/ks.yaml
   - reloader/ks.yaml

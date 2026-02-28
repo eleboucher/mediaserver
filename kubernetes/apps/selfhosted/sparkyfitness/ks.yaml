@@ -13,7 +13,7 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: longhorn
-      namespace: kube-system
+      namespace: longhorn-system
   interval: 1h
   path: "./kubernetes/apps/selfhosted/sparkyfitness/server"
   postBuild:

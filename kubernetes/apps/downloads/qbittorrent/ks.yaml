@@ -13,7 +13,7 @@ spec:
   path: ./kubernetes/apps/downloads/qbittorrent/app
   dependsOn:
     - name: longhorn
-      namespace: kube-system
+      namespace: longhorn-system
   postBuild:
     substitute:
       APP: qbittorrent

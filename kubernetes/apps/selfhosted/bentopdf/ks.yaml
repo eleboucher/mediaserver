@@ -12,7 +12,7 @@ spec:
     - name: envoy-gateway
       namespace: network
     - name: longhorn
-      namespace: kube-system
+      namespace: longhorn-system
   postBuild:
     substitute:
       APP: bentopdf
