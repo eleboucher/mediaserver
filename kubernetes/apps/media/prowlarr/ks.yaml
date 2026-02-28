@@ -16,7 +16,7 @@ spec:
     - name: envoy-gateway
       namespace: network
     - name: longhorn
-      namespace: kube-system
+      namespace: longhorn-system
     - name: volsync
       namespace: volsync-system
   postBuild:

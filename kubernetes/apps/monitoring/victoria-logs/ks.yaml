@@ -7,7 +7,7 @@ metadata:
 spec:
   dependsOn:
     - name: longhorn
-      namespace: kube-system
+      namespace: longhorn-system
   interval: 1h
   path: ./kubernetes/apps/monitoring/victoria-logs/app
   prune: true

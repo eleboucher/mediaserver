@@ -9,7 +9,7 @@ spec:
   path: ./kubernetes/apps/volsync-system/volsync/app
   dependsOn:
     - name: longhorn
-      namespace: kube-system
+      namespace: longhorn-system
     - name: snapshot-controller
       namespace: kube-system
   healthChecks:

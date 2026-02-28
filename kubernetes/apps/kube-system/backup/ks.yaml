@@ -10,7 +10,7 @@ spec:
   path: ./kubernetes/apps/kube-system/backup/app
   dependsOn:
     - name: longhorn
-      namespace: kube-system
+      namespace: longhorn-system
   prune: true
   sourceRef:
     kind: GitRepository
