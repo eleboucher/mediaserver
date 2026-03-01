@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/postgresql.cnpg.io/cluster_v1.json
 ---
 # yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
@@ -45,7 +44,26 @@ spec:
   storage:
     storageClass: longhorn
     size: 10Gi
-
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore:
+      data:
+        compression: bzip2
+      wal:
+        compression: bzip2
+        maxParallel: 8
+      destinationPath: s3://cloudnative-pg/
+      endpointURL: https://729991681d6b2d5c8f17351d354f4a92.r2.cloudflarestorage.com
+      # Note: serverName version needs to be incremented
+      # when recovering from an existing cnpg cluster
+      serverName: postgres-${APP}-v1
+      s3Credentials:
+        accessKeyId:
+          name: ${APP}-cnpg-secret
+          key: aws-access-key-id
+        secretAccessKey:
+          name: ${APP}-cnpg-secret
+          key: aws-secret-access-key
   resources:
     requests:
       memory: "256Mi"
