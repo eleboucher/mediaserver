@@ -10,6 +10,12 @@ spec:
       featureGates:
         - LiveMigration
         - NetworkBindingPlugins
+    permittedHostDevices:
+      usb:
+        - resourceName: kubevirt.io/bluetooth
+          selectors:
+            - product: "0026"
+              vendor: "8087"
     smbios:
       family: ccio
       manufacturer: Talos Virtualization

@@ -24,6 +24,9 @@ spec:
             - name: haos-disk
               disk:
                 bus: virtio
+          hostDevices:
+            - deviceName: kubevirt.io/bluetooth
+              name: bluetooth
           interfaces:
             - name: default
               masquerade: {}
