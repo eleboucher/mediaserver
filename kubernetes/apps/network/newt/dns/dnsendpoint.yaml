@@ -6,10 +6,10 @@ metadata:
   name: pangolin
 spec:
   endpoints:
-    # - dnsName: external.erwanleboucher.dev
-    #   recordType: A
-    #   targets:
-    #     - ${VPS_IP}
+    - dnsName: external.erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
     - dnsName: pangolin.erwanleboucher.dev
       recordType: A
       targets:
