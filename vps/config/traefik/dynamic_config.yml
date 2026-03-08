@@ -36,6 +36,20 @@ http:
       plugin:
         badger:
           disableForwardAuth: true
+    cors:
+      headers:
+        accessControlAllowOriginListRegex:
+          - "^https://([a-z0-9-]+\\.)?erwanleboucher\\.dev$"
+          - "^http://localhost:5173$"
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - HEAD
+        accessControlAllowHeaders:
+          - "*"
+        accessControlMaxAge: 86400
+        customResponseHeaders:
+          Access-Control-Allow-Private-Network: "true"
     redirect-to-https:
       redirectScheme:
         scheme: https
@@ -110,6 +124,8 @@ http:
       service: "1-External-Gateway-service@http"
       entryPoints:
         - websecure
+      middlewares:
+        - cors
       priority: 1
       tls:
         certResolver: letsencrypt
