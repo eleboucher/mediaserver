@@ -1,0 +1,104 @@
+---
+name: pangolin
+services:
+  pangolin:
+    image: docker.io/fosrl/pangolin:latest
+    container_name: pangolin
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+        reservations:
+          memory: 256m
+    volumes:
+      - ./config:/app/config
+    configs:
+      - source: pangolin_config
+        target: /app/config/config.yml
+    healthcheck:
+      test:
+        - "CMD"
+        - "curl"
+        - "-f"
+        - "http://localhost:3001/api/v1/"
+      interval: "10s"
+      timeout: "10s"
+      retries: 15
+
+  gerbil:
+    image: docker.io/fosrl/gerbil:latest
+    container_name: gerbil
+    restart: unless-stopped
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --reachableAt=http://gerbil:3004
+      - --generateAndSaveKeyTo=/var/config/key
+      - --remoteConfig=http://pangolin:3001/api/v1/
+    volumes:
+      - ./config/:/var/config
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - 51820:51820/udp
+      - 21820:21820/udp
+      - 443:443
+      - 80:80
+
+  traefik:
+    image: docker.io/traefik:v3.6
+    container_name: traefik
+    restart: unless-stopped
+    environment:
+      - OVH_ENDPOINT=ovh-eu
+      - OVH_APPLICATION_KEY=${OVH_APPLICATION_KEY}
+      - OVH_APPLICATION_SECRET=${OVH_APPLICATION_SECRET}
+      - OVH_CONSUMER_KEY=${OVH_CONSUMER_KEY}
+    network_mode: service:gerbil
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --configFile=/etc/traefik/traefik_config.yml
+    volumes:
+      - ./config/traefik:/etc/traefik:ro
+      - ./config/letsencrypt:/letsencrypt
+      - ./config/traefik/logs:/var/log/traefik
+
+networks:
+  default:
+    driver: bridge
+    name: pangolin
+
+configs:
+  pangolin_config:
+    content: |-
+      # https://docs.pangolin.net/
+      gerbil:
+          start_port: 51820
+          base_endpoint: "pangolin.erwanleboucher.dev"
+      app:
+          dashboard_url: "https://pangolin.erwanleboucher.dev"
+          log_level: "info"
+          telemetry:
+              anonymous_usage: false
+      domains:
+          domain1:
+              base_domain: "erwanleboucher.dev"
+      server:
+          secret: "${PANGOLIN_SECRET}"
+          cors:
+              origins: ["https://pangolin.erwanleboucher.dev"]
+              methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+              allowed_headers: ["X-CSRF-Token", "Content-Type"]
+              credentials: false
+
+      flags:
+          require_email_verification: false
+          disable_signup_without_invite: true
+          disable_user_create_org: false
+          allow_raw_resources: true
+          enable_integration_api: true

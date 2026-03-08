@@ -1,10 +1,13 @@
 ---
-- name: Install and configure Pangolin on VPS
+- name: Bootstrap doco-cd on VPS
   hosts: all
   become: true
   gather_facts: false
   vars:
     ansible_user: root
+    # Pass via: just vps install <ip>
+    # Reads git_token and op_sa_token from 1Password on the local machine
+    doco_cd_repo: "https://github.com/eleboucher/mediaserver.git"
 
   tasks:
     - name: Ping
@@ -16,98 +19,68 @@
         executable: /bin/bash
         creates: /usr/bin/docker
 
-    - name: Create Pangolin directory
+    - name: Read GitHub deploy token from 1Password
+      ansible.builtin.shell: "op read 'op://kubernetes/doco-cd/github-token' < /dev/null"
+      delegate_to: localhost
+      become: false
+      register: github_token
+
+    - name: Read 1Password service account token from 1Password
+      ansible.builtin.shell: "op read 'op://kubernetes/doco-cd/credential' < /dev/null"
+      delegate_to: localhost
+      become: false
+      register: op_sa_token
+
+    - name: Create doco-cd directory
       ansible.builtin.file:
-        path: /opt/pangolin
+        path: /opt/doco-cd
         state: directory
-        mode: "0755"
+        mode: "0700"
 
-    - name: Download Pangolin installer
-      ansible.builtin.shell: curl -fsSL https://static.pangolin.net/get-installer.sh | bash
-      args:
-        executable: /bin/bash
-        chdir: /opt/pangolin
-        creates: /opt/pangolin/installer
-
-    - name: Check if Gerbil is running
-      ansible.builtin.command: docker compose -f /opt/pangolin/docker-compose.yml ps -q gerbil
-      register: gerbil_running
+    - name: Stop existing Pangolin stack if present
+      ansible.builtin.command: docker compose -f /opt/pangolin/docker-compose.yml down
       ignore_errors: true
 
-    - name: Pause — run the installer manually
-      ansible.builtin.pause:
-        prompt: |
-          The Pangolin installer is ready. Run it interactively:
+    - name: Deploy doco-cd compose file
+      ansible.builtin.copy:
+        dest: /opt/doco-cd/docker-compose.yml
+        mode: "0600"
+        content: |
+          services:
+            doco-cd:
+              image: ghcr.io/kimdre/doco-cd:latest
+              container_name: doco-cd
+              restart: unless-stopped
+              environment:
+                TZ: Europe/Paris
+                GIT_ACCESS_TOKEN: "{{ github_token.stdout }}"
+                SECRET_PROVIDER: 1password
+                SECRET_PROVIDER_ACCESS_TOKEN: "{{ op_sa_token.stdout }}"
+                POLL_CONFIG: |
+                  - url: {{ doco_cd_repo }}
+                    reference: refs/heads/main
+                    interval: 60
+              volumes:
+                - /var/run/docker.sock:/var/run/docker.sock
+                - /opt/pangolin:/data
+              healthcheck:
+                test: ["CMD", "/doco-cd", "healthcheck"]
+                start_period: 15s
+                interval: 30s
+                timeout: 5s
+                retries: 3
 
-            ssh root@{{ inventory_hostname }} -t 'cd /opt/pangolin && ./installer'
-
-          put Gerbil to Yes
-
-          Press Enter here when the installer has finished.
-      when: gerbil_running.stdout == ""
-
-    - name: Find Pangolin config file
-      ansible.builtin.find:
-        paths:
-          - /opt/pangolin
-        patterns: "config.yml"
-        recurse: true
-      register: config_search
-
-    - name: Fail if config not found
-      ansible.builtin.fail:
-        msg: "Pangolin config.yml not found — did the installer complete successfully?"
-      when: config_search.files | length == 0
-
-    - name: Read Pangolin config
-      ansible.builtin.slurp:
-        src: "{{ config_search.files[0].path }}"
-      register: config_raw
-
-    - name: Capture VPS IP
-      ansible.builtin.set_fact:
-        vps_ip: "{{ inventory_hostname }}"
-
-    - name: Parse Pangolin config
-      ansible.builtin.set_fact:
-        cfg: "{{ config_raw.content | b64decode | from_yaml }}"
-
-    - name: Derive URLs
-      ansible.builtin.set_fact:
-        dashboard_url: "{{ cfg.app.dashboard_url }}"
-        server_url: "{{ cfg.app.dashboard_url }}"
-
-    - name: Save VPS info to 1Password (edit existing item)
-      ansible.builtin.shell: >
-        op item edit pangolin --vault kubernetes
-        "server_url={{ server_url }}" "vps_ip={{ vps_ip }}"
-        "newt_id=" "newt_secret=" < /dev/null
-      delegate_to: localhost
-      become: false
-      ignore_errors: true
-      register: op_edit
-
-    - name: Create 1Password item if it did not exist
-      ansible.builtin.shell: >
-        op item create --vault kubernetes --category=login --title=pangolin
-        "server_url={{ server_url }}" "vps_ip={{ vps_ip }}"
-        "newt_id=" "newt_secret=" < /dev/null
-      delegate_to: localhost
-      become: false
-      when: op_edit is failed
+    - name: Start doco-cd
+      ansible.builtin.command: docker compose -f /opt/doco-cd/docker-compose.yml up -d
 
     - name: Display summary
       ansible.builtin.debug:
         msg:
-          - "=== Pangolin is ready ==="
-          - "VPS IP    : {{ vps_ip }}"
-          - "Server URL: {{ server_url }}"
-          - "Dashboard : {{ dashboard_url }}/auth/initial-setup"
+          - "=== doco-cd is running ==="
+          - "It will deploy Pangolin from {{ doco_cd_repo }} within ~60s."
           - ""
-          - "server_url and vps_ip saved to 1Password item 'pangolin'."
-          - ""
-          - "Next steps:"
-          - "  1. Open {{ dashboard_url }}/auth/initial-setup to create your admin account"
+          - "Once Pangolin is up:"
+          - "  1. Open https://pangolin.erwanleboucher.dev/auth/initial-setup"
           - "  2. Create an organisation + site"
-          - "  3. Copy the NEWT_ID and NEWT_SECRET shown for the site"
-          - "  4. Run: just vps save-newt {{ vps_ip }} <newt_id> <newt_secret>"
+          - "  3. Create an External Gateway resource pointing to kgateway-external"
+          - "  4. Run: just vps save-newt {{ inventory_hostname }} <newt_id> <newt_secret> https://pangolin.erwanleboucher.dev"
