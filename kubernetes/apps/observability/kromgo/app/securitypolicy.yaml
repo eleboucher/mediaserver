@@ -12,9 +12,7 @@ spec:
     name: kromgo
   cors:
     allowOrigins:
-      - "http://localhost:5173"
-      - "https://erwanleboucher.dev"
-      - "https://www.erwanleboucher.dev"
+      - "*"
     allowMethods:
       - GET
       - OPTIONS
