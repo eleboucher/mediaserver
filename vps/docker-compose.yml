@@ -52,8 +52,8 @@ services:
       - 6060:6060
     restart: unless-stopped
     volumes:
-      - ./config/crowdsec:/etc/crowdsec
-      - ./config/crowdsec/db:/var/lib/crowdsec/data
+      - /opt/crowdsec/config:/etc/crowdsec
+      - /opt/crowdsec/data:/var/lib/crowdsec/data
       - ./config/traefik/logs:/var/log/traefik
 
   gerbil:
