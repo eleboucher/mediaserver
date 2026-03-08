@@ -118,20 +118,20 @@ http:
       tls:
         certResolver: letsencrypt
 
-    # Wildcard catch-all: forward all *.erwanleboucher.dev to kgateway-external via Newt
-    wildcard-subdomain-router:
-      rule: "HostRegexp(`\\.erwanleboucher\\.dev$`)"
-      service: "1-External-Gateway-service@http"
+    # Wildcard catch-all for *.erwanleboucher.dev → kgateway-external via newt tunnel
+    wildcard-erwanleboucher:
       entryPoints:
         - websecure
       middlewares:
         - badger
-        - cors
         - crowdsec
         - security-headers
       priority: 1
+      rule: "HostRegexp(`^.+\\.erwanleboucher\\.dev$`)"
+      service: "1-External-Gateway-service@http"
       tls:
         certResolver: letsencrypt
+
 
   services:
     next-service:
