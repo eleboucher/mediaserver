@@ -78,14 +78,21 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        filters:
-          - type: ResponseHeaderModifier
-            responseHeaderModifier:
-              add:
-                - name: Access-Control-Allow-Origin
-                  value: "*"
-                - name: Access-Control-Allow-Private-Network
-                  value: "true"
+        rules:
+          - filters:
+              - type: CORS
+                cors:
+                  allowOrigins:
+                    - "*"
+                  allowMethods:
+                    - GET
+                    - OPTIONS
+                  allowHeaders:
+                    - "*"
+                  maxAge: 86400
+            backendRefs:
+              - name: kromgo
+                port: *port
         hostnames:
           - kromgo.erwanleboucher.dev
         parentRefs:
