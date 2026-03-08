@@ -6,7 +6,6 @@ namespace: cert-manager
 resources:
   - helmrelease.yaml
   - externalsecret.yaml
-  - clusterissuer.yaml
   - ocirepository.yaml
   - prometheusrule.yaml
   - ./grafanadashboard.yaml

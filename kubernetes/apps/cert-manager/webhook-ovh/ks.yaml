@@ -6,7 +6,6 @@ metadata:
   name: cert-manager-webhook-ovh
   namespace: flux-system
 spec:
-  suspend: true
   dependsOn:
     - name: cert-manager
   interval: 12h
