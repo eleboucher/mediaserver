@@ -5,14 +5,9 @@ kind: HelmRelease
 metadata:
   name: newt
 spec:
-  chart:
-    spec:
-      chart: newt
-      version: 1.2.0
-      sourceRef:
-        kind: HelmRepository
-        name: fossorial
-
+  chartRef:
+    kind: OCIRepository
+    name: newt
   interval: 30m
   values:
     global:
@@ -41,6 +36,20 @@ spec:
             endpointKey: NEWT_SERVER_URL
             idKey: NEWT_ID
             secretKey: NEWT_SECRET
+        blueprintFile: /etc/newt/blueprint.yaml
+        blueprintData: |
+          public-resources:
+            kgateway-external:
+              name: "External Gateway"
+              protocol: http
+              ssl: true
+              full-domain: "external.erwanleboucher.dev"
+              tls-server-name: external.erwanleboucher.dev
+              targets:
+                - site: dopey-mertenss-worm-lizard
+                  hostname: kgateway-external.network.svc.cluster.local
+                  method: https
+                  port: 443
 
         resources:
           requests:

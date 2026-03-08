@@ -5,5 +5,5 @@ kind: Kustomization
 namespace: network
 resources:
   - ./helmrelease.yaml
-  - ./helmrepository.yaml
+  - ./ocirepository.yaml
   - ./externalsecret.yaml
