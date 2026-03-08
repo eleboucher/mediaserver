@@ -39,7 +39,23 @@ http:
     redirect-to-https:
       redirectScheme:
         scheme: https
-
+    security-headers:
+      headers:
+        contentTypeNosniff: true
+        customFrameOptionsValue: SAMEORIGIN
+        customResponseHeaders:
+          Server: ""
+          X-Forwarded-Proto: https
+          X-Powered-By: ""
+        forceSTSHeader: true
+        hostsProxyHeaders:
+          - X-Forwarded-Host
+        referrerPolicy: strict-origin-when-cross-origin
+        sslProxyHeaders:
+          X-Forwarded-Proto: https
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 63072000
   routers:
     # HTTP to HTTPS redirect router
     main-app-router-redirect:
