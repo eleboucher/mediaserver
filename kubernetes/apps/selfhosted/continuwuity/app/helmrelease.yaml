@@ -46,9 +46,9 @@ spec:
               CONDUWUIT_ALLOW_LEGACY_MEDIA: false
               CONDUWUIT_QUERY_OVER_TCP_ONLY: true
               CONDUWUIT_IP_LOOKUP_STRATEGY: "1"
-            # envFrom:
-            #   - secretRef:
-            #       name: continuwuity-secret
+            envFrom:
+              - secretRef:
+                  name: continuwuity-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
