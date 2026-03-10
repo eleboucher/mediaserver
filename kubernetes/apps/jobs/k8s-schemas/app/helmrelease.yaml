@@ -32,9 +32,6 @@ spec:
             image:
               repository: ghcr.io/bjw-s-labs/k8s-crd-extractor
               tag: 2025.12.22
-            env:
-              - name: OUTPUT_DIR
-                value: /data/crdSchemas
             resources:
               requests:
                 cpu: 10m
@@ -126,7 +123,8 @@ spec:
         advancedMounts:
           extract:
             app:
-              - path: /data
+              - path: /config/.datree
+                subPath: data
           serve:
             app:
               - path: /usr/share/nginx/html
@@ -136,7 +134,5 @@ spec:
         advancedMounts:
           extract:
             app:
-              - path: /config/.datree
-                subPath: data
               - path: /tmp
                 subPath: tmp
