@@ -12,3 +12,4 @@ resources:
   - paperless/ks.yaml
   - webhook/ks.yaml
   - sparkyfitness/ks.yaml
+  - continuwuity/ks.yaml

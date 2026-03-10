@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: continuwuity
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: continuwuity
+  components:
+    - ../../../../components/volsync
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+  interval: 1h
+  path: "./kubernetes/apps/selfhosted/continuwuity/app"
+  postBuild:
+    substitute:
+      APP: continuwuity
+      APP_NAMESPACE: selfhosted
+      VOLSYNC_CAPACITY: 5Gi
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: selfhosted
+  timeout: 5m
+  wait: false
