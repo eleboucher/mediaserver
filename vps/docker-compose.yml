@@ -393,9 +393,9 @@ configs:
             middlewares:
               - matrix-cors
               - matrix-well-known-redirect
-            priority: 99
             rule: "Host(`erwanleboucher.dev`) && PathPrefix(`/.well-known/matrix/`)"
-            service: "11-erwanleboucher-dev-service@http" # hack to get active services docker exec -it 7ebee498bb7e wget -qO- http://localhost:8080/api/http/services
+            priority: 1000
+            service: noop@internal
             tls:
               certResolver: letsencrypt
 
