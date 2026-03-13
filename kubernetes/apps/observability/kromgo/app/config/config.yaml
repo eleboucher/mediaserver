@@ -32,6 +32,9 @@ metrics:
   - name: cluster_pod_count
     query: sum(kube_pod_status_phase{phase="Running"})
     title: Pods
+    history:
+      enabled: true
+      maxDuration: "7d"
 
   - name: github_last_push_info
     query: label_replace(topk(1, github_last_push_info), "short_repo", "$1", "repo", ".+/(.+)")
@@ -45,6 +48,9 @@ metrics:
   - name: gh_contributions_year
     query: avg (gh_contributions_year)
     title: GH Contributions (1y)
+    history:
+      enabled: true
+      maxDuration: "1y"
 
   - name: github_followers
     query: github_followers
