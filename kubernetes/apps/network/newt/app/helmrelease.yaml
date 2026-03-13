@@ -40,7 +40,7 @@ spec:
           node-exporter-proxy:
             image:
               repository: docker.io/alpine/socat
-              tag: 1.8.0.0
+              tag: 1.8.0.3
             args:
               - TCP-LISTEN:9100,fork,reuseaddr
               - TCP:100.89.128.1:9100
