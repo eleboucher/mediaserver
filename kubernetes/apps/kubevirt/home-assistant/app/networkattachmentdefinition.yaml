@@ -9,8 +9,7 @@ spec:
     {
       "cniVersion": "0.3.1",
       "name": "home-assistant-lan",
-      "type": "macvlan",
-      "master": "ens18",
-      "mode": "bridge",
+      "type": "bridge",
+      "bridge": "br-lan",
       "ipam": {}
     }
