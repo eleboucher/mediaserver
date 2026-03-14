@@ -9,12 +9,10 @@ spec:
   runStrategy: Always
   template:
     metadata:
-      annotations:
-        kubevirt.io/allow-pod-bridge-network-live-migration: "true"
       labels:
         kubevirt.io/vm: home-assistant
     spec:
-      evictionStrategy: LiveMigrate
+      evictionStrategy: None
       nodeSelector:
         kubernetes.io/hostname: le-havre
       domain:
@@ -36,6 +34,9 @@ spec:
             - macAddress: "02:00:00:00:00:01"
               masquerade: {}
               name: default
+              ports:
+                - name: http
+                  port: 8123
             - bridge: {}
               macAddress: "02:00:00:00:00:02"
               name: lan
