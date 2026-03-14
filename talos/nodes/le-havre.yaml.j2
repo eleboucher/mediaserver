@@ -5,11 +5,14 @@ machine:
     disk: /dev/sda
 ---
 apiVersion: v1alpha1
-kind: LinkConfig
-name: ens18
+kind: BridgeConfig
+name: br-lan
+links:
+  - ens18
+stp:
+  enabled: false
 addresses:
   - address: 192.168.1.7/24
-mtu: 1500
 routes:
   - gateway: 192.168.1.2
 ---
