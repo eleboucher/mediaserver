@@ -7,10 +7,12 @@ JUST_UNSTABLE = "1"
 
 [tools]
 "uv" = "latest"
+kustomize = "5.6.0"
 "pipx:flux-local" = "latest"
 "aqua:opentofu/opentofu" = "1"
 "aqua:google/yamlfmt" = ["latest"]
 "aqua:yannh/kubeconform" = "latest"
+"aqua:mikefarah/yq" = "latest"
 prek = "latest"
 "helmfile" = "latest"
 "pipx:ansible" = "latest"
