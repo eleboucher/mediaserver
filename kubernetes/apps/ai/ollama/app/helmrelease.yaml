@@ -17,14 +17,32 @@ spec:
         replicas: 1
         strategy: Recreate
         type: deployment
+        initContainers:
+          pull-models:
+            image:
+              repository: ollama/ollama
+              tag: 0.18.0
+            command:
+              - /bin/sh
+              - -c
+              - |
+                ollama serve &
+                SERVE_PID=$!
+                until ollama list >/dev/null 2>&1; do sleep 1; done
+                ollama pull nomic-embed-text
+                ollama pull qwen3.5:4b
+                kill $SERVE_PID
         containers:
           app:
             image:
               repository: ollama/ollama
               tag: 0.18.0
             env:
-              - name: OLLAMA_KEEP_ALIVE
-                value: "0"
+              OLLAMA_CONTEXT_LENGTH: 32768
+              OLLAMA_FLASH_ATTENTION: 0
+              OLLAMA_KEEP_ALIVE: 30m
+              OLLAMA_KV_CACHE_TYPE: q8_0
+              OLLAMA_NUM_PARALLEL: 1
             resources:
               requests:
                 memory: 2Gi
@@ -44,4 +62,4 @@ spec:
         accessMode: ReadWriteOnce
         size: 10Gi
         globalMounts:
-          - path: /config
+          - path: /root/.ollama
