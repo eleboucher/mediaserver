@@ -19,6 +19,12 @@ spec:
       fsGroup: ${VOLSYNC_PGID:=1000}
     parallelism: 2
     repository: ${APP}-volsync-secret
+    moverVolumes:
+      - mountPath: repository
+        volumeSource:
+          nfs:
+            path: /backups/volsync-kopia
+            server: normandie.internal
     retain:
       hourly: 24
       daily: 7

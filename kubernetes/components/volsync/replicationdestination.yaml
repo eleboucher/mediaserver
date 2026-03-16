@@ -19,7 +19,12 @@ spec:
     capacity: ${VOLSYNC_CAPACITY:=5Gi}
     copyMethod: Snapshot
     enableFileDeletion: true
-
+    moverVolumes:
+      - mountPath: repository
+        volumeSource:
+          nfs:
+            path: /backups/volsync-kopia
+            server: normandie.internal
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=1000}
       runAsGroup: ${VOLSYNC_PGID:=1000}
