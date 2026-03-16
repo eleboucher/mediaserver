@@ -28,7 +28,7 @@ spec:
     newtInstances:
       - name: main-tunnel
         enabled: true
-        replicas: 2
+        replicas: 1
         auth:
           existingSecretName: newt-secret
           keys:
