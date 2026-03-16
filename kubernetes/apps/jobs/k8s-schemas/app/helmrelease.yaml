@@ -11,27 +11,25 @@ spec:
   interval: 30m
   values:
     controllers:
-      extract:
-        pod:
-          restartPolicy: OnFailure
-          securityContext:
-            runAsGroup: 65534
-            runAsNonRoot: true
-            runAsUser: 65534
-        serviceAccount:
-          identifier: extract
+      k8s-schemas:
+        type: cronjob
         cronjob:
           backoffLimit: 4
           concurrencyPolicy: Forbid
           failedJobsHistory: 1
           schedule: "0 */4 * * *"
           successfulJobsHistory: 1
-        type: cronjob
-        containers:
-          app:
+        pod:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsGroup: 65534
+            runAsNonRoot: true
+            runAsUser: 65534
+        initContainers:
+          generate-schemas:
             image:
               repository: ghcr.io/bjw-s-labs/k8s-crd-extractor
-              tag: 2026.3.11
+              tag: 2026.3.11@sha256:a26844ff81905a8fac4dba61b416bed087a1944e20e38634acba5a7f65eeac93
             resources:
               requests:
                 cpu: 10m
@@ -40,38 +38,67 @@ spec:
                 memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
               capabilities:
                 drop:
                   - ALL
-      serve:
-        pod:
-          securityContext:
-            runAsGroup: 101
-            runAsNonRoot: true
-            runAsUser: 101
-        serviceAccount:
-          identifier: serve
-        replicas: 1
-        type: deployment
         containers:
           app:
             image:
-              repository: docker.io/nginxinc/nginx-unprivileged
-              tag: alpine
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
+              repository: docker.io/amazon/aws-cli
+              tag: "2.34.10"
+            env:
+              AWS_ACCESS_KEY_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: k8s-schemas-secret
+                    key: AWS_ACCESS_KEY_ID
+              AWS_DEFAULT_REGION: rbx
+              AWS_SECRET_ACCESS_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: k8s-schemas-secret
+                    key: AWS_SECRET_ACCESS_KEY
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                export HOME=/tmp
+                aws s3 sync /data/crdSchemas/ s3://k8s-schemas \
+                  --delete \
+                  --acl public-read \
+                  --endpoint-url https://s3.rbx.io.cloud.ovh.net
             resources:
               requests:
                 cpu: 10m
-                memory: 32Mi
+                memory: 64Mi
               limits:
                 memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    persistence:
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          k8s-schemas:
+            generate-schemas:
+              - path: /config/.datree
+                subPath: data
+              - path: /tmp
+                subPath: tmp
+            app:
+              - path: /data
+                subPath: data
+              - path: /tmp
+                subPath: tmp
     rbac:
       roles:
-        extract:
+        k8s-schemas:
           type: ClusterRole
           rules:
             - apiGroups:
@@ -93,46 +120,11 @@ spec:
                 - list
                 - watch
       bindings:
-        extract:
+        k8s-schemas:
           type: ClusterRoleBinding
           roleRef:
-            identifier: extract
+            identifier: k8s-schemas
           subjects:
-            - identifier: extract
-    route:
-      app:
-        parentRefs:
-          - name: kgateway-internal
-            namespace: network
-        hostnames:
-          - k8s-schemas.erwanleboucher.dev
-    service:
-      app:
-        controller: serve
-        ports:
-          http:
-            port: 8080
+            - identifier: k8s-schemas
     serviceAccount:
-      extract: {}
-      serve: {}
-    persistence:
-      schemas:
-        type: hostPath
-        hostPath: /var/lib/k8s-schemas
-        hostPathType: DirectoryOrCreate
-        advancedMounts:
-          extract:
-            app:
-              - path: /config/.datree
-                subPath: data
-          serve:
-            app:
-              - path: /usr/share/nginx/html
-                subPath: data/crdSchemas
-      tmpfs:
-        type: emptyDir
-        advancedMounts:
-          extract:
-            app:
-              - path: /tmp
-                subPath: tmp
+      k8s-schemas: {}
