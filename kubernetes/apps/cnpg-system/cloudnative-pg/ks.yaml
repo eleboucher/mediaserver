@@ -7,13 +7,13 @@ metadata:
   name: cloudnative-pg
 spec:
   interval: 1h
-  path: ./kubernetes/apps/database/cloudnative-pg/app
+  path: ./kubernetes/apps/cnpg-system/cloudnative-pg/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: database
+  targetNamespace: cnpg-system
   timeout: 10m
   wait: false
 ---
@@ -26,11 +26,11 @@ spec:
   dependsOn:
     - name: cnpg
   interval: 1h
-  path: ./kubernetes/apps/database/cloudnative-pg/plugin-barman-cloud
+  path: ./kubernetes/apps/cnpg-system/cloudnative-pg/plugin-barman-cloud
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: database
+  targetNamespace: cnpg-system
   wait: false
