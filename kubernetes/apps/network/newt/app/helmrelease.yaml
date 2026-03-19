@@ -16,7 +16,7 @@ spec:
       image:
         tag: "1.10.2"
       nativeMode:
-        enabled: true
+        enabled: false
 
     rbac:
       clusterRole: true
@@ -82,4 +82,4 @@ spec:
         pingInterval: 60s
         service:
           enabled: false
-        useNativeInterface: true
+        useNativeInterface: false
