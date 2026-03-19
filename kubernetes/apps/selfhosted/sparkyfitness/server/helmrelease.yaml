@@ -33,15 +33,18 @@ spec:
               # Configure application
               SPARKY_FITNESS_DB_NAME: sparkyfitness
               SPARKY_FITNESS_DB_USER: sparkyfitness
-              SPARKY_FITNESS_DB_PASSWORD: sparkyfitness
+              SPARKY_FITNESS_DB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: sparkyfitness-postgres
+                    key: password
               SPARKY_FITNESS_APP_DB_USER: sparkyfitness
-              SPARKY_FITNESS_APP_DB_PASSWORD: sparkyfitness
-              SPARKY_FITNESS_DB_HOST: pooler-rw.database.svc
-              PGSSLROOTCERT: /var/run/secrets/root-ca/ca.crt
-              PGSSLCERT: /var/run/secrets/postgresql/tls.crt
-              PGSSLKEY: /var/run/secrets/postgresql/tls.key
-              PGSSLMODE: verify-full
-              NODE_EXTRA_CA_CERTS: /var/run/secrets/root-ca/ca.crt
+              SPARKY_FITNESS_APP_DB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: sparkyfitness-postgres
+                    key: password
+              SPARKY_FITNESS_DB_HOST: postgres-rw.database.svc
               SPARKY_FITNESS_FRONTEND_URL: fitness.erwanleboucher.dev
               SPARKY_FITNESS_DISABLE_SIGNUP: false
               NODE_ENV: "production"
@@ -66,7 +69,7 @@ spec:
       backup:
         storageClass: "longhorn"
         accessMode: ReadWriteOnce
-        size: 5Gi
+        size: 15Gi
         globalMounts:
           - path: /app/SparkyFitnessServer/backup
       tmp:

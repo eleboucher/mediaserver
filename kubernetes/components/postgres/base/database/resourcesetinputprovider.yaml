@@ -13,3 +13,6 @@ spec:
   type: Static
   defaultValues:
     role: ${OWNER}
+    app: ${APP}
+    disablePassword: ${DISABLE_PASSWORD:=true}
+    superuser: ${DATABASE_SUPERUSER:=false}

@@ -62,26 +62,42 @@ spec:
             spec:
               managed:
                 roles:
-                  <<- $roleNames := list >>
+                  <<- $roleMap := dict >>
                   <<- range $k, $in := inputs >>
                   <<-   if kindIs "map" $in >>
                   <<-     $r := index $in "role" >>
                   <<-     if $r >>
-                  <<-       $roleNames = concat $roleNames (list $r) >>
+                  <<-       $_ := set $roleMap $r $in >>
                   <<-     end >>
                   <<-   end >>
                   <<- end >>
-                  <<- $roleNames = $roleNames | compact | uniq | sortAlpha >>
+
+                  <<- $roleNames := keys $roleMap | sortAlpha >>
 
                   <<- $roleObjs := list >>
                   <<- range $r := $roleNames >>
-                  <<-   $roleObjs = concat $roleObjs (list (dict
-                        "name" $r
-                        "ensure" "present"
-                        "login" true
-                        "superuser" false
-                        "disablePassword" true
-                      )) >>
+                  <<-   $in := index $roleMap $r >>
+
+                  <<-   $disablePass := true >>
+                  <<-   $dpVal := index $in "disablePassword" | toString | lower >>
+                  <<-   if contains "false" $dpVal >>
+                  <<-     $disablePass = false >>
+                  <<-   end >>
+
+                  <<-   $superuser := false >>
+                  <<-   $suVal := index $in "superuser" | toString | lower >>
+                  <<-   if contains "true" $suVal >>
+                  <<-     $superuser = true >>
+                  <<-   end >>
+
+                  <<-   $role := dict "name" $r "ensure" "present" "login" true "superuser" $superuser "disablePassword" $disablePass >>
+
+                  <<-   if not $disablePass >>
+                  <<-     $app := index $in "app" >>
+                  <<-     $_ := set $role "passwordSecret" (dict "name" (printf "%s-postgres" $app)) >>
+                  <<-   end >>
+
+                  <<-   $roleObjs = concat $roleObjs (list $role) >>
                   <<- end >>
 
                   <<- toYaml $roleObjs | nindent 18 >>
