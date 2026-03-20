@@ -52,9 +52,14 @@ spec:
             image: ghcr.io/home-operations/newt-sidecar:0.2.0
             args:
               - --gateway-name=kgateway-external
-              - --site-id=some-roses-rain-frog
               - --target-hostname=kgateway-external.network.svc.cluster.local
               - --deny-countries=RU,CN,KP,IR,BY,IL
+            env:
+              - name: NEWTSC_SITE_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: newt-secret
+                    key: NEWTSC_SITE_ID
             restartPolicy: Always
             resources:
               limits:

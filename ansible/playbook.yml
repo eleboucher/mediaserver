@@ -264,6 +264,7 @@
         op item edit pangolin --vault kubernetes
         "newt_id={{ newt_id }}"
         "newt_secret={{ newt_secret }}"
+        "newt_site_id={{ site_nice_id }}"
         "vps_ip={{ inventory_hostname }}"
         "server_url=https://{{ pangolin_hostname }}" < /dev/null
       delegate_to: localhost
