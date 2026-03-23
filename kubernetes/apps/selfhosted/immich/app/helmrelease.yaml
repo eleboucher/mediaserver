@@ -23,7 +23,9 @@ spec:
                   secretKeyRef:
                     name: "{{ .Release.Name }}-postgres"
                     key: url
-              REDIS_URL: "redis://dragonfly.database.svc:6379/3"
+              REDIS_DBINDEX: "3"
+              REDIS_HOSTNAME: dragonfly.database.svc
+              REDIS_PORT: "6379"
 
     immich:
       metrics:

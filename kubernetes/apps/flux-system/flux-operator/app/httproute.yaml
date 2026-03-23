@@ -12,7 +12,7 @@ spec:
   parentRefs:
     - name: kgateway-internal
       namespace: network
-      sectionName: https
+
   rules:
     - backendRefs:
         - name: flux-operator
