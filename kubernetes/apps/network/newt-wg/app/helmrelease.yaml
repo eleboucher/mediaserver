@@ -42,7 +42,6 @@ spec:
         auth:
           existingSecretName: newt-wg-secret
         extraEnv:
-          BLUEPRINT_FILE: /etc/newt/blueprint.yaml
           NEWT_ADMIN_ADDR: "0.0.0.0:2112"
           NEWT_METRICS_PROMETHEUS_ENABLED: "true"
         metrics:
