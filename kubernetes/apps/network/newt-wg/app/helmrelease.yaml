@@ -17,11 +17,16 @@ spec:
         # renovate: datasource=github-releases depName=fosrl/newt
         tag: "1.10.3"
       nativeMode:
-        enabled: true
+        enabled: false
       networkPolicy:
         enabled: false
       prometheusRule:
         enabled: true
+      updownScripts:
+        enable-forwarding: |
+          #!/bin/sh
+          sysctl -w net.ipv4.ip_forward=1
+          iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
     rbac:
       clusterRole: true
@@ -36,11 +41,26 @@ spec:
         replicas: 1
         pingInterval: 60s
         interface: "newt-wg"
-        useNativeInterface: true
+        useNativeInterface: false
         acceptClients: true
         mtu: 1380
         auth:
           existingSecretName: newt-wg-secret
+        blueprintData: |
+          networks:
+            - name: cluster-nodes
+              subnet: 192.168.1.0/24
+            - name: cluster-lb-pool
+              subnet: 192.168.69.0/24
+            - name: cluster-pods
+              subnet: 10.42.0.0/16
+            - name: cluster-services
+              subnet: 10.96.0.0/12
+        updown:
+          enabled: true
+          script: "enable-forwarding"
+          mountPath: "/opt/newt/updown"
+          fileName: "updown.sh"
         extraEnv:
           NEWT_ADMIN_ADDR: "0.0.0.0:2112"
           NEWT_METRICS_PROMETHEUS_ENABLED: "true"
