@@ -5,58 +5,48 @@ kind: HelmRelease
 metadata:
   name: &app bluesky
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: bluesky
+  interval: 1h
   values:
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
 
     controllers:
       bluesky:
         containers:
           app:
             image:
-              repository: ghcr.io/bluesky-social/pds
-              tag: 0.4.208
+              repository: ghcr.io/haileyok/cocoon
+              tag: latest
             env:
               TZ: "Europe/Paris"
-              PDS_PORT: &port 3000
-              PDS_HOSTNAME: &host bluesky.erwanleboucher.dev
-              PDS_DATA_DIRECTORY: &pvc /pds
-              PDS_BLOBSTORE_DISK_LOCATION: /pds/blocks
-              PDS_INVITE_REQUIRED: "true"
-              LOG_ENABLED: "true"
-              PDS_RATE_LIMITS_ENABLED: "true"
-              LOG_LEVEL: "info"
-              PDS_CRAWLERS: "https://bsky.network"
-              PDS_REPORT_SERVICE_URL: "https://mod.bsky.app"
-              PDS_REPORT_SERVICE_DID: "did:plc:ar7c4by46qjdydhdevvrndac"
-              PDS_BSKY_APP_VIEW_URL: "https://api.bsky.app"
-              PDS_BSKY_APP_VIEW_DID: "did:web:api.bsky.app"
-              PDS_DID_PLC_URL: "https://plc.directory"
-              PDS_EMAIL_SMTP_URL: "smtp://smtp-relay.selfhosted.svc.cluster.local:25"
-              PDS_EMAIL_FROM_ADDRESS: "bluesky@erwanleboucher.dev"
+              COCOON_CONTACT_EMAIL: "erwan@erwanleboucher.dev"
+              COCOON_DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: bluesky-postgres
+                    key: url
+              COCOON_DB_TYPE: postgres
+              COCOON_DID: "did:web:bluesky.erwanleboucher.dev"
+              COCOON_HOSTNAME: "bluesky.erwanleboucher.dev"
+              COCOON_RELAYS: "https://bsky.network"
+              COCOON_S3_BLOBSTORE_ENABLED: "true"
+              COCOON_S3_BUCKET: bluesky
+              COCOON_S3_ENDPOINT: "http://garage.garage-system.svc.cluster.local:3900"
+              COCOON_S3_REGION: us-east-1
+              COCOON_SMTP_EMAIL: "bluesky@erwanleboucher.dev"
+              COCOON_SMTP_HOST: "smtp-relay.selfhosted.svc.cluster.local"
+              COCOON_SMTP_PORT: "25"
             envFrom:
               - secretRef:
                   name: bluesky-secret
-            securityContext:
-              readOnlyRootFilesystem: true
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                  - "ALL"
-            resources:
-              requests:
-                cpu: "10m"
-              limits:
-                memory: "512Mi"
             probes:
               liveness: &probes
                 enabled: true
@@ -64,18 +54,42 @@ spec:
                 spec:
                   httpGet:
                     path: /xrpc/_health
-                    port: *port
+                    port: 8080
+                  failureThreshold: 3
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
               readiness: *probes
-    service:
-      app:
-        controller: bluesky
-        ports:
-          http:
-            port: *port
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: true
+
+    persistence:
+      data:
+        enabled: true
+        type: persistentVolumeClaim
+        existingClaim: "{{ .Release.Name }}"
+        advancedMounts:
+          bluesky:
+            app:
+              - path: /keys
+                subPath: keys
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /data
+            subPath: data
+          - path: /tmp
+            subPath: tmp
+
     route:
       app:
         hostnames:
@@ -85,26 +99,23 @@ spec:
           - name: kgateway-external
             namespace: network
         rules:
-          - filters:
-              - type: CORS
-                cors:
-                  allowOrigins:
+          - backendRefs:
+              - name: bluesky
+                port: 8080
+            filters:
+              - cors:
+                  allowHeaders:
                     - "*"
                   allowMethods:
                     - "*"
-                  allowHeaders:
+                  allowOrigins:
                     - "*"
                   maxAge: 86400
-            backendRefs:
-              - name: bluesky
-                port: *port
-    persistence:
-      data:
-        enabled: true
-        type: persistentVolumeClaim
-        existingClaim: "{{ .Release.Name }}"
-        advancedMounts:
-          bluesky:
-            app:
-              - subPath: data
-                path: *pvc
+                type: CORS
+
+    service:
+      app:
+        controller: bluesky
+        ports:
+          http:
+            port: 8080
