@@ -11,7 +11,7 @@ spec:
   mountOptions:
     - nfsvers=4.1
   nfs:
-    path: /
+    path: /immich
     server: normandie.internal
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
