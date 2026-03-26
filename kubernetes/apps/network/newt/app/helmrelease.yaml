@@ -54,6 +54,7 @@ spec:
               - --gateway-name=kgateway-external
               - --target-hostname=kgateway-external.network.svc.cluster.local
               - --deny-countries=RU,CN,KP,IR,BY,IL
+              - --enable-service
             env:
               - name: NEWTSC_SITE_ID
                 valueFrom:
