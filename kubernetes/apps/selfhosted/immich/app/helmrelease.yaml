@@ -34,8 +34,7 @@ spec:
         library:
           existingClaim: immich-library
           globalMounts:
-            - path: /library
-              subPath: library
+            - path: /data
 
     server:
       controllers:
