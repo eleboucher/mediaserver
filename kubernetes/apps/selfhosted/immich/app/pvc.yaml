@@ -12,7 +12,7 @@ spec:
     - nfsvers=4.1
   nfs:
     path: /
-    server: 10.43.1.200
+    server: normandie.internal
   persistentVolumeReclaimPolicy: Retain
   storageClassName: ""
   volumeMode: Filesystem

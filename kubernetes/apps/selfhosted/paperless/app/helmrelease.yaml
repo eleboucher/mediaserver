@@ -104,7 +104,7 @@ spec:
                 subPath: apt
       nas:
         type: nfs
-        server: 10.43.1.200
+        server: normandie.internal
         path: /
         globalMounts:
           - path: /data/nas
