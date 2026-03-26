@@ -112,8 +112,6 @@ spec:
 
     route:
       app:
-        annotations:
-          newt-sidecar/ssl: "true"
         hostnames:
           - "bluesky.erwanleboucher.dev"
           - "*.bluesky.erwanleboucher.dev"
