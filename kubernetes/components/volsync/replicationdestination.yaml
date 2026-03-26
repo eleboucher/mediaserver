@@ -24,7 +24,7 @@ spec:
         volumeSource:
           nfs:
             path: /backups/volsync-kopia
-            server: 10.43.1.200
+            server: normandie.internal
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=1000}
       runAsGroup: ${VOLSYNC_PGID:=1000}

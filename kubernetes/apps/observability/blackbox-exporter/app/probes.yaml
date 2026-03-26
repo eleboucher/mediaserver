@@ -26,4 +26,4 @@ spec:
   targets:
     staticConfig:
       static:
-        - 10.43.1.200:2049
+        - normandie.internal:2049

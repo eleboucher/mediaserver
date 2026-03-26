@@ -15,4 +15,4 @@ spec:
       volumeSource:
         nfs:
           path: /backups/volsync-kopia
-          server: 10.43.1.200
+          server: normandie.internal
