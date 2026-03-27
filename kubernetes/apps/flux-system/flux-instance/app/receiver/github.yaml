@@ -1,16 +1,12 @@
-# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/notification.toolkit.fluxcd.io/receiver_v1.json
 ---
 # yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/notification.toolkit.fluxcd.io/receiver_v1.json
 apiVersion: notification.toolkit.fluxcd.io/v1
 kind: Receiver
 metadata:
-  name: github-receiver
+  name: flux-receiver
   namespace: flux-system
 spec:
-  type: github
-  events:
-    - "ping"
-    - "push"
+  type: generic-hmac
   secretRef:
     name: receiver-token
   resources:
