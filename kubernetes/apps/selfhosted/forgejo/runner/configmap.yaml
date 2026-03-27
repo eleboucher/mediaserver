@@ -17,7 +17,7 @@ data:
       file: /persistent/.runner
       labels:
         - ubuntu-latest:k8spod:/config/podspec-default.yaml
-        - ubuntu-22.04:k8spod:/config/podspec-default.yaml
+        - ubuntu-24.04:k8spod:/config/podspec-default.yaml
         - default:k8spod:/config/podspec-default.yaml
       timeout: 3h
   podspec-default.yaml: |-
@@ -25,7 +25,7 @@ data:
       - env:
           - name: DEBIAN_FRONTEND
             value: noninteractive
-        image: ubuntu:24.04
+        image: ghcr.io/catthehacker/ubuntu:act-24.04
         imagePullPolicy: IfNotPresent
         name: main
         resources:

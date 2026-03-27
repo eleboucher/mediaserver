@@ -22,4 +22,6 @@ jobs:
           server_host="${SERVER_URL#*://}"
           git clone --mirror "https://oauth2:${FORGEJO_TOKEN}@${server_host}/${REPOSITORY}.git" repo.git
           cd repo.git
-          git push --mirror "https://${GH_MIRROR_TOKEN}@github.com/eleboucher/homelab.git"
+          git push --prune "https://${GH_MIRROR_TOKEN}@github.com/eleboucher/homelab.git" \
+            'refs/heads/*:refs/heads/*' \
+            'refs/tags/*:refs/tags/*'
