@@ -31,3 +31,15 @@ jobs:
           aws s3 sync ./kubernetes/ s3://homelab-flux/kubernetes/ \
             --delete \
             --endpoint-url https://s3.rbx.io.cloud.ovh.net
+
+      - name: Trigger Flux reconciliation
+        env:
+          FLUX_WEBHOOK_TOKEN: ${{ secrets.FLUX_WEBHOOK_TOKEN }}
+          FLUX_WEBHOOK_URL: ${{ secrets.FLUX_WEBHOOK_URL }}
+        run: |-
+          PAYLOAD='{}'
+          SIGNATURE=$(printf '%s' "$PAYLOAD" | openssl dgst -sha256 -r -hmac "$FLUX_WEBHOOK_TOKEN" | awk '{print $1}')
+          curl -s --fail -X POST "$FLUX_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Signature: sha256=${SIGNATURE}" \
+            -d "$PAYLOAD"
