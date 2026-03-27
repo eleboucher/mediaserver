@@ -22,7 +22,7 @@ spec:
       VOLSYNC_CAPACITY: 20Gi
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: garage-system
