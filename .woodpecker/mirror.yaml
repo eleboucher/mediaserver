@@ -18,4 +18,4 @@ steps:
         from_secret: GH_MIRROR_TOKEN
     commands:
       - git remote add github "https://$${MIRROR_TOKEN}@github.com/eleboucher/homelab.git"
-      - git push --mirror github
+      - git push --force github 'refs/heads/main:refs/heads/main'
