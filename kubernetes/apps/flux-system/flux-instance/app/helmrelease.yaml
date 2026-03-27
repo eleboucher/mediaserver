@@ -29,6 +29,7 @@ spec:
         kind: Bucket
         url: "s3.rbx.io.cloud.ovh.net"
         ref: "homelab-flux"
+        path: "kubernetes/flux/cluster"
         pullSecret: "flux-s3-secret"
       resources:
         limits:
@@ -38,6 +39,17 @@ spec:
           memory: 64Mi
       kustomize:
         patches:
+          - # Set OVH S3 provider and region on the generated Bucket
+            patch: |-
+              - op: add
+                path: /spec/provider
+                value: generic
+              - op: add
+                path: /spec/region
+                value: rbx
+            target:
+              kind: Bucket
+              name: flux-system
           - # Increase the number of workers
             patch: |-
               - op: add
