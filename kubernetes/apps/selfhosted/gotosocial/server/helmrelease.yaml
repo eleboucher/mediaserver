@@ -57,6 +57,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 404"]
         parentRefs:
           - name: envoy-external
             namespace: network
