@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forgejo-runner-config
+data:
+  runner.yaml: |
+    cache:
+      enabled: false
+    container:
+      k8s_namespace: selfhosted
+      kubernetes: true
+    log:
+      level: info
+    runner:
+      capacity: 2
+      file: /persistent/.runner
+      labels:
+        - default:k8spod:/config/podspec-default.yaml
+      timeout: 3h
+  podspec-default.yaml: |-
+    containers:
+      - env:
+          - name: DEBIAN_FRONTEND
+            value: noninteractive
+        image: node:20-bookworm
+        imagePullPolicy: IfNotPresent
+        name: main
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+    restartPolicy: Never
