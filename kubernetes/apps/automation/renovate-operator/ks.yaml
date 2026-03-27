@@ -16,7 +16,7 @@ spec:
       name: renovate-operator
       namespace: automation
   sourceRef:
-    kind: Bucket
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: automation
@@ -37,7 +37,7 @@ spec:
       namespace: security
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: automation

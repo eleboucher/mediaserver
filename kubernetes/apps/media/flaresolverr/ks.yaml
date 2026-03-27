@@ -20,7 +20,7 @@ spec:
       APP_NAMESPACE: media
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: media

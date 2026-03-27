@@ -12,7 +12,7 @@ spec:
   path: ./kubernetes/apps/kubevirt/cdi/app
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: cdi
