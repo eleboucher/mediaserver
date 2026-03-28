@@ -48,23 +48,67 @@ spec:
               capabilities:
                 drop:
                   - ALL
+      provision:
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+        containers:
+          app:
+            image:
+              repository: ghcr.io/m00nwtchr/kanidm-provision
+              tag: 1.3.0
+            env:
+              KANIDM_INSTANCE: https://idm.erwanleboucher.dev
+              KANIDM_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-provision-token
+                    key: token
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 100Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
     persistence:
       data:
         existingClaim: kanidm
-        globalMounts:
-          - path: /data
-            subPath: data
+        advancedMounts:
+          kanidm:
+            app:
+              - path: /data
+                subPath: data
       certs:
         type: secret
         name: idm-erwanleboucher-dev-tls
         defaultMode: 0400
-        globalMounts:
-          - path: /certs
+        advancedMounts:
+          kanidm:
+            app:
+              - path: /certs
       tmpfs:
         type: emptyDir
-        globalMounts:
-          - path: /var/run
-            subPath: var-run
+        advancedMounts:
+          kanidm:
+            app:
+              - path: /var/run
+      icon-cache:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        advancedMounts:
+          provision:
+            app:
+              - path: /data/icons
     route:
       app:
         hostnames:
