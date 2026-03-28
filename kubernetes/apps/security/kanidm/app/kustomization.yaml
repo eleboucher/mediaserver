@@ -3,7 +3,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./certificate.yaml
-  - ./ocirepository.yaml
-  - ./helmrelease.yaml
   - ./backendtlspolicy.yaml
+  - ./certificate.yaml
+  - ./externalsecret.yaml
+  - ./helmrelease.yaml
+  - ./ocirepository.yaml
+  - ./rbac.yaml
