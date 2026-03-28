@@ -8,12 +8,14 @@ spec:
   components:
     - ../../../../components/postgres/cert
     - ../../../../components/nfs-scaler
+    - ../../../../components/oidc
   interval: 1h
   path: ./kubernetes/apps/selfhosted/immich/app
   postBuild:
     substitute:
       APP: *app
       APP_NAMESPACE: selfhosted
+      SUBDOMAIN: photos
       DATABASE_EXTENSIONS: |
         [
           { name: vector },
@@ -21,6 +23,10 @@ spec:
           { name: cube },
           { name: earthdistance }
         ]
+      OIDC_DISPLAY_NAME: "Immich"
+      OIDC_CALLBACK: /auth/login
+      OIDC_EXTRA_CALLBACKS: '["app.immich:///oauth-callback", "https://photos.erwanleboucher.dev/user-settings"]'
+      OIDC_LEGACY_CRYPTO: "true"
   prune: true
   sourceRef:
     kind: Bucket
