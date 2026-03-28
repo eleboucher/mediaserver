@@ -118,6 +118,7 @@ spec:
             namespace: network
     service:
       app:
+        controller: kanidm
         ports:
           http:
             port: 8443
