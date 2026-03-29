@@ -23,6 +23,30 @@ spec:
       APP: jellyfin
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_SCHEDULE: "50 1-23/2 * * *"
+      OIDC_DISPLAY_NAME: "Jellyfin"
+      OIDC_CALLBACK: /sso/OID/redirect/kanidm
+      OIDC_EXTRA_CALLBACKS: '["https://jellyfin.erwanleboucher.dev/sso/OID/r/kanidm"]'
+      OIDC_ORIGIN: /sso/OID/start/kanidm
+      OIDC_SHORT_USERNAME: "true"
+      OIDC_GROUP: media_users
+      OIDC_CUSTOM_STATE: |
+        {
+          "groups": {
+            "media_users": {
+              "members": ["users"]
+            }
+          }
+        }
+      OIDC_CLAIM_MAPS: |
+        {
+          "roles": {
+            "joinType": "array",
+            "valuesByGroup": {
+              "users@idm.erwanleboucher.dev": ["user"],
+              "admins@idm.erwanleboucher.dev": ["admin"]
+            }
+          }
+        }
   prune: true
   sourceRef:
     kind: Bucket
