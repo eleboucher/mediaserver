@@ -452,7 +452,15 @@ configs:
               - badger
             tls:
               certResolver: letsencrypt
-
+          int-api-router:
+            rule: "Host(`api.pangolin.erwanleboucher.dev`)"
+            service: int-api-service
+            entryPoints:
+              - websecure
+            middlewares:
+              - badger
+            tls:
+              certResolver: letsencrypt
           # WebSocket router
           ws-router:
             rule: "Host(`pangolin.erwanleboucher.dev`)"
@@ -499,7 +507,10 @@ configs:
             loadBalancer:
               servers:
                 - url: "http://pangolin:3000"
-
+          int-api-service:
+            loadBalancer:
+              servers:
+                - url: "http://pangolin:3003"
       tcp:
         serversTransports:
           pp-transport-v1:
