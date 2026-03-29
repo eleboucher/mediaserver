@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/newt-sidecar.home-operations.com/privateresource_v1alpha1.json
+apiVersion: newt-sidecar.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-pods
+  namespace: network
+spec:
+  name: Cluster Pod Network
+  mode: cidr
+  destination: 10.42.0.0/16
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/newt-sidecar.home-operations.com/privateresource_v1alpha1.json
+apiVersion: newt-sidecar.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-services
+  namespace: network
+spec:
+  name: Cluster Service Network
+  mode: cidr
+  destination: 10.43.0.0/16
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/newt-sidecar.home-operations.com/privateresource_v1alpha1.json
+apiVersion: newt-sidecar.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-nodes
+  namespace: network
+spec:
+  name: Cluster Node Network
+  mode: cidr
+  destination: 192.168.1.0/24
