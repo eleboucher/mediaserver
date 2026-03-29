@@ -248,6 +248,8 @@ configs:
             encodedCharacters:
               allowEncodedSlash: true
               allowEncodedQuestionMark: true
+        tcp-2222:
+          address: ":2222"
 
       serversTransport:
         insecureSkipVerify: true
