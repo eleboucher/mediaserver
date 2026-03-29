@@ -35,12 +35,12 @@ spec:
             name: erwanleboucher-dev-tls
     - name: ssh
       protocol: TCP
-      port: 22
+      port: 2222
       allowedRoutes:
         namespaces:
           from: Selector
           selector:
             matchLabels:
-              kubernetes.io/metadata.name: forgejo
+              kubernetes.io/metadata.name: selfhosted
         kinds:
           - kind: TCPRoute
