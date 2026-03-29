@@ -32,4 +32,4 @@ releases:
   - name: newt-sidecar
     namespace: network
     chart: oci://ghcr.io/home-operations/charts/newt-sidecar
-    version: 0.0.0
+    version: 0.2.1
