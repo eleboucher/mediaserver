@@ -13,12 +13,11 @@ spec:
     image:
       repository: ghcr.io/eleboucher/pangolin-operator
       pullPolicy: IfNotPresent
-      tag: main-23a151f
+      tag: main-34bfded
     pangolin:
       existingSecret: pangolin-operator-secret
     resources:
       limits:
-        cpu: null
         memory: 256Mi
       requests:
         cpu: 10m
