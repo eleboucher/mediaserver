@@ -68,7 +68,7 @@ spec:
           ENABLE_PASSWORD_SIGNIN_FORM: false
           ENABLE_NOTIFY_MAIL: true
         repository:
-          DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls
+          DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls,repo.actions
           DISABLED_REPO_UNITS: repo.ext_wiki,repo.ext_issues
         repository.pull-request:
           DEFAULT_DELETE_BRANCH_AFTER_MERGE: true
