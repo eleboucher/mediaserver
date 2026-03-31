@@ -27,6 +27,10 @@ spec:
   dependsOn:
     - name: pangolin-operator
   prune: true
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: pangolin-operator-secret
   sourceRef:
     kind: Bucket
     name: flux-system
