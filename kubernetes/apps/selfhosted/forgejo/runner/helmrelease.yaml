@@ -18,7 +18,7 @@ spec:
             cache:
               enabled: false
             container:
-              k8s_namespace: selhosted
+              k8s_namespace: selfhosted
               kubernetes: true
             log:
               level: info
