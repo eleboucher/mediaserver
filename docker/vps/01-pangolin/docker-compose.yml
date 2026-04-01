@@ -217,8 +217,7 @@ configs:
   traefik_config:
     content: |-
       api:
-        insecure: true
-        dashboard: true
+        dashboard: false
 
       providers:
         http:
