@@ -158,6 +158,7 @@ services:
       OG_EXPIRY_TIME: "24h"
       OG_PASSTHROUGH: "true"
       SERVE_ROBOTS_TXT: "true"
+      REDIRECT_DOMAINS: "erwanleboucher.dev"
       TARGET: "http://localhost:8082"
     depends_on:
       gerbil:
