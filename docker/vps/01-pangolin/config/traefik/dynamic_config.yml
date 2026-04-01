@@ -182,6 +182,7 @@ http:
       entryPoints:
         - websecure
       middlewares:
+        # - crowdsec
         - security-headers
       rule: "Host(`erwanleboucher.dev`)"
       service: anubis-website-svc
