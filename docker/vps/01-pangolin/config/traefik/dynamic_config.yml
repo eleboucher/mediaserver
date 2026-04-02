@@ -55,6 +55,15 @@ http:
         permanent: true
         regex: "^https?://erwanleboucher\\.dev(/.well-known/(webfinger|host-meta|nodeinfo).*)$"
         replacement: "https://gts.erwanleboucher.dev${1}"
+    wkd-cors:
+      headers:
+        accessControlAllowOriginList:
+          - "*"
+        accessControlAllowHeaders:
+          - "*"
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
     matrix-cors:
       headers:
         accessControlAllowOriginList:
@@ -139,6 +148,18 @@ http:
         - websecure
       middlewares:
         - badger
+      tls:
+        certResolver: letsencrypt
+
+    # WKD Direct — serve OpenPGP keys from S3 with CORS
+    wkd-direct:
+      entryPoints:
+        - websecure
+      middlewares:
+        - wkd-cors
+      rule: "Host(`erwanleboucher.dev`) && PathPrefix(`/.well-known/openpgpkey/`)"
+      priority: 1000
+      service: ovh-s3-website
       tls:
         certResolver: letsencrypt
 
