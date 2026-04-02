@@ -34,3 +34,15 @@ spec:
   siteRef: homelab
   mode: cidr
   destination: 192.168.1.0/24
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/privateresource_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-bgp
+  namespace: network
+spec:
+  name: Cluster BGP Network
+  siteRef: homelab
+  mode: cidr
+  destination: 192.168.69.0/24
