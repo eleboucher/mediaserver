@@ -163,6 +163,17 @@ http:
       tls:
         certResolver: letsencrypt
 
+    # WKD Advanced — openpgpkey subdomain
+    wkd-advanced:
+      entryPoints:
+        - websecure
+      middlewares:
+        - wkd-cors
+      rule: "Host(`openpgpkey.erwanleboucher.dev`) && PathPrefix(`/.well-known/openpgpkey/`)"
+      service: ovh-s3-website
+      tls:
+        certResolver: letsencrypt
+
     # 301 redirect /.well-known/matrix/* → continuwuity subdomain
     matrix-well-known:
       entryPoints:
