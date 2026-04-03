@@ -136,7 +136,7 @@ spec:
           register-runner:
             image:
               repository: git.erwanleboucher.dev/eleboucher/runner
-              tag: latest@sha256:212e8eb7848bfcb2afdb83efadc5ec6009074c62fa62f51f05bffa772ef64bad
+              tag: latest@sha256:d04345529082456ed0f16f9f8858e47b757eaaff7f73df3686fd58d4b1a50945
             command:
               - sh
               - -c
@@ -147,7 +147,7 @@ spec:
                 fi
                 echo "Registering runner..."
                 cd /persistent && forgejo-runner register \
-                  --instance https://git.erwanleboucher.dev \
+                  --instance http://forgejo-http:3000 \
                   --token "${RUNNER_TOKEN}" \
                   --name k8s-runner \
                   --labels "default:k8spod:/config/podspec-default.yaml" \
@@ -162,7 +162,7 @@ spec:
           runner:
             image:
               repository: git.erwanleboucher.dev/eleboucher/runner
-              tag: latest@sha256:212e8eb7848bfcb2afdb83efadc5ec6009074c62fa62f51f05bffa772ef64bad
+              tag: latest@sha256:d04345529082456ed0f16f9f8858e47b757eaaff7f73df3686fd58d4b1a50945
             command:
               - /bin/forgejo-runner
               - daemon
