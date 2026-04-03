@@ -5,4 +5,5 @@ kind: Component
 resources:
   - ./deployment.yaml
   - ./externalsecret.yaml
+  - ./ks.yaml
   - ./service.yaml
