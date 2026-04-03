@@ -41,6 +41,9 @@ spec:
       config:
         APP_NAME: "Erwan's Forge"
         APP_SLOGAN: "deep deep in the mine"
+        ui.meta:
+          AUTHOR: Erwan Leboucher
+          DESCRIPTION: "Erwan's Forge"
         database:
           DB_TYPE: postgres
           HOST: pooler-rw.database.svc:5432
