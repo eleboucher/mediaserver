@@ -62,6 +62,7 @@ spec:
         repository:
           DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls,repo.actions
           DISABLED_REPO_UNITS: repo.ext_wiki,repo.ext_issues
+          DISABLE_DOWNLOAD_SOURCE_ARCHIVES: true
         repository.pull-request:
           DEFAULT_DELETE_BRANCH_AFTER_MERGE: true
           DEFAULT_MERGE_STYLE: squash
