@@ -1,0 +1,129 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Flux Local
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ forgejo.workflow }}-${{ forgejo.event.number || forgejo.ref }}
+  cancel-in-progress: true
+
+jobs:
+  filter:
+    name: Flux Local - Filter
+    runs-on: ubuntu-latest
+    outputs:
+      changed-files: ${{ steps.changed-files.outputs.changed_files }}
+    steps:
+      - name: Get Changed Files
+        id: changed-files
+        uses: https://github.com/bjw-s-labs/action-changed-files@a9a36fb08ce06db9b02fbd8026cc2c0945eb9841 # v0.6.0
+        with:
+          patterns: kubernetes/**/*
+
+  test:
+    if: ${{ needs.filter.outputs.changed-files != '[]' }}
+    needs: filter
+    name: Flux Local - Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Run flux-local test
+        shell: bash
+        run: |-
+          flux-local test --enable-helm --all-namespaces --sources "flux-system=." --path kubernetes/flux/cluster -v
+
+  diff:
+    if: ${{ needs.filter.outputs.changed-files != '[]' }}
+    needs: filter
+    name: Flux Local - Diff ${{ matrix.resources }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        resources:
+          - helmrelease
+          - kustomization
+      max-parallel: 4
+      fail-fast: false
+    steps:
+      - name: Checkout Pull Request Branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: pull
+          persist-credentials: false
+
+      - name: Checkout Default Branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: default
+          persist-credentials: false
+          ref: ${{ forgejo.event.repository.default_branch }}
+
+      - name: Run flux-local diff
+        shell: bash
+        working-directory: pull
+        run: |-
+          flux-local diff ${{ matrix.resources }} \
+            --unified 6 \
+            --sources "flux-system=." \
+            --path kubernetes/flux/cluster \
+            --path-orig ../default/kubernetes/flux/cluster \
+            --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart" \
+            --limit-bytes 10000 \
+            --all-namespaces \
+            --output-file diff.patch
+
+      - name: Generate Diff
+        id: diff
+        run: |
+          if [ -f pull/diff.patch ] && [ -s pull/diff.patch ]; then
+            {
+                echo 'diff<<EOF'
+                cat pull/diff.patch
+                echo EOF
+            } >> "${FORGEJO_OUTPUT}";
+            {
+                echo "## Flux ${{ matrix.resources }} diff"
+                echo '```diff'
+                cat pull/diff.patch
+                echo '```'
+            } >> "${FORGEJO_STEP_SUMMARY}"
+          fi
+
+      - name: Add Comment
+        if: ${{ steps.diff.outputs.diff != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.MISTGAZER_TOKEN }}
+          PR_NUMBER: ${{ forgejo.event.pull_request.number }}
+          HEADER: "${{ forgejo.event.pull_request.number }}/kubernetes/${{ matrix.resources }}"
+          DIFF_CONTENT: ${{ steps.diff.outputs.diff }}
+        run: |-
+          MARKER="<!-- sticky-comment: ${HEADER} -->"
+          BODY=$(printf $'%s\n```diff\n%s\n```' "${MARKER}" "${DIFF_CONTENT}")
+          BODY_JSON=$(jq -Rs '{"body": .}' <<< "${BODY}")
+
+          COMMENT_ID=$(curl -s \
+            -H "Authorization: token ${GH_TOKEN}" \
+            "${{ forgejo.api_url }}/repos/${{ forgejo.repository }}/issues/${PR_NUMBER}/comments" \
+            | jq -r --arg marker "${MARKER}" '.[] | select(.body | startswith($marker)) | .id' | head -1)
+
+          if [[ -n "${COMMENT_ID}" ]]; then
+            curl -s -X PATCH \
+              -H "Authorization: token ${GH_TOKEN}" \
+              -H "Content-Type: application/json" \
+              "${{ forgejo.api_url }}/repos/${{ forgejo.repository }}/issues/comments/${COMMENT_ID}" \
+              -d "${BODY_JSON}"
+          else
+            curl -s -X POST \
+              -H "Authorization: token ${GH_TOKEN}" \
+              -H "Content-Type: application/json" \
+              "${{ forgejo.api_url }}/repos/${{ forgejo.repository }}/issues/${PR_NUMBER}/comments" \
+              -d "${BODY_JSON}"
+          fi
