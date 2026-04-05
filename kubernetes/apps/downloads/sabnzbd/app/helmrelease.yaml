@@ -14,6 +14,8 @@ spec:
     controllers:
       sabnzbd:
         pod:
+          nodeSelector:
+            kubernetes.io/hostname: le-havre
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
@@ -79,9 +81,8 @@ spec:
         globalMounts:
           - path: /config
       data:
-        type: nfs
-        server: normandie.internal
-        path: /
+        type: hostPath
+        hostPath: /var/mnt/media
         globalMounts:
           - path: /data
       tmpfs:
