@@ -1,6 +1,4 @@
 ---
-name: pangolin
-reference: refs/heads/main
 working_dir: ./docker/vps
 auto_discover: true
 auto_discover_opts:
