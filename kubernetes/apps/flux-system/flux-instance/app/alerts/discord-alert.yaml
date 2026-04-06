@@ -26,13 +26,11 @@ spec:
   eventSources:
     - kind: FluxInstance
       name: "*"
-    - kind: Bucket
+    - kind: OCIRepository
       name: "*"
     - kind: HelmRelease
       name: "*"
     - kind: HelmRepository
       name: "*"
     - kind: Kustomization
-      name: "*"
-    - kind: OCIRepository
       name: "*"

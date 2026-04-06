@@ -1,0 +1,95 @@
+---
+name: Push OCI Artifact
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - kubernetes/**
+  workflow_dispatch:
+
+concurrency:
+  group: oci-push-${{ forgejo.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUX_VERSION: 2.8.3
+  COSIGN_VERSION: 3.0.5
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    outputs:
+      digest-url: ${{ steps.push.outputs.digest-url }}
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Install Flux CLI
+        run: |
+          curl -sLO https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz
+          tar xzf flux_${FLUX_VERSION}_linux_amd64.tar.gz
+          mv flux /usr/local/bin/
+
+      - name: Push to Forgejo
+        id: push
+        run: |
+          DIGEST_URL=$(flux push artifact \
+            oci://git.erwanleboucher.dev/eleboucher/homelab:${{ forgejo.sha }} \
+            --path=. \
+            --source=${{ forgejo.server_url }}/${{ forgejo.repository }} \
+            --revision=${{ forgejo.ref_name }}@sha1:${{ forgejo.sha }} \
+            --creds=eleboucher:${{ secrets.OWNER_PACKAGE_SECRET }} \
+            --output json | \
+            jq -r '.repository + "@" + .digest')
+          echo "digest-url=$DIGEST_URL" >> "$FORGEJO_OUTPUT"
+
+      - name: Tag main
+        run: |
+          flux tag artifact oci://git.erwanleboucher.dev/eleboucher/homelab:${{ forgejo.sha }} \
+            --tag main \
+            --creds=eleboucher:${{ secrets.OWNER_PACKAGE_SECRET }}
+
+      - name: Push to code.forgejo.org
+        run: |
+          flux push artifact \
+            oci://code.forgejo.org/eleboucher/homelab:${{ forgejo.sha }} \
+            --path=. \
+            --source=${{ forgejo.server_url }}/${{ forgejo.repository }} \
+            --revision=${{ forgejo.ref_name }}@sha1:${{ forgejo.sha }} \
+            --creds=eleboucher:${{ secrets.CODEBERG_TOKEN }}
+          flux tag artifact oci://code.forgejo.org/eleboucher/homelab:${{ forgejo.sha }} \
+            --tag main \
+            --creds=eleboucher:${{ secrets.CODEBERG_TOKEN }}
+
+  sign:
+    runs-on: ubuntu-latest
+    needs: push
+    steps:
+      - name: Install Cosign
+        run: |
+          curl -sLO https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64
+          chmod +x cosign-linux-amd64
+          mv cosign-linux-amd64 /usr/local/bin/cosign
+
+      - name: Sign OCI artifact
+        env:
+          COSIGN_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          DIGEST_URL: ${{ needs.push.outputs.digest-url }}
+        run: |-
+          cosign sign --yes \
+            --key env://COSIGN_KEY \
+            --registry-username=eleboucher \
+            --registry-password=${{ secrets.OWNER_PACKAGE_SECRET }} \
+            $DIGEST_URL
+
+      - name: Trigger Flux reconciliation
+        env:
+          WEBHOOK_TOKEN: ${{ secrets.FLUX_WEBHOOK_TOKEN }}
+          WEBHOOK_URL: ${{ secrets.FLUX_WEBHOOK_URL }}
+        run: |-
+          SIGNATURE=$(printf '{}' | openssl dgst -sha256 -r -hmac "${WEBHOOK_TOKEN}" | awk '{print $1}')
+          HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST "${WEBHOOK_URL}" -H 'Content-Type: application/json' -H "X-Signature: sha256=${SIGNATURE}" -d '{}')
+          echo "Flux webhook response: HTTP ${HTTP_STATUS}"
+          test "${HTTP_STATUS}" = "200"

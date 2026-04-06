@@ -9,7 +9,7 @@ spec:
   path: ./kubernetes/apps/kube-system/metrics-server/app
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: kube-system

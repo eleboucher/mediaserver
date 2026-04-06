@@ -10,7 +10,7 @@ spec:
   path: ./kubernetes/apps/flux-system/flux-operator/app
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: flux-system

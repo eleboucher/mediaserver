@@ -24,7 +24,7 @@ spec:
       OIDC_ORIGIN: /
       OIDC_SHORT_USERNAME: "true"
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: home-assistant

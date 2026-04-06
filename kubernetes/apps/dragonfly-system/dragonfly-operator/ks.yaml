@@ -14,7 +14,7 @@ spec:
   path: ./kubernetes/apps/dragonfly-system/dragonfly-operator/app
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: dragonfly-system

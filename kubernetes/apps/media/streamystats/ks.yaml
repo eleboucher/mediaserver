@@ -22,7 +22,7 @@ spec:
       APP_NAMESPACE: media
       ANUBIS_TARGET: "http://streamystats-frontend.media.svc:80"
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: media

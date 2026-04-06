@@ -9,7 +9,7 @@ spec:
   path: ./kubernetes/apps/network/pangolin-operator/operator
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: network
@@ -32,7 +32,7 @@ spec:
       - kind: Secret
         name: pangolin-operator-secret
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   timeout: 5m

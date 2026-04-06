@@ -29,7 +29,7 @@ spec:
       OIDC_LEGACY_CRYPTO: "true"
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: selfhosted
