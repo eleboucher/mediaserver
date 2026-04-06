@@ -19,6 +19,10 @@ browse-pvc namespace claim:
 delete-ks ns ks:
     just kube render-local-ks "{{ ns }}" "{{ ks }}" | kubectl delete -f /dev/stdin
 
+[doc('Restart Home Assistant VM (fixes Bluetooth USB passthrough)')]
+restart-ha:
+    kubectl virt restart home-assistant -n home-assistant
+
 [doc('Open a shell on a node')]
 node-shell node:
     kubectl debug node/{{ node }} -n default -it --image="mirror.gcr.io/alpine:latest" --profile sysadmin
