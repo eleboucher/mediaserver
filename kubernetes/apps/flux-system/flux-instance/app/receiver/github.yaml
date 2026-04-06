@@ -11,7 +11,7 @@ spec:
     name: receiver-token
   resources:
     - apiVersion: source.toolkit.fluxcd.io/v1
-      kind: Bucket
+      kind: OCIRepository
       name: flux-system
     - apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization

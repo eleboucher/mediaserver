@@ -30,7 +30,7 @@ spec:
       OIDC_SCOPES: '["openid", "profile", "email", "groups", "ssh_publickeys"]'
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: selfhosted
@@ -50,7 +50,7 @@ spec:
   path: "./kubernetes/apps/selfhosted/forgejo/runner"
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: selfhosted

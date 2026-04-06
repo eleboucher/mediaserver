@@ -13,7 +13,7 @@ spec:
       namespace: longhorn-system
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: kube-system

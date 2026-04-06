@@ -9,7 +9,7 @@ spec:
   path: ./kubernetes/apps/observability/grafana/app
   prune: true
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: observability
@@ -47,7 +47,7 @@ spec:
           }
         }
   sourceRef:
-    kind: Bucket
+    kind: OCIRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: observability

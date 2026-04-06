@@ -99,4 +99,4 @@ view-secret namespace secret:
 
 [private]
 render-local-ks ns ks:
-    flux-local build ks --namespace "{{ ns }}" --path "{{ kubernetes_dir }}/flux/cluster" "{{ ks }}"
+    flux-local build ks --namespace "{{ ns }}" --sources "flux-system=." --path "{{ kubernetes_dir }}/flux/cluster" "{{ ks }}"
