@@ -20,8 +20,6 @@ http:
           crowdsecMode: live
           defaultDecisionSeconds: 15
           enabled: true
-          forwardedHeadersTrustedIPs:
-            - 0.0.0.0/0
           httpTimeoutSeconds: 10
           logLevel: INFO
           updateIntervalSeconds: 15

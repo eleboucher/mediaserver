@@ -27,7 +27,6 @@ services:
       retries: 15
 
   crowdsec:
-    command: -t
     container_name: crowdsec
     environment:
       COLLECTIONS: crowdsecurity/traefik crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/linux crowdsecurity/iptables

@@ -11,6 +11,7 @@ customization:
     - intel_iommu=on # PCI Passthrough
     - iommu=pt # PCI Passthrough
     - pcie_aspm=off # Disable PCIe ASPM
+    - usbcore.autosuspend=-1 # Disable USB autosuspend
     - mitigations=off
     - security=none
     - sysctl.kernel.kexec_load_disabled=1
