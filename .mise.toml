@@ -1,5 +1,3 @@
-[settings]
-pipx_uvx = true
 
 [env]
 MINIJINJA_CONFIG_FILE = "{{config_root}}/.minijinja.toml"
