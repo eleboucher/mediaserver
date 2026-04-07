@@ -34,7 +34,7 @@ spec:
     route:
       app:
         parentRefs:
-          - name: envoy-internal
+          - name: envoy-external
             namespace: network
         hostnames:
           - phanpy.erwanleboucher.dev
