@@ -63,7 +63,7 @@ spec:
         source:
           http:
             # renovate: datasource=github-releases depName=home-assistant/operating-system
-            url: "https://github.com/home-assistant/operating-system/releases/download/17.1/haos_ova-17.1.qcow2.xz"
+            url: 17.2
         storage:
           accessModes:
             - ReadWriteOnce
