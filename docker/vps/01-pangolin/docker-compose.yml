@@ -251,7 +251,7 @@ services:
       DELETE_OLDER_THAN: "30 days ago"
 
   fluent-bit:
-    image: cr.fluentbit.io/fluent/fluent-bit:3.2
+    image: cr.fluentbit.io/fluent/fluent-bit:5.0
     container_name: fluent-bit
     restart: unless-stopped
     network_mode: service:gerbil
