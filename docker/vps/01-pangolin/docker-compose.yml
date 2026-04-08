@@ -250,6 +250,28 @@ services:
       SCHEDULE: "0 */6 * * *"
       DELETE_OLDER_THAN: "30 days ago"
 
+  fluent-bit:
+    image: cr.fluentbit.io/fluent/fluent-bit:3.2
+    container_name: fluent-bit
+    restart: unless-stopped
+    network_mode: service:gerbil
+    environment:
+      - VICTORIA_LOGS_HOST=10.43.249.113
+    depends_on:
+      gerbil:
+        condition: service_started
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /opt/pangolin/traefik-logs:/var/log/traefik:ro
+      - fluent-bit-data:/fluent-bit/data
+    configs:
+      - source: fluent_bit_config
+        target: /fluent-bit/etc/fluent-bit.conf
+      - source: fluent_bit_enrich
+        target: /fluent-bit/etc/enrich.lua
+      - source: fluent_bit_custom_parsers
+        target: /fluent-bit/etc/custom-parsers.conf
+
   geoipupdate:
     container_name: geoipupdate
     image: ghcr.io/maxmind/geoipupdate:v7.1.1
@@ -264,6 +286,7 @@ services:
 
 volumes:
   apoci-pg-data:
+  fluent-bit-data:
   prometheus-data:
 
 networks:
@@ -290,5 +313,11 @@ configs:
     file: ./config/crowdsec/my-whitelist-postoverflows.yaml
   apoci_config:
     file: ./config/apoci/apoci.yaml
+  fluent_bit_config:
+    file: ./config/fluent-bit/fluent-bit.conf
+  fluent_bit_enrich:
+    file: ./config/fluent-bit/enrich.lua
+  fluent_bit_custom_parsers:
+    file: ./config/fluent-bit/custom-parsers.conf
   prometheus_agent_config:
     file: ./config/prometheus/prometheus.yml
