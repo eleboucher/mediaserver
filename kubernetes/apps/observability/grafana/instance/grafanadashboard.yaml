@@ -73,3 +73,609 @@ spec:
     matchLabels:
       dashboards: grafana
   url: https://grafana.com/api/dashboards/17346/revisions/9/download
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: apoci
+spec:
+  allowCrossNamespaceImport: true
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  json: |
+    {
+      "__inputs": [
+        {
+          "name": "DS_PROMETHEUS",
+          "label": "Prometheus",
+          "type": "datasource",
+          "pluginId": "prometheus"
+        }
+      ],
+      "title": "apoci - Federated OCI Registry",
+      "uid": "apoci-overview",
+      "schemaVersion": 39,
+      "version": 1,
+      "tags": ["apoci", "oci", "federation"],
+      "timezone": "browser",
+      "refresh": "30s",
+      "time": { "from": "now-6h", "to": "now" },
+      "graphTooltip": 1,
+      "templating": {
+        "list": [
+          {
+            "type": "datasource",
+            "name": "DS_PROMETHEUS",
+            "label": "Datasource",
+            "query": "prometheus",
+            "current": { "selected": false, "text": "prometheus", "value": "prometheus" }
+          }
+        ]
+      },
+      "panels": [
+        {
+          "type": "row",
+          "title": "Overview",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 1,
+          "collapsed": false
+        },
+        {
+          "type": "stat",
+          "title": "Followers",
+          "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+          "id": 2,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "apoci_federation_followers{job=\"apoci\"}",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "blue", "value": null }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } }
+        },
+        {
+          "type": "stat",
+          "title": "Following",
+          "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+          "id": 3,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "apoci_federation_following{job=\"apoci\"}",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "blue", "value": null }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } }
+        },
+        {
+          "type": "stat",
+          "title": "Delivery Pending",
+          "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+          "id": 4,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "apoci_delivery_pending{job=\"apoci\"}",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 10 },
+                  { "color": "red", "value": 50 }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } }
+        },
+        {
+          "type": "stat",
+          "title": "Replications In-Flight",
+          "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+          "id": 5,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "apoci_blob_replication_in_flight{job=\"apoci\"}",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 5 }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } }
+        },
+        {
+          "type": "stat",
+          "title": "Inbox Rate",
+          "description": "Inbound activities per second",
+          "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+          "id": 6,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "sum(rate(apoci_inbox_activities_total{job=\"apoci\"}[5m]))",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "unit": "reqps",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } }
+        },
+        {
+          "type": "stat",
+          "title": "Registry Ops Rate",
+          "description": "Total registry operations per second",
+          "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+          "id": 7,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "sum(rate(apoci_registry_manifest_pushes_total{job=\"apoci\"}[5m])) + sum(rate(apoci_registry_manifest_pulls_total{job=\"apoci\"}[5m])) + sum(rate(apoci_registry_blob_pushes_total{job=\"apoci\"}[5m])) + sum(rate(apoci_registry_blob_pulls_total{job=\"apoci\"}[5m]))",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "unit": "ops",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } }
+        },
+
+        {
+          "type": "row",
+          "title": "OCI Registry",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+          "id": 10,
+          "collapsed": false
+        },
+        {
+          "type": "timeseries",
+          "title": "Push Rate",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 6 },
+          "id": 11,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_registry_manifest_pushes_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Manifests",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(apoci_registry_blob_pushes_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Blobs",
+              "refId": "B"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 20, "stacking": { "mode": "none" } }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Pull Rate",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 6 },
+          "id": 12,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_registry_manifest_pulls_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Manifests",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(apoci_registry_blob_pulls_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Blobs",
+              "refId": "B"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 20, "stacking": { "mode": "none" } }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Pull-Through Rate",
+          "description": "Content fetched from federation peers",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 6 },
+          "id": 13,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_registry_manifest_pull_throughs_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Manifests",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(apoci_registry_blob_pull_throughs_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Blobs",
+              "refId": "B"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 20, "stacking": { "mode": "none" } }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+
+        {
+          "type": "row",
+          "title": "Federation / ActivityPub",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+          "id": 20,
+          "collapsed": false
+        },
+        {
+          "type": "timeseries",
+          "title": "Inbox Activities by Type",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 15 },
+          "id": 21,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_inbox_activities_total{job=\"apoci\"}[5m])",
+              "legendFormat": "{{type}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "bars", "fillOpacity": 80, "stacking": { "mode": "normal" } }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Outbound Activities by Type",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 15 },
+          "id": 22,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_outbound_activities_total{job=\"apoci\"}[5m])",
+              "legendFormat": "{{type}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "bars", "fillOpacity": 80, "stacking": { "mode": "normal" } }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Rate Limiting & Dedup",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 15 },
+          "id": 23,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_inbox_rate_limited_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Inbox rate limited",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(apoci_registry_push_rate_limited_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Push rate limited",
+              "refId": "B"
+            },
+            {
+              "expr": "rate(apoci_inbox_dedup_hits_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Dedup hits",
+              "refId": "C"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 20, "stacking": { "mode": "none" } }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+
+        {
+          "type": "row",
+          "title": "Delivery Queue",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+          "id": 30,
+          "collapsed": false
+        },
+        {
+          "type": "timeseries",
+          "title": "Delivery Throughput",
+          "gridPos": { "h": 8, "w": 16, "x": 0, "y": 24 },
+          "id": 31,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_delivery_enqueued_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Enqueued",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(apoci_delivery_succeeded_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Succeeded",
+              "refId": "B"
+            },
+            {
+              "expr": "rate(apoci_delivery_failed_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Failed",
+              "refId": "C"
+            },
+            {
+              "expr": "rate(apoci_delivery_retries_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Retries",
+              "refId": "D"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 20, "stacking": { "mode": "none" } }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "Failed" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+              { "matcher": { "id": "byName", "options": "Succeeded" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+            ]
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Delivery Pending",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 24 },
+          "id": 32,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "apoci_delivery_pending{job=\"apoci\"}",
+              "legendFormat": "Pending",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "fixedColor": "orange", "mode": "fixed" },
+              "unit": "short",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 30 }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+        },
+
+        {
+          "type": "row",
+          "title": "Blob Replication",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 },
+          "id": 40,
+          "collapsed": false
+        },
+        {
+          "type": "timeseries",
+          "title": "Replication Throughput",
+          "gridPos": { "h": 8, "w": 16, "x": 0, "y": 33 },
+          "id": 41,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_blob_replication_started_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Started",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(apoci_blob_replication_succeeded_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Succeeded",
+              "refId": "B"
+            },
+            {
+              "expr": "rate(apoci_blob_replication_failed_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Failed",
+              "refId": "C"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 20, "stacking": { "mode": "none" } }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "Failed" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+              { "matcher": { "id": "byName", "options": "Succeeded" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+            ]
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "Replications In-Flight",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 33 },
+          "id": 42,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "apoci_blob_replication_in_flight{job=\"apoci\"}",
+              "legendFormat": "In-flight",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "fixedColor": "purple", "mode": "fixed" },
+              "unit": "short",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 30 }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+        },
+
+        {
+          "type": "row",
+          "title": "Garbage Collection",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 41 },
+          "id": 50,
+          "collapsed": false
+        },
+        {
+          "type": "timeseries",
+          "title": "GC Removals",
+          "gridPos": { "h": 8, "w": 16, "x": 0, "y": 42 },
+          "id": 51,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_gc_stale_peer_blobs_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Stale peer blobs",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(apoci_gc_orphaned_metadata_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Orphaned metadata",
+              "refId": "B"
+            },
+            {
+              "expr": "rate(apoci_gc_orphaned_files_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Orphaned files",
+              "refId": "C"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 20, "stacking": { "mode": "none" } }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "GC Cycles",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 42 },
+          "id": 52,
+          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "targets": [
+            {
+              "expr": "rate(apoci_gc_cycles_completed_total{job=\"apoci\"}[5m])",
+              "legendFormat": "Cycles/s",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "fixedColor": "semi-dark-blue", "mode": "fixed" },
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 30 }
+            },
+            "overrides": []
+          },
+          "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+        }
+      ]
+    }
