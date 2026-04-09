@@ -14,5 +14,16 @@
   },
   "kubernetes": {
     "managerFilePatterns": ["/\\.yaml(?:\\.j2)?$/"]
-  }
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/\\.yaml(?:\\.j2)?$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+)\\s+url: \"https://github\\.com/(?:[^/]+/[^/]+)/releases/download/(?<currentValue>[^/]+)/[^\"]+\""
+      ],
+      "datasourceTemplate": "{{datasource}}",
+      "versioningTemplate": "semver"
+    }
+  ]
 }
