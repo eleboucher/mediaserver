@@ -29,10 +29,26 @@ spec:
               GTS_SEMAPHORE_URL: https://phanpy.erwanleboucher.dev
               GTS_LANDING_PAGE_USER: "eleboucher"
               GTS_METRICS_ENABLED: "true"
-              GTS_TRUSTED_PROXIES: "127.0.0.1/32,::1,10.42.0.0/16,192.168.1.0/24"
+              GTS_TRUSTED_PROXIES: "127.0.0.1/32,::1,10.42.0.0/16"
               OTEL_EXPORTER_PROMETHEUS_HOST: 0.0.0.0
               OTEL_METRICS_PRODUCERS: prometheus
               OTEL_METRICS_EXPORTER: prometheus
+              GTS_OIDC_ENABLED: "true"
+              GTS_OIDC_IDP_NAME: "Kanidm"
+              GTS_OIDC_ISSUER: "https://idm.erwanleboucher.dev/oauth2/openid/gotosocial"
+              GTS_OIDC_SCOPES: "openid,email,profile,groups"
+              GTS_OIDC_LINK_EXISTING: "true"
+              GTS_OIDC_ADMIN_GROUPS: "admins@idm.erwanleboucher.dev"
+              GTS_OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-gotosocial-oidc
+                    key: client-id
+              GTS_OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-gotosocial-oidc
+                    key: client-secret
               GTS_DB_TYPE: postgres
               GTS_DB_POSTGRES_CONNECTION_STRING:
                 valueFrom:
