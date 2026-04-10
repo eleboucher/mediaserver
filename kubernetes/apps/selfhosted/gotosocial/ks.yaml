@@ -8,13 +8,17 @@ spec:
   components:
     - ../../../../components/postgres/cert
     - ../../../../components/volsync
+    - ../../../../components/oidc
   interval: 1h
   path: ./kubernetes/apps/selfhosted/gotosocial/server
   postBuild:
     substitute:
       APP: *app
       APP_NAMESPACE: selfhosted
+      SUBDOMAIN: gts
       VOLSYNC_CAPACITY: 10Gi
+      OIDC_CALLBACK: /auth/callback
+      OIDC_DISABLE_PKCE: "true"
   prune: true
   sourceRef:
     kind: OCIRepository
