@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: janitorr
+  namespace: flux-system
+spec:
+  interval: 1h
+  path: ./kubernetes/apps/media/janitorr/app
+  dependsOn:
+    - name: external-secrets
+      namespace: security
+    - name: longhorn
+      namespace: longhorn-system
+  postBuild:
+    substitute:
+      APP: janitorr
+      APP_NAMESPACE: media
+  prune: true
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: media
+  timeout: 5m
+  wait: false
