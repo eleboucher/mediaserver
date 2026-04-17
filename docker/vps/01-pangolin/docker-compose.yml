@@ -367,11 +367,13 @@ services:
           level: info
         runner:
           capacity: 1
+          envs:
+            DOCKER_HOST: tcp://forgejo-runner-dind:2375
           file: .runner
           labels:
             - ubuntu-latest:docker://ghcr.io/bjw-s-labs/forgejo-runner:ubuntu-24.04
             - default:docker://ghcr.io/bjw-s-labs/forgejo-runner:ubuntu-24.04
-            - docker:docker://docker:29-dind
+            - docker:docker://ghcr.io/bjw-s-labs/forgejo-runner:ubuntu-24.04
           timeout: 3h
         server:
           connections:
