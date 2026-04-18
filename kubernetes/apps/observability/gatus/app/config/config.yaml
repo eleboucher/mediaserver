@@ -34,14 +34,7 @@ endpoints:
       dns-resolver: tcp://1.1.1.1:53
     conditions:
       - "[STATUS] == 200"
-  - name: pangolin
-    group: external
-    url: https://pangolin.erwanleboucher.dev
-    interval: 1m
-    client:
-      dns-resolver: tcp://1.1.1.1:53
-    conditions:
-      - "[STATUS] == 200"
+
   - name: registry
     group: external
     url: https://registry.erwanleboucher.dev/healthz
