@@ -40,4 +40,4 @@ deploy ip:
       --url 'http://localhost:8080/v1/api/poll/run?wait=true' \
       --header 'content-type: application/json' \
       --header 'x-api-key: ${api_key}' \
-      --data '[{\"url\": \"https://git.erwanleboucher.dev/eleboucher/homelab.git\"}]'"
+      --data '[{\"url\": \"https://github.com/eleboucher/homelab.git\"}]'"
