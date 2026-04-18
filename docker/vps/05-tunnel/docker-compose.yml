@@ -11,7 +11,8 @@ services:
       RUST_LOG: info
       TOWONEL_IDENTITY__KEY_PATH: /data/node.key
       TOWONEL_HUB__ENABLED: "true"
-      TOWONEL_HUB__DB_PATH: /data/hub.db
+      TOWONEL_HUB__DATABASE__DRIVER: sqlite
+      TOWONEL_HUB__DATABASE__DSN: /data/hub.db
       TOWONEL_HUB__LISTEN_ADDR: 0.0.0.0:8443
       TOWONEL_HUB__PUBLIC_URL: https://towonel.erwanleboucher.dev
       TOWONEL_HUB__OPERATOR_API_KEY_PATH: /data/operator.key
