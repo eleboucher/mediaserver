@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kubevirt.io/kubevirt_v1.json
 apiVersion: kubevirt.io/v1
 kind: KubeVirt
 metadata:
