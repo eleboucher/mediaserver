@@ -10,5 +10,5 @@ resources:
   - envoy-gateway/ks.yaml
   - pangolin-operator/ks.yaml
   - rathole/ks.yaml
-  - turbo-agent/ks.yaml
+  - towonel-agent/ks.yaml
   - namespace.yaml

@@ -1,0 +1,86 @@
+{
+	email {$CADDY_ACME_EMAIL}
+}
+
+
+registry.erwanleboucher.dev {
+	reverse_proxy apoci:5000
+}
+
+doco-cd.erwanleboucher.dev {
+	reverse_proxy doco-cd:80
+}
+
+towonel.erwanleboucher.dev {
+	reverse_proxy towonel-node:8443
+}
+
+k8s-schemas.erwanleboucher.dev {
+	reverse_proxy http://k8s-schemas.s3-website.rbx.io.cloud.ovh.net {
+		header_up Host k8s-schemas.s3-website.rbx.io.cloud.ovh.net
+	}
+}
+
+openpgpkey.erwanleboucher.dev {
+	header Access-Control-Allow-Origin *
+	header Access-Control-Allow-Headers *
+	header Access-Control-Allow-Methods "GET, OPTIONS"
+	@wkd path /.well-known/openpgpkey/*
+	handle @wkd {
+		reverse_proxy http://erwanleboucher.dev.s3-website.rbx.io.cloud.ovh.net {
+			header_up Host erwanleboucher.dev.s3-website.rbx.io.cloud.ovh.net
+		}
+	}
+	respond 404
+}
+
+www.erwanleboucher.dev {
+	redir https://erwanleboucher.dev{uri} permanent
+}
+
+erwanleboucher.dev {
+	# WKD direct — OpenPGP keys from S3, with CORS.
+	@wkd path /.well-known/openpgpkey/*
+	handle @wkd {
+		header Access-Control-Allow-Origin *
+		header Access-Control-Allow-Headers *
+		header Access-Control-Allow-Methods "GET, OPTIONS"
+		reverse_proxy http://erwanleboucher.dev.s3-website.rbx.io.cloud.ovh.net {
+			header_up Host erwanleboucher.dev.s3-website.rbx.io.cloud.ovh.net
+		}
+	}
+
+	# WebFinger for the apoci registry: /.well-known/webfinger?resource=*registry@*
+	@webfinger_registry {
+		path /.well-known/webfinger
+		query resource=*registry@*
+	}
+	handle @webfinger_registry {
+		reverse_proxy apoci:5000
+	}
+
+	# Matrix .well-known — 301 to the matrix subdomain.
+	@matrix path /.well-known/matrix/*
+	handle @matrix {
+		header Access-Control-Allow-Origin *
+		redir https://matrix.erwanleboucher.dev{uri} 301
+	}
+
+	# GoToSocial/ActivityPub .well-knowns — 301 to the gts subdomain. Must come
+	# *after* the registry-webfinger rule so apoci still handles its own case.
+	@fediverse path /.well-known/webfinger /.well-known/host-meta* /.well-known/nodeinfo*
+	handle @fediverse {
+		redir https://gts.erwanleboucher.dev{uri} 301
+	}
+
+	# Everything else → anubis bot-challenge; anubis forwards non-challenge
+	# traffic back to caddy:8082 which passes it through to the S3 website.
+	reverse_proxy anubis:8083
+}
+
+
+:8082 {
+	reverse_proxy http://erwanleboucher.dev.s3-website.rbx.io.cloud.ovh.net {
+		header_up Host erwanleboucher.dev.s3-website.rbx.io.cloud.ovh.net
+	}
+}

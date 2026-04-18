@@ -1,0 +1,47 @@
+---
+name: tunnel
+
+services:
+  towonel-node:
+    # renovate: datasource=docker depName=git.erwanleboucher.dev/eleboucher/towonel-node
+    image: git.erwanleboucher.dev/eleboucher/towonel-node:0.0.1
+    container_name: towonel-node
+    restart: unless-stopped
+    environment:
+      RUST_LOG: info
+      TOWONEL_IDENTITY__KEY_PATH: /data/node.key
+      TOWONEL_HUB__ENABLED: "true"
+      TOWONEL_HUB__DB_PATH: /data/hub.db
+      TOWONEL_HUB__LISTEN_ADDR: 0.0.0.0:8443
+      TOWONEL_HUB__PUBLIC_URL: https://towonel.erwanleboucher.dev
+      TOWONEL_HUB__OPERATOR_API_KEY_PATH: /data/operator.key
+      TOWONEL_EDGE__ENABLED: "true"
+      TOWONEL_EDGE__LISTEN_ADDR: 0.0.0.0:4443
+      TOWONEL_EDGE__HEALTH_LISTEN_ADDR: 0.0.0.0:9092
+      TOWONEL_EDGE__PUBLIC_ADDRESSES: '["tunnel.erwanleboucher.dev:443"]'
+      TOWONEL_EDGE__TLS__CERT_DIR: /data/certs
+      TOWONEL_EDGE__TLS__ACME_EMAIL: ${TOWONEL_ACME_EMAIL}
+      TOWONEL_EDGE__TLS__HTTP_LISTEN_ADDR: 0.0.0.0:8081
+    ports:
+      - "${VPS_ADD_IP}:443:4443"
+      - "${VPS_ADD_IP}:80:8081"
+    labels:
+      - prometheus.scrape=true
+      - prometheus.port=9092
+      - prometheus.job=towonel-node
+    volumes:
+      - /opt/towonel:/data
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -sf
+        - http://localhost:9092/health
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  default:
+    name: edge
+    external: true

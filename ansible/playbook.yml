@@ -127,6 +127,12 @@
       community.general.ufw:
         state: enabled
         policy: deny
+    - name: Create edge docker network
+      community.docker.docker_network:
+        name: edge
+        driver: bridge
+        state: present
+
     - name: Create doco-cd directory
       ansible.builtin.file:
         path: /opt/doco-cd
