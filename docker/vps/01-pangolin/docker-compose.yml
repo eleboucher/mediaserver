@@ -49,9 +49,6 @@ services:
     image: ghcr.io/crowdsecurity/crowdsec:v1.7.7
     labels:
       - traefik.enable=false
-      - prometheus.scrape=true
-      - prometheus.port=6060
-      - prometheus.job=crowdsec
     ports:
       - 6060:6060
     restart: unless-stopped
@@ -71,6 +68,7 @@ services:
         target: /etc/crowdsec/scenarios/ban-ai-crawlers.yaml
       - source: crowdsec_whitelist_postoverflows
         target: /etc/crowdsec/postoverflows/s01-whitelist/my-whitelists.yaml
+
   gerbil:
     image: ghcr.io/fosrl/gerbil:1.3.1
     container_name: gerbil
@@ -120,46 +118,6 @@ services:
         target: /etc/traefik/traefik_config.yml
       - source: traefik_dynamic_config
         target: /etc/traefik/dynamic_config.yml
-  node-exporter:
-    image: quay.io/prometheus/node-exporter:v1.11.1
-    container_name: node-exporter
-    restart: unless-stopped
-    # Shares Gerbil's network namespace so node_exporter is accessible
-    # at the Gerbil WireGuard IP (100.89.128.1) on port 9100
-    network_mode: service:gerbil
-    pid: host
-    command:
-      - --path.procfs=/host/proc
-      - --path.sysfs=/host/sys
-      - --path.rootfs=/host/root
-      - --web.listen-address=:9100
-    volumes:
-      - /proc:/host/proc:ro,rslave
-      - /sys:/host/sys:ro,rslave
-      - /:/host/root:ro,rslave
-    depends_on:
-      gerbil:
-        condition: service_started
-
-  prometheus-agent:
-    image: quay.io/prometheus/prometheus:v3.11.2
-    container_name: prometheus-agent
-    restart: unless-stopped
-    group_add:
-      - 989
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-      - --agent
-      - --storage.agent.path=/prometheus
-    depends_on:
-      - node-exporter
-    network_mode: service:gerbil
-    configs:
-      - source: prometheus_agent_config
-        target: /etc/prometheus/prometheus.yml
-    volumes:
-      - prometheus-data:/prometheus
-      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   anubis-website:
     image: ghcr.io/techarohq/anubis:v1.25.0
@@ -183,133 +141,6 @@ services:
       gerbil:
         condition: service_started
 
-  apoci:
-    image: git.erwanleboucher.dev/eleboucher/apoci:0.0.24
-    container_name: apoci
-    restart: unless-stopped
-    user: "1000:1000"
-    labels:
-      - prometheus.scrape=true
-      - prometheus.port=9090
-      - prometheus.job=apoci
-    depends_on:
-      apoci-postgres:
-        condition: service_healthy
-    volumes:
-      - /opt/apoci/data:/apoci/storage
-    configs:
-      - source: apoci_config
-        target: /apoci/config/apoci.yaml
-    healthcheck:
-      test:
-        - "CMD"
-        - "wget"
-        - "-q"
-        - "--spider"
-        - "http://localhost:5000/healthz"
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
-  apoci-postgres:
-    image: postgres:17-alpine
-    container_name: apoci-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: apoci
-      POSTGRES_PASSWORD: apoci
-      POSTGRES_DB: apoci
-    volumes:
-      - apoci-pg-data:/var/lib/postgresql/data
-    healthcheck:
-      test:
-        - "CMD-SHELL"
-        - "pg_isready -U apoci"
-      interval: 5s
-      timeout: 3s
-      retries: 5
-
-  apoci-postgres-backup:
-    image: ghcr.io/itbm/postgresql-backup-s3:1.2.3
-    container_name: apoci-postgres-backup
-    restart: unless-stopped
-    depends_on:
-      apoci-postgres:
-        condition: service_healthy
-    environment:
-      POSTGRES_HOST: apoci-postgres
-      POSTGRES_DATABASE: apoci
-      POSTGRES_USER: apoci
-      POSTGRES_PASSWORD: apoci
-      S3_ENDPOINT: ${OVH_S3_ENDPOINT}
-      S3_BUCKET: homelab-postgres
-      S3_PREFIX: apoci
-      S3_ACCESS_KEY_ID: ${OVH_S3_ACCESS_KEY_ID}
-      S3_SECRET_ACCESS_KEY: ${OVH_S3_SECRET_ACCESS_KEY}
-      S3_S3V4: "yes"
-      SCHEDULE: "0 */6 * * *"
-      DELETE_OLDER_THAN: "30 days ago"
-
-  fluent-bit:
-    image: cr.fluentbit.io/fluent/fluent-bit:5.0
-    container_name: fluent-bit
-    restart: unless-stopped
-    network_mode: service:gerbil
-    environment:
-      - VICTORIA_LOGS_HOST=10.43.249.113
-    depends_on:
-      gerbil:
-        condition: service_started
-    volumes:
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /opt/pangolin/traefik-logs:/var/log/traefik:ro
-      - fluent-bit-data:/fluent-bit/data
-    configs:
-      - source: fluent_bit_config
-        target: /fluent-bit/etc/fluent-bit.conf
-      - source: fluent_bit_enrich
-        target: /fluent-bit/etc/enrich.lua
-      - source: fluent_bit_custom_parsers
-        target: /fluent-bit/etc/custom-parsers.conf
-
-  turbo-node:
-    image: git.erwanleboucher.dev/eleboucher/turbo-node:sha-13a022941d1bea5a852fffd7c20349aab79c311a
-    container_name: turbo-node
-    restart: unless-stopped
-    environment:
-      RUST_LOG: info
-      TURBO_IDENTITY__KEY_PATH: /data/node.key
-      TURBO_HUB__ENABLED: "true"
-      TURBO_HUB__DB_PATH: /data/hub.db
-      TURBO_HUB__LISTEN_ADDR: 0.0.0.0:8443
-      TURBO_HUB__PUBLIC_URL: https://turbo.erwanleboucher.dev
-      TURBO_HUB__OPERATOR_API_KEY_PATH: /data/operator.key
-      TURBO_EDGE__ENABLED: "true"
-      TURBO_EDGE__LISTEN_ADDR: 0.0.0.0:4443
-      TURBO_EDGE__HEALTH_LISTEN_ADDR: 0.0.0.0:9092
-      TURBO_EDGE__PUBLIC_ADDRESSES: '["tunnel.erwanleboucher.dev:443"]'
-      TURBO_EDGE__TLS__CERT_DIR: /data/certs
-      TURBO_EDGE__TLS__ACME_EMAIL: ${TURBO_ACME_EMAIL}
-      TURBO_EDGE__TLS__HTTP_LISTEN_ADDR: 0.0.0.0:8081
-    ports:
-      - "${VPS_ADD_IP}:443:4443"
-      - "${VPS_ADD_IP}:80:8081"
-    labels:
-      - prometheus.scrape=true
-      - prometheus.port=9092
-      - prometheus.job=turbo-node
-    volumes:
-      - /opt/turbo-tunnel:/data
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - -sf
-        - http://localhost:9092/health
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
   geoipupdate:
     container_name: geoipupdate
     image: ghcr.io/maxmind/geoipupdate:v7.1.1
@@ -321,77 +152,6 @@ services:
       - GEOIPUPDATE_FREQUENCY=72
     volumes:
       - "/opt/pangolin/config/GeoLite2:/usr/share/GeoIP"
-
-  forgejo-runner-dind:
-    image: docker:29-dind
-    container_name: forgejo-runner-dind
-    restart: unless-stopped
-    privileged: true
-    command:
-      - dockerd
-      - -H
-      - tcp://0.0.0.0:2375
-      - --tls=false
-    ports:
-      - 127.0.0.1:2375:2375
-    volumes:
-      - forgejo-runner-dind-data:/var/lib/docker
-
-  forgejo-runner:
-    image: data.forgejo.org/forgejo/runner:12
-    container_name: forgejo-runner
-    restart: unless-stopped
-    depends_on:
-      forgejo-runner-dind:
-        condition: service_started
-    environment:
-      DOCKER_HOST: tcp://forgejo-runner-dind:2375
-      FORGEJO_RUNNER_UUID: ${FORGEJO_RUNNER_UUID}
-      FORGEJO_RUNNER_TOKEN: ${FORGEJO_RUNNER_TOKEN}
-    user: 1001:1001
-    working_dir: /data
-    volumes:
-      - /opt/forgejo-runner/data:/data
-    entrypoint:
-      - sh
-      - -c
-      - |
-        set -e
-        umask 077
-        cat > /data/runner-config.yml <<EOF
-        cache:
-          enabled: true
-          dir: /data/cache
-        container:
-          docker_host: tcp://forgejo-runner-dind:2375
-          options: --add-host=forgejo-runner-dind:host-gateway
-          workdir_parent: /data/workdir
-        log:
-          level: info
-        runner:
-          capacity: 1
-          envs:
-            DOCKER_HOST: tcp://forgejo-runner-dind:2375
-          file: .runner
-          labels:
-            - ubuntu-latest:docker://ghcr.io/bjw-s-labs/forgejo-runner:ubuntu-24.04
-            - default:docker://ghcr.io/bjw-s-labs/forgejo-runner:ubuntu-24.04
-            - docker:docker://ghcr.io/bjw-s-labs/forgejo-runner:ubuntu-24.04
-          timeout: 3h
-        server:
-          connections:
-            forgejo:
-              url: https://git.erwanleboucher.dev/
-              uuid: "$${FORGEJO_RUNNER_UUID}"
-              token: "$${FORGEJO_RUNNER_TOKEN}"
-        EOF
-        exec forgejo-runner daemon --config /data/runner-config.yml
-
-volumes:
-  apoci-pg-data:
-  fluent-bit-data:
-  forgejo-runner-dind-data:
-  prometheus-data:
 
 networks:
   default:
@@ -415,13 +175,3 @@ configs:
     file: ./config/crowdsec/ban-ai-crawlers.yaml
   crowdsec_whitelist_postoverflows:
     file: ./config/crowdsec/my-whitelist-postoverflows.yaml
-  apoci_config:
-    file: ./config/apoci/apoci.yaml
-  fluent_bit_config:
-    file: ./config/fluent-bit/fluent-bit.conf
-  fluent_bit_enrich:
-    file: ./config/fluent-bit/enrich.lua
-  fluent_bit_custom_parsers:
-    file: ./config/fluent-bit/custom-parsers.conf
-  prometheus_agent_config:
-    file: ./config/prometheus/prometheus.yml

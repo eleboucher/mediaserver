@@ -4,13 +4,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: turbo-agent
+  name: towonel-agent
 spec:
   interval: 1h
-  path: ./kubernetes/apps/network/turbo-agent/app
+  path: ./kubernetes/apps/network/towonel-agent/app
   postBuild:
     substitute:
-      APP: turbo-agent
+      APP: towonel-agent
       APP_NAMESPACE: network
   prune: true
   sourceRef:

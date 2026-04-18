@@ -27,3 +27,16 @@ configs:
       [server.services.forgejo-ssh]
       token = "${RATHOLE_FORGEJO_SSH_TOKEN}"
       bind_addr = "0.0.0.0:2222"
+
+      [server.services.prom-write]
+      token = "${RATHOLE_FORGEJO_SSH_TOKEN}"
+      bind_addr = "0.0.0.0:9090"
+
+      [server.services.vlogs-write]
+      token = "${RATHOLE_FORGEJO_SSH_TOKEN}"
+      bind_addr = "0.0.0.0:9428"
+
+networks:
+  default:
+    name: edge
+    external: true

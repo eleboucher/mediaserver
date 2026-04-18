@@ -3,7 +3,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: turbo-agent
+  name: towonel-agent
 spec:
   interval: 15m
   layerSelector:

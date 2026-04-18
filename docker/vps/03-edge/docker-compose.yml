@@ -1,0 +1,63 @@
+---
+name: edge
+
+services:
+  caddy:
+    # renovate: datasource=docker depName=caddy
+    image: docker.io/library/caddy:2.11-alpine
+    container_name: caddy
+    restart: unless-stopped
+    environment:
+      CADDY_ACME_EMAIL: ${TOWONEL_ACME_EMAIL}
+    ports:
+      - "${VPS_IP}:80:80"
+      - "${VPS_IP}:443:443"
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    networks:
+      - default
+      - legacy
+    labels:
+      - prometheus.scrape=false
+
+  anubis:
+    # renovate: datasource=docker depName=ghcr.io/techarohq/anubis
+    image: ghcr.io/techarohq/anubis:v1.25.0
+    container_name: anubis
+    restart: unless-stopped
+    environment:
+      BIND: ":8083"
+      DIFFICULTY: "4"
+      ED25519_PRIVATE_KEY_HEX: ${ANUBIS_ED25519_PRIVATE_KEY_HEX}
+      METRICS_BIND: ":9091"
+      OG_EXPIRY_TIME: "24h"
+      OG_PASSTHROUGH: "true"
+      POLICY_FNAME: "/etc/anubis/policy.yaml"
+      SERVE_ROBOTS_TXT: "true"
+      REDIRECT_DOMAINS: "erwanleboucher.dev"
+      TARGET: "http://caddy:8082"
+    configs:
+      - source: anubis_policy
+        target: /etc/anubis/policy.yaml
+
+volumes:
+  caddy-data:
+  caddy-config:
+
+configs:
+  caddyfile:
+    file: ./config/Caddyfile
+  anubis_policy:
+    file: ./config/anubis-policy.yaml
+
+networks:
+  default:
+    name: edge
+    external: true
+  legacy:
+    name: pangolin
+    external: true
