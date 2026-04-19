@@ -60,7 +60,7 @@ spec:
           app:
             image:
               repository: ghcr.io/m00nwtchr/kanidm-provision
-              tag: main@sha256:c94a5176f765d9bd0e094570022b9b64a6c683d5a847de8bd229c5f56eaf7c72
+              tag: main@sha256:5453cca3794eb615a35b90352ffe82b5af8b4e9d9936b1d118da5bbca58b78db
             env:
               KANIDM_INSTANCE: https://idm.erwanleboucher.dev
               KANIDM_NAMESPACE: security
