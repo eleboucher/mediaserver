@@ -20,4 +20,5 @@ external_secrets:
   TOWONEL_EDGE_INVITE_TOKEN: "op://kubernetes/towonel-hub/edge_invite_token"
   FORGEJO_RUNNER_UUID: "op://kubernetes/forgejo-runner-vps/uuid"
   FORGEJO_RUNNER_TOKEN: "op://kubernetes/forgejo-runner-vps/token"
+  FORGEJO_RUNNER_FREEK_TOKEN: "op://kubernetes/forgejo-runner-freek/token"
   RATHOLE_FORGEJO_SSH_TOKEN: "op://kubernetes/rathole/forgejo_ssh_token"
