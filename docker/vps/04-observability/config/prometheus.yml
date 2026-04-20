@@ -44,3 +44,11 @@ scrape_configs:
         target_label: job
       - target_label: instance
         replacement: edge-vps
+
+  - job_name: towonel-hub
+    static_configs:
+      - targets:
+          - towonel-node:9091
+    relabel_configs:
+      - target_label: instance
+        replacement: edge-vps

@@ -15,6 +15,7 @@ services:
       TOWONEL_HUB__DATABASE__DRIVER: sqlite
       TOWONEL_HUB__DATABASE__DSN: /data/hub.db
       TOWONEL_HUB__LISTEN_ADDR: 0.0.0.0:8443
+      TOWONEL_HUB__HEALTH_LISTEN_ADDR: 0.0.0.0:9091
       TOWONEL_HUB__PUBLIC_URL: https://towonel.erwanleboucher.dev
       TOWONEL_HUB__OPERATOR_API_KEY_PATH: /data/operator.key
       TOWONEL_EDGE__ENABLED: "true"
