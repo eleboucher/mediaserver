@@ -12,7 +12,7 @@ doco-cd.erwanleboucher.dev {
 }
 
 towonel.erwanleboucher.dev {
-	reverse_proxy towonel-node:8443
+	reverse_proxy towonel-hub:8443
 }
 
 k8s-schemas.erwanleboucher.dev {
