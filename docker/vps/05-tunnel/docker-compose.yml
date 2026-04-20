@@ -1,11 +1,17 @@
 ---
 name: tunnel
 
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
-  towonel-node:
+  towonel-hub:
     # renovate: datasource=docker depName=git.erwanleboucher.dev/eleboucher/towonel-node
     image: registry.erwanleboucher.dev/eleboucher/towonel-node:0.0.13
-    container_name: towonel-node
+    container_name: towonel-hub
     restart: unless-stopped
     user: "10001:10001"
     environment:
@@ -19,7 +25,45 @@ services:
       TOWONEL_HUB_HEALTH_LISTEN_ADDR: 0.0.0.0:9091
       TOWONEL_HUB_PUBLIC_URL: https://towonel.erwanleboucher.dev
       TOWONEL_HUB_OPERATOR_API_KEY_PATH: /data/operator.key
+      TOWONEL_EDGE_ENABLED: "false"
+    volumes:
+      - /opt/towonel/hub:/data
+    labels:
+      - prometheus.scrape=true
+      - prometheus.ports=9091
+      - prometheus.job=towonel-hub
+    healthcheck:
+      test:
+        - "CMD"
+        - "curl"
+        - "-fsS"
+        - "-o"
+        - "/dev/null"
+        - "http://127.0.0.1:8443/v1/health"
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "1.0"
+    logging: *default-logging
+
+  towonel-edge:
+    # renovate: datasource=docker depName=git.erwanleboucher.dev/eleboucher/towonel-node
+    image: registry.erwanleboucher.dev/eleboucher/towonel-node:0.0.13
+    container_name: towonel-edge
+    restart: unless-stopped
+    user: "10001:10001"
+    depends_on:
+      - towonel-hub
+    environment:
+      RUST_LOG: info
+      TOWONEL_HUB_ENABLED: "false"
       TOWONEL_EDGE_ENABLED: "true"
+      TOWONEL_EDGE_INVITE_TOKEN: ${TOWONEL_EDGE_INVITE_TOKEN}
       TOWONEL_EDGE_LISTEN_ADDR: 0.0.0.0:4443
       TOWONEL_EDGE_HEALTH_LISTEN_ADDR: 0.0.0.0:9092
       TOWONEL_EDGE_PUBLIC_ADDRESSES: tunnel.erwanleboucher.dev:443
@@ -29,12 +73,30 @@ services:
     ports:
       - "${VPS_ADD_IP}:443:4443"
       - "${VPS_ADD_IP}:80:8081"
+    volumes:
+      - /opt/towonel/edge:/data
     labels:
       - prometheus.scrape=true
-      - prometheus.ports=9091,9092
-      - prometheus.job=towonel-node
-    volumes:
-      - /opt/towonel:/data
+      - prometheus.ports=9092
+      - prometheus.job=towonel-edge
+    healthcheck:
+      test:
+        - "CMD"
+        - "curl"
+        - "-fsS"
+        - "-o"
+        - "/dev/null"
+        - "http://127.0.0.1:9092/health"
+      interval: 30s
+      timeout: 5s
+      start_period: 90s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "2.0"
+    logging: *default-logging
 
 networks:
   default:
