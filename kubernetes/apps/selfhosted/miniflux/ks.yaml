@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: miniflux
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: miniflux
+  components:
+    - ../../../../components/postgres/cert
+    - ../../../../components/oidc
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+    - name: external-secrets
+      namespace: security
+  interval: 1h
+  path: "./kubernetes/apps/selfhosted/miniflux/app"
+  postBuild:
+    substitute:
+      APP: miniflux
+      APP_NAMESPACE: selfhosted
+      OIDC_CALLBACK: /oauth2/oidc/callback
+      SUBDOMAIN: rss
+      OIDC_SCOPES: '["openid", "profile", "email", "groups"]'
+  prune: true
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: selfhosted
+  timeout: 5m
+  wait: false
