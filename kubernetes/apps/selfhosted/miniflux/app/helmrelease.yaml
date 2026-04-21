@@ -1,0 +1,88 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: miniflux
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: miniflux
+  interval: 1h
+  values:
+    controllers:
+      miniflux:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/miniflux/miniflux
+              tag: 2.2.19-distroless@sha256:c752402519127b6eb4081bace4bea3ca89465b2c7e3f354b7be020a822e3d8a3
+            env:
+              BASE_URL: https://rss.erwanleboucher.dev
+              CREATE_ADMIN: "1"
+              DISABLE_LOCAL_AUTH: "1"
+              RUN_MIGRATIONS: "1"
+              OAUTH2_PROVIDER: oidc
+              OAUTH2_REDIRECT_URL: https://rss.erwanleboucher.dev/oauth2/oidc/callback
+              OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.erwanleboucher.dev/oauth2/openid/miniflux
+              OAUTH2_OIDC_PROVIDER_NAME: kanidm
+              OAUTH2_USER_CREATION: "1"
+              TZ: Europe/Paris
+              OAUTH2_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-miniflux-oidc
+                    key: OAUTH2_CLIENT_ID
+              OAUTH2_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-miniflux-oidc
+                    key: OAUTH2_CLIENT_SECRET
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: miniflux-postgres
+                    key: url
+            envFrom:
+              - secretRef:
+                  name: miniflux
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              readOnlyRootFilesystem: true
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: &port 8080
+    route:
+      app:
+        hostnames:
+          - rss.erwanleboucher.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
