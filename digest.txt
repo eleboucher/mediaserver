@@ -1,0 +1,248 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pangolin-operator
+spec:
+  interval: 6h
+  path: ./kubernetes/apps/network/pangolin-operator/operator
+  prune: true
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: network
+  timeout: 5m
+  wait: true
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: pangolin-operator-site
+spec:
+  interval: 6h
+  path: ./kubernetes/apps/network/pangolin-operator/site
+  dependsOn:
+    - name: pangolin-operator
+  prune: true
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: pangolin-operator-secret
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 5m
+  wait: false
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: pangolin-operator
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    name: pangolin-operator-secret
+    template:
+      data:
+        PANGOLIN_API_URL: "{{ .api_url }}"
+        PANGOLIN_ENDPOINT: "{{ .server_url }}"
+        PANGOLIN_API_KEY: "{{ .api_key }}"
+        PANGOLIN_ORG_ID: "{{ .org_id }}"
+        VPS_IP: "{{ .vps_ip }}"
+  dataFrom:
+    - extract:
+        key: pangolin-operator
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pangolin-operator
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: pangolin-operator
+  interval: 1h
+  values:
+    pangolin:
+      existingSecret: pangolin-operator-secret
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+    controller:
+      logLevel: debug
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: network
+resources:
+  - ./helmrelease.yaml
+  - ./ocirepository.yaml
+  - ./externalsecret.yaml
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: pangolin-operator
+spec:
+  interval: 15m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.1.1
+  url: oci://ghcr.io/home-operations/charts/pangolin-operator
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: pangolin
+  namespace: network
+spec:
+  endpoints:
+    - dnsName: external.erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
+    - dnsName: pangolin.erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
+    - dnsName: api.erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
+    - dnsName: erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
+    - dnsName: www.erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
+    - dnsName: openpgpkey.erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
+    - dnsName: registry.erwanleboucher.dev
+      recordType: A
+      targets:
+        - ${VPS_IP}
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./newtsite.yaml
+  - ./dnsendpoint.yaml
+  - ./privresources.yaml
+  - ./publicresources.yaml
+  - ./localsite.yaml
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/newtsite_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: NewtSite
+metadata:
+  name: local
+spec:
+  name: local
+  type: local
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/newtsite_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: NewtSite
+metadata:
+  name: homelab
+spec:
+  name: homelab
+  newt:
+    # renovate: datasource=github-releases depName=fosrl/newt
+    tag: 1.11.0
+    mtu: 1380
+    acceptClients: true
+  autoDiscover:
+    annotationPrefix: pangolin-operator
+    denyCountries: RU,CN,KP,IR,BY,IL
+    gatewayName: envoy-external
+    gatewayNamespace: network
+    ssl: true
+    enableRouteDiscovery: true
+    enableServiceDiscovery: true
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/privateresource_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-pods
+  namespace: network
+spec:
+  name: Cluster Pod Network
+  siteRef: homelab
+  mode: cidr
+  destination: 10.42.0.0/16
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/privateresource_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-services
+  namespace: network
+spec:
+  name: Cluster Service Network
+  siteRef: homelab
+  mode: cidr
+  destination: 10.43.0.0/16
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/privateresource_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-nodes
+  namespace: network
+spec:
+  name: Cluster Node Network
+  siteRef: homelab
+  mode: cidr
+  destination: 192.168.1.0/24
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/privateresource_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: PrivateResource
+metadata:
+  name: cluster-bgp
+  namespace: network
+spec:
+  name: Cluster BGP Network
+  siteRef: homelab
+  mode: cidr
+  destination: 192.168.69.0/24
+---
+# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/pangolin.home-operations.com/publicresource_v1alpha1.json
+apiVersion: pangolin.home-operations.com/v1alpha1
+kind: PublicResource
+metadata:
+  name: k8s-schemas
+  namespace: network
+spec:
+  name: k8s-schemas
+  siteRef: local
+  fullDomain: k8s-schemas.erwanleboucher.dev
+  hostHeader: k8s-schemas.s3-website.rbx.io.cloud.ovh.net
+  protocol: http
+  targets:
+    - hostname: k8s-schemas.s3-website.rbx.io.cloud.ovh.net
+      port: 80
+      method: http
