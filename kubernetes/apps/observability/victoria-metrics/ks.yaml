@@ -6,8 +6,8 @@ metadata:
   name: victoria-metrics
 spec:
   dependsOn:
-    - name: openebs
-      namespace: openebs-system
+    - name: longhorn
+      namespace: longhorn-system
   interval: 1h
   path: ./kubernetes/apps/observability/victoria-metrics/app
   prune: true
