@@ -368,6 +368,13 @@ spec:
         extraArgs:
           promscrape.streamParse: "true"
           promscrape.maxScrapeSize: "32MB"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 1000m
+            memory: 500Mi
         inlineRelabelConfig:
           - action: drop
             source_labels:
