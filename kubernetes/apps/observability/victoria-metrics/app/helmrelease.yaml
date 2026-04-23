@@ -36,13 +36,13 @@ spec:
         extraArgs:
           promscrape.streamParse: "true"
           promscrape.maxScrapeSize: "32MB"
-        metricRelabelConfigs:
+        inlineRelabelConfig:
           - action: drop
-            sourceLabels:
+            source_labels:
               - __name__
             regex: "cpu_feature_.+"
           - action: drop
-            sourceLabels:
+            source_labels:
               - __name__
             regex: "kubernetes_feature_enabled"
           - action: labeldrop
