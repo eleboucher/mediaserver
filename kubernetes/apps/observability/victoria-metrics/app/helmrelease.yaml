@@ -12,10 +12,14 @@ spec:
   values:
     fullnameOverride: victoria-metrics
 
-    global:
-      clusterLabel: home
+    prometheus-node-exporter:
+      enabled: false
+
+    kube-state-metrics:
+      enabled: false
 
     victoria-metrics-operator:
+      fullnameOverride: victoria-metrics-operator
       crds:
         cleanup:
           image:
@@ -31,8 +35,30 @@ spec:
           - url: http://vmsingle-victoria-metrics.observability.svc.cluster.local:8428/api/v1/write
         extraArgs:
           promscrape.streamParse: "true"
-        externalLabels:
-          cluster: home
+          promscrape.maxScrapeSize: "32MB"
+        metricRelabelConfigs:
+          - action: drop
+            sourceLabels:
+              - __name__
+            regex: "cpu_feature_.+"
+          - action: drop
+            sourceLabels:
+              - __name__
+            regex: "kubernetes_feature_enabled"
+          - action: labeldrop
+            regex: "cpu_feature_node_kubevirt_io_.+"
+          - action: labeldrop
+            regex: "host_model_cpu_features_node_kubevirt_io_.+"
+          - action: labeldrop
+            regex: "host_model_required_features_node_kubevirt_io_.+"
+          - action: labeldrop
+            regex: "machine_type_node_kubevirt_io_.+"
+          - action: labeldrop
+            regex: "hyperv_node_kubevirt_io_.+"
+          - action: labeldrop
+            regex: "scheduling_node_kubevirt_io_.+"
+          - action: labeldrop
+            regex: "kubevirt_io_.+"
 
     vmalert:
       spec:
@@ -41,8 +67,6 @@ spec:
           url: http://vmsingle-victoria-metrics.observability.svc.cluster.local:8428/api/v1/write
         remoteRead:
           url: http://vmsingle-victoria-metrics.observability.svc.cluster.local:8428
-        externalLabels:
-          cluster: home
 
     alertmanager:
       spec:
@@ -104,7 +128,7 @@ spec:
                     {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
                     {{ end }}
                   {{ end }}
-                api_url:
+                webhook_url_secret:
                   name: vmalertmanager-secret
                   key: DISCORD_WEBHOOK_URL
       route:
@@ -119,6 +143,8 @@ spec:
       enabled: true
       spec:
         retentionPeriod: 90d
+        extraArgs:
+          maxLabelsPerTimeseries: "40"
         storage:
           storageClassName: longhorn
           resources:
