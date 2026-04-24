@@ -25,6 +25,26 @@ spec:
   shutdown:
     drainTimeout: 180s
   telemetry:
+    accessLog:
+      settings:
+        - format:
+            type: JSON
+            json:
+              authority: "%REQ(:AUTHORITY)%"
+              bytes_received: "%BYTES_RECEIVED%"
+              bytes_sent: "%BYTES_SENT%"
+              duration: "%DURATION%"
+              message: "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %RESPONSE_CODE%"
+              response_code: "%RESPONSE_CODE%"
+              response_flags: "%RESPONSE_FLAGS%"
+              start_time: "%START_TIME%"
+              upstream_host: "%UPSTREAM_HOST%"
+              user_agent: "%REQ(USER-AGENT)%"
+              x_forwarded_for: "%REQ(X-FORWARDED-FOR)%"
+          sinks:
+            - file:
+                path: /dev/stdout
+              type: File
     metrics:
       prometheus:
         compression:
