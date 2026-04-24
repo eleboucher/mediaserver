@@ -50,7 +50,7 @@ spec:
     source: discovered
   sessionStorage:
     provider: redis
-    address: toolhive-dragonfly:6379
+    address: dragonfly.database:6379
   podTemplateSpec:
     spec:
       containers:
