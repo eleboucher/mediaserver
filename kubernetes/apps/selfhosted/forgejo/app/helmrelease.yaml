@@ -38,6 +38,9 @@ spec:
       config:
         APP_NAME: "Erwan's Forge"
         APP_SLOGAN: "deep deep in the mine"
+        ui:
+          THEMES: forgejo-auto,forgejo-light,forgejo-dark,anthracite,anthracite-dark,anthracite-light
+          DEFAULT_THEME: anthracite
         ui.meta:
           AUTHOR: Erwan Leboucher
           DESCRIPTION: "Erwan's Forge"
@@ -147,6 +150,9 @@ spec:
         secret:
           secretName: forgejo-secret
           defaultMode: 0o400
+      - name: forgejo-themes
+        configMap:
+          name: forgejo-themes
     extraInitVolumeMounts:
       - name: postgres-forgejo
         mountPath: "/var/run/secrets/postgresql"
@@ -165,4 +171,7 @@ spec:
         subPath: ssh_host_ed25519_key
       - name: signing-key
         mountPath: /data/signing
+        readOnly: true
+      - name: forgejo-themes
+        mountPath: /data/gitea/public/assets/css
         readOnly: true
