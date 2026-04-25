@@ -16,11 +16,11 @@ configMapGenerator:
       - themes/theme-anthracite-light.css
   - name: forgejo-logo
     files:
-      - img/logo.svg
-      - img/logo.png
-      - img/favicon.svg
-      - img/favicon.png
-      - img/apple-touch-icon.png
+      - logo.svg=img/logo.svg.txt
+      - logo.png=img/logo.png.bin
+      - favicon.svg=img/favicon.svg.txt
+      - favicon.png=img/favicon.png.bin
+      - apple-touch-icon.png=img/apple-touch-icon.png.bin
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
