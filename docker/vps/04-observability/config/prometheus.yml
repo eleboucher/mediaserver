@@ -59,3 +59,11 @@ scrape_configs:
     relabel_configs:
       - target_label: instance
         replacement: edge-vps
+
+  - job_name: crowdsec
+    static_configs:
+      - targets:
+          - crowdsec:6060
+    relabel_configs:
+      - target_label: instance
+        replacement: edge-vps
