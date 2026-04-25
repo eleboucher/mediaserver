@@ -153,6 +153,9 @@ spec:
       - name: forgejo-themes
         configMap:
           name: forgejo-themes
+      - name: forgejo-logo
+        configMap:
+          name: forgejo-logo
     extraInitVolumeMounts:
       - name: postgres-forgejo
         mountPath: "/var/run/secrets/postgresql"
@@ -174,4 +177,7 @@ spec:
         readOnly: true
       - name: forgejo-themes
         mountPath: /data/gitea/public/assets/css
+        readOnly: true
+      - name: forgejo-logo
+        mountPath: /data/gitea/public/assets/img
         readOnly: true
