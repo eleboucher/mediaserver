@@ -1,0 +1,2 @@
+@import "theme-anthracite-dark.css";
+@import "theme-anthracite-light.css" (prefers-color-scheme: light);

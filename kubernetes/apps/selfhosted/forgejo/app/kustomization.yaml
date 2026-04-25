@@ -8,3 +8,13 @@ resources:
   - ./httproute.yaml
   - ./ocirepository.yaml
   - ./pubresource.yaml
+configMapGenerator:
+  - name: forgejo-themes
+    files:
+      - themes/theme-anthracite.css
+      - themes/theme-anthracite-dark.css
+      - themes/theme-anthracite-light.css
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
