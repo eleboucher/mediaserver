@@ -44,7 +44,7 @@ spec:
           limits:
             memory: 2Gi
           requests:
-            cpu: 500m
+            cpu: "1"
             memory: 2Gi
       networks:
         - name: default
