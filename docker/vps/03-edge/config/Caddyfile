@@ -3,13 +3,9 @@
 	http_port 8080
 	https_port 8443
 
-	# Hosts caddy serves locally (sites defined below) → loopback with PROXY v2.
-	# Everything else → towonel-edge raw passthrough; the edge tunnels to the
-	# cluster, which serves bluesky/gts/watch/etc. via envoy-external.
-	# towonel-edge does not speak PROXY protocol, so the default leg is raw.
 	layer4 {
 		:443 {
-			@local tls sni registry.erwanleboucher.dev doco-cd.erwanleboucher.dev towonel.erwanleboucher.dev k8s-schemas.erwanleboucher.dev openpgpkey.erwanleboucher.dev www.erwanleboucher.dev erwanleboucher.dev
+			@local tls sni {$VPS_LOCAL_HOSTS}
 			route @local {
 				proxy {
 					proxy_protocol v2
@@ -22,7 +18,7 @@
 			}
 		}
 		:80 {
-			@local_http http host registry.erwanleboucher.dev doco-cd.erwanleboucher.dev towonel.erwanleboucher.dev k8s-schemas.erwanleboucher.dev openpgpkey.erwanleboucher.dev www.erwanleboucher.dev erwanleboucher.dev
+			@local_http http host {$VPS_LOCAL_HOSTS}
 			route @local_http {
 				proxy {
 					proxy_protocol v2
