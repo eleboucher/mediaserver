@@ -3,17 +3,13 @@
 	http_port 8080
 	https_port 8443
 
-	# Upstreams must accept PROXY protocol v2: real client IP is otherwise
-	# lost across the SNI-passthrough hop. Applies to towonel-edge and the
-	# loopback caddy listeners on :8080/:8443.
+	# towonel-edge does not speak PROXY protocol, so tunnel.* legs forward raw.
+	# Loopback legs send PROXY v2 so caddy's http app sees the real client IP.
 	layer4 {
 		:443 {
 			@tunnel tls sni tunnel.erwanleboucher.dev
 			route @tunnel {
-				proxy {
-					proxy_protocol v2
-					upstream towonel-edge:4443
-				}
+				proxy towonel-edge:4443
 			}
 			@tls tls
 			route @tls {
@@ -26,10 +22,7 @@
 		:80 {
 			@tunnel_http http host tunnel.erwanleboucher.dev
 			route @tunnel_http {
-				proxy {
-					proxy_protocol v2
-					upstream towonel-edge:8081
-				}
+				proxy towonel-edge:8081
 			}
 			@http http
 			route @http {
