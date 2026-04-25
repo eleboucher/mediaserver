@@ -11,6 +11,14 @@ services:
     restart: unless-stopped
     environment:
       CADDY_ACME_EMAIL: ${TOWONEL_ACME_EMAIL}
+      VPS_LOCAL_HOSTS: >-
+        registry.erwanleboucher.dev
+        doco-cd.erwanleboucher.dev
+        towonel.erwanleboucher.dev
+        k8s-schemas.erwanleboucher.dev
+        openpgpkey.erwanleboucher.dev
+        www.erwanleboucher.dev
+        erwanleboucher.dev
     ports:
       - "${VPS_IP}:80:80"
       - "${VPS_IP}:443:443"
