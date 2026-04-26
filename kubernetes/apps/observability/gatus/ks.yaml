@@ -11,7 +11,7 @@ spec:
     - ../../../../components/volsync
   postBuild:
     substitute:
-      APP: atuin
+      APP: gatus
       APP_NAMESPACE: selfhosted
   prune: true
   retryInterval: 2m
