@@ -44,8 +44,8 @@ services:
       OG_EXPIRY_TIME: "24h"
       OG_PASSTHROUGH: "true"
       POLICY_FNAME: "/etc/anubis/policy.yaml"
-      SERVE_ROBOTS_TXT: "true"
       REDIRECT_DOMAINS: "erwanleboucher.dev"
+      SERVE_ROBOTS_TXT: "true"
       TARGET: "http://caddy:8082"
     configs:
       - source: anubis_policy
