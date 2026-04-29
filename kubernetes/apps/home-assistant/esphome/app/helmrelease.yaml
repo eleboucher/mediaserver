@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: esphome
+  namespace: home
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: esphome
+  values:
+    controllers:
+      esphome:
+        pod:
+          securityContext:
+            fsGroup: 2000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 2000
+            runAsUser: 2000
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/esphome
+              tag: 2026.3.2@sha256:2ba540801aafc0074baeb313471cdd5af378a314d5515c47f7ef96c63986f9da
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 5m
+                memory: 512Mi
+              limits:
+                memory: 3072Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    service:
+      app:
+        forceRename: "{{.Release.Name}}"
+        ports:
+          http:
+            port: &esphome-port 6052
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        advancedMounts:
+          esphome:
+            app:
+              - path: /config
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          esphome:
+            app:
+              - path: /cache
+                subPath: cache
+              - path: /tmp
+                subPath: esphome-tmp
+    route:
+      app:
+        hostnames:
+          - esphome.erwanleboucher.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - identifier: app
+                port: *esphome-port
