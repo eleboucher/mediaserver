@@ -14,7 +14,10 @@
 			}
 			@tls tls
 			route @tls {
-				proxy towonel-hub:4443
+				proxy {
+					proxy_protocol v2
+					upstream towonel-hub:4443
+				}
 			}
 		}
 		:80 {
