@@ -18,6 +18,8 @@ spec:
       enabled: true
       grafanaOperator:
         enabled: true
+    vector:
+      enabled: false
     server:
       persistentVolume:
         enabled: true
