@@ -8,6 +8,7 @@ metadata:
   namespace: flux-system
 spec:
   components:
+    - ../../../../components/oidc/envoy
     - ../../../../components/volsync
     - ../../../../components/nfs-scaler
   interval: 1h
@@ -23,6 +24,9 @@ spec:
     substitute:
       APP: prowlarr
       APP_NAMESPACE: media
+      OIDC_DISPLAY_NAME: Prowlarr
+      OIDC_GROUP: admins
+      OIDC_SCOPES: '["openid", "profile"]'
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_SCHEDULE: "10 1-23/2 * * *"
   prune: true

@@ -30,6 +30,10 @@ spec:
             env:
               - name: TZ
                 value: "Europe/Paris"
+              - name: SONARR__AUTH__METHOD
+                value: External
+              - name: SONARR__AUTH__REQUIRED
+                value: DisabledForLocalAddresses
             probes:
               liveness: &probes
                 enabled: true

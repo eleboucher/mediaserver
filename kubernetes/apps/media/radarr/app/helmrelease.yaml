@@ -30,6 +30,10 @@ spec:
             env:
               - name: TZ
                 value: "Europe/Paris"
+              - name: RADARR__AUTH__METHOD
+                value: External
+              - name: RADARR__AUTH__REQUIRED
+                value: DisabledForLocalAddresses
             probes:
               liveness: &probes
                 enabled: true
