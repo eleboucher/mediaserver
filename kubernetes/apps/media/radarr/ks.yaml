@@ -8,6 +8,7 @@ metadata:
   namespace: flux-system
 spec:
   components:
+    - ../../../../components/oidc/envoy
     - ../../../../components/volsync
     - ../../../../components/nfs-scaler
   interval: 1h
@@ -20,6 +21,10 @@ spec:
   postBuild:
     substitute:
       APP: radarr
+      APP_NAMESPACE: media
+      OIDC_DISPLAY_NAME: Radarr
+      OIDC_GROUP: admins
+      OIDC_SCOPES: '["openid", "profile"]'
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_SCHEDULE: "10 1-23/2 * * *"
   prune: true

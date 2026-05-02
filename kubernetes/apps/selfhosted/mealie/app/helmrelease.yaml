@@ -43,6 +43,19 @@ spec:
               SMTP_USER: mealie@erwanleboucher.dev
               OPENAI_BASE_URL: http://ollama.ai:11434/v1
               OPENAI_API_KEY: mealie
+              OIDC_AUTH_ENABLED: "true"
+              OIDC_AUTO_REDIRECT: "true"
+              OIDC_ADMIN_GROUP: admins@idm.erwanleboucher.dev
+              OIDC_USER_GROUP: users@idm.erwanleboucher.dev
+              OIDC_CLIENT_ID: mealie
+              OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-mealie-oidc
+                    key: client-secret
+              OIDC_CONFIGURATION_URL: https://idm.erwanleboucher.dev/oauth2/openid/mealie/.well-known/openid-configuration
+              OIDC_PROVIDER_NAME: Kanidm
+              OIDC_REMEMBER_ME: "true"
             resources:
               requests:
                 memory: 250Mi

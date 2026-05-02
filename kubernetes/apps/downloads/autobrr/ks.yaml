@@ -7,6 +7,7 @@ metadata:
   namespace: flux-system
 spec:
   components:
+    - ../../../../components/oidc
     - ../../../../components/volsync
     - ../../../../components/nfs-scaler
   interval: 1h
@@ -20,6 +21,10 @@ spec:
     substitute:
       APP: autobrr
       APP_NAMESPACE: downloads
+      OIDC_CALLBACK: /api/auth/oidc/callback
+      OIDC_GROUP: admins
+      OIDC_LEGACY_CRYPTO: "true"
+      OIDC_SHORT_USERNAME: "true"
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_SCHEDULE: "40 1-23/2 * * *"
   prune: true

@@ -7,6 +7,7 @@ metadata:
   namespace: flux-system
 spec:
   components:
+    - ../../../../components/oidc/envoy
     - ../../../../components/volsync
     - ../../../../components/nfs-scaler
   interval: 1h
@@ -17,6 +18,11 @@ spec:
   postBuild:
     substitute:
       APP: qbittorrent
+      APP_NAMESPACE: downloads
+      OIDC_DISPLAY_NAME: qBittorrent
+      OIDC_GROUP: admins
+      OIDC_SCOPES: '["openid", "profile"]'
+      SUBDOMAIN: qbit
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_SCHEDULE: "30 1-23/2 * * *"
   prune: true

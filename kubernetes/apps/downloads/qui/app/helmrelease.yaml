@@ -38,6 +38,21 @@ spec:
                 value: "/"
               - name: QUI__PORT
                 value: "8080"
+              - name: QUI__OIDC_CLIENT_ID
+                value: "qui"
+              - name: QUI__OIDC_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-qui-oidc
+                    key: client-secret
+              - name: QUI__OIDC_DISABLE_BUILT_IN_LOGIN
+                value: "true"
+              - name: QUI__OIDC_ENABLED
+                value: "true"
+              - name: QUI__OIDC_ISSUER
+                value: "https://idm.erwanleboucher.dev/oauth2/openid/qui"
+              - name: QUI__OIDC_REDIRECT_URL
+                value: "https://qui.erwanleboucher.dev/api/auth/oidc/callback"
             probes:
               liveness: &probes
                 enabled: true

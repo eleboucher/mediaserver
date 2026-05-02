@@ -6,6 +6,7 @@ metadata:
   name: &app mealie
 spec:
   components:
+    - ../../../../components/oidc
     - ../../../../components/postgres/cert
     - ../../../../components/volsync
   dependsOn:
@@ -17,6 +18,10 @@ spec:
     substitute:
       APP: *app
       APP_NAMESPACE: selfhosted
+      OIDC_CALLBACK: /login
+      OIDC_DISPLAY_NAME: Mealie
+      OIDC_LEGACY_CRYPTO: "true"
+      OIDC_SHORT_USERNAME: "true"
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   sourceRef:
