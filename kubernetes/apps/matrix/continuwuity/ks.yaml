@@ -14,17 +14,17 @@ spec:
     - name: longhorn
       namespace: longhorn-system
   interval: 1h
-  path: "./kubernetes/apps/selfhosted/continuwuity/app"
+  path: "./kubernetes/apps/matrix/continuwuity/app"
   postBuild:
     substitute:
       APP: continuwuity
-      APP_NAMESPACE: selfhosted
+      APP_NAMESPACE: matrix
       VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: OCIRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: selfhosted
+  targetNamespace: matrix
   timeout: 5m
   wait: false

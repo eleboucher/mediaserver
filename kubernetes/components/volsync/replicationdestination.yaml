@@ -32,5 +32,6 @@ spec:
     repository: ${APP}-volsync-secret
     sourceIdentity:
       sourceName: ${APP}
+      sourceNamespace: ${VOLSYNC_SOURCE_NAMESPACE:=${APP_NAMESPACE}}
     storageClassName: ${VOLSYNC_STORAGECLASS:=longhorn-snapshot}
     volumeSnapshotClassName: ${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapclass}

@@ -17,12 +17,12 @@ spec:
     - name: longhorn
       namespace: longhorn-system
   interval: 1h
-  path: "./kubernetes/apps/selfhosted/forgejo/app"
+  path: "./kubernetes/apps/forgejo/forgejo/app"
   postBuild:
     substitute:
       APP: forgejo
-      ANUBIS_TARGET: "http://forgejo-http.selfhosted.svc:3000"
-      APP_NAMESPACE: selfhosted
+      ANUBIS_TARGET: "http://forgejo-http.forgejo.svc:3000"
+      APP_NAMESPACE: forgejo
       VOLSYNC_CAPACITY: 20Gi
       OIDC_CALLBACK: /user/oauth2/kanidm/callback
       SUBDOMAIN: git
@@ -32,26 +32,6 @@ spec:
     kind: OCIRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: selfhosted
-  timeout: 5m
-  wait: false
----
-# yaml-language-server: $schema=https://k8s-schemas.erwanleboucher.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: forgejo-runner
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: forgejo
-  interval: 1h
-  path: "./kubernetes/apps/selfhosted/forgejo/runner"
-  prune: true
-  sourceRef:
-    kind: OCIRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: selfhosted
+  targetNamespace: forgejo
   timeout: 5m
   wait: false
