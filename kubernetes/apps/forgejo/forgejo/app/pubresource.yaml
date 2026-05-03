@@ -4,7 +4,7 @@ apiVersion: pangolin.home-operations.com/v1alpha1
 kind: PublicResource
 metadata:
   name: forgejo-ssh
-  namespace: selfhosted
+  namespace: forgejo
 spec:
   name: Forgejo SSH
   siteRef: homelab

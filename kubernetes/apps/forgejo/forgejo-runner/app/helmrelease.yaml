@@ -24,7 +24,7 @@ spec:
             host:
               workdir_parent: /data/act
             kubernetes:
-              namespace: selfhosted
+              namespace: forgejo
               poll_timeout: 10m
             log:
               level: info
@@ -32,7 +32,7 @@ spec:
               k8s:
                 address: "unix:///plugin/forgejo-runner-k8s.sock"
                 options:
-                  namespace: selfhosted
+                  namespace: forgejo
                   poll_timeout: 10m
             runner:
               capacity: 2
