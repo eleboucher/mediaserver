@@ -20,7 +20,6 @@ spec:
     substitute:
       APP: sparkyfitness
       APP_UID: "1000"
-      VOLSYNC_CLAIM: sparkyfitness-data
       VOLSYNC_CAPACITY: 15Gi
   prune: true
   sourceRef:
