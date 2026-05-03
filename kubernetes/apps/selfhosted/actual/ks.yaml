@@ -18,7 +18,6 @@ spec:
   postBuild:
     substitute:
       APP: actual
-      VOLSYNC_CLAIM: actual-data
   prune: true
   sourceRef:
     kind: OCIRepository
