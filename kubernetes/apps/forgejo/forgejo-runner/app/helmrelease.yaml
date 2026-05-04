@@ -10,6 +10,8 @@ spec:
     name: forgejo-runner
   interval: 30m
   values:
+    defaultPodOptions:
+      automountServiceAccountToken: true
     configMaps:
       config:
         suffix: config
@@ -174,8 +176,6 @@ spec:
                 drop:
                   - ALL
 
-    serviceAccount:
-      forgejo-runner: {}
     rbac:
       roles:
         forgejo-runner:

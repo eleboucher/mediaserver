@@ -10,6 +10,8 @@ spec:
     name: publish-k8s-schemas
   interval: 30m
   values:
+    defaultPodOptions:
+      automountServiceAccountToken: true
     controllers:
       k8s-schemas:
         type: cronjob
@@ -126,5 +128,3 @@ spec:
             identifier: k8s-schemas
           subjects:
             - identifier: k8s-schemas
-    serviceAccount:
-      k8s-schemas: {}
