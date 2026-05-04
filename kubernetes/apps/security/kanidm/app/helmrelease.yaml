@@ -10,6 +10,8 @@ spec:
     name: kanidm
   interval: 30m
   values:
+    defaultPodOptions:
+      automountServiceAccountToken: true
     controllers:
       kanidm:
         replicas: 1
@@ -172,5 +174,3 @@ spec:
             port: *port
           ldap:
             port: 3636
-    serviceAccount:
-      kanidm: {}
