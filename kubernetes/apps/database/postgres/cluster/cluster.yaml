@@ -45,6 +45,7 @@ spec:
   postgresql:
     pg_hba:
       - hostssl all all all cert clientcert=verify-full map=pooler-map
+      - host all all all scram-sha-256
     pg_ident:
       - pooler-map pooler-rw all
     shared_preload_libraries:
