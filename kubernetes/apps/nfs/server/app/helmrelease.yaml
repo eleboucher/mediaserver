@@ -47,12 +47,25 @@ spec:
                     command:
                       - sh
                       - -c
-                      - rpcinfo -T tcp localhost 100003 >/dev/null
+                      - rpcinfo -T tcp localhost 100003 >/dev/null && exportfs -s | grep -q /mnt/media
                   initialDelaySeconds: 30
                   periodSeconds: 30
                   timeoutSeconds: 10
                   failureThreshold: 6
               readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - rpcinfo -T tcp localhost 100003 >/dev/null && exportfs -s | grep -q /mnt/media
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 50m
