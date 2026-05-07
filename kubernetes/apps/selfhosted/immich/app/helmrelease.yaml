@@ -49,17 +49,6 @@ spec:
               resources:
                 requests:
                   cpu: 11m
-      persistence:
-        metadata:
-          forceRename: immich-metadata
-          size: 30Gi
-          storageClass: ceph-block
-          accessMode: ReadWriteOnce
-          globalMounts:
-            - path: /data/thumbs
-              subPath: thumbs
-            - path: /data/encoded-video
-              subPath: encoded-video
 
     machine-learning:
       controllers:
