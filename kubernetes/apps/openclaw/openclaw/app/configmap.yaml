@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-configmap
+data:
+  openclaw.json: |-
+    {
+      "gateway": {
+        "auth": {
+          "mode": "token",
+          "token": "{{ .GATEWAY_TOKEN }}"
+        },
+        "mode": "local"
+      }
+    }
