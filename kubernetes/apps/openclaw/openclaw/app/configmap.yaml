@@ -11,6 +11,122 @@ data:
           "mode": "token",
           "token": "{{ .GATEWAY_TOKEN }}"
         },
-        "mode": "local"
+        "bind": "lan",
+        "controlUi": {
+          "allowInsecureAuth": true
+        },
+        "mode": "local",
+        "nodes": {
+          "denyCommands": [
+            "camera.snap",
+            "camera.clip",
+            "screen.record",
+            "contacts.add",
+            "calendar.add",
+            "reminders.add",
+            "sms.send",
+            "sms.search"
+          ]
+        },
+        "port": 18789,
+        "tailscale": {
+          "mode": "off",
+          "resetOnExit": false
+        }
+      },
+      "agents": {
+        "defaults": {
+          "workspace": "/home/node/.openclaw/workspace"
+        }
+      },
+      "auth": {
+        "profiles": {
+          "ollama:default": {
+            "provider": "ollama",
+            "mode": "api_key"
+          }
+        }
+      },
+      "channels": {
+        "discord": {
+          "enabled": true,
+          "groupPolicy": "allowlist",
+          "guilds": {
+            "1441534507017703547": {
+              "channels": {
+                "1501981764430594189": {
+                  "enabled": true
+                }
+              }
+            }
+          },
+          "token": "{{ .DISCORD_TOKEN }}"
+        }
+      },
+      "hooks": {
+        "internal": {
+          "enabled": true,
+          "entries": {
+            "compaction-notifier": {
+              "enabled": true
+            },
+            "session-memory": {
+              "enabled": true
+            }
+          }
+        }
+      },
+      "models": {
+        "mode": "merge",
+        "providers": {
+          "ollama": {
+            "api": "ollama",
+            "apiKey": "{{ .LLAMA_API_KEY }}",
+            "baseUrl": "https://llama.erwanleboucher.dev",
+            "models": [
+              {
+                "id": "gemma4",
+                "name": "gemma4",
+                "reasoning": false,
+                "input": ["text"],
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0
+                },
+                "contextWindow": 128000,
+                "maxTokens": 8192,
+                "compat": {
+                  "supportsUsageInStreaming": true
+                }
+              }
+            ]
+          }
+        }
+      },
+      "plugins": {
+        "entries": {
+          "discord": {
+            "enabled": true
+          },
+          "ollama": {
+            "enabled": true
+          },
+          "searxng": {
+            "enabled": true
+          }
+        }
+      },
+      "session": {
+        "dmScope": "per-channel-peer"
+      },
+      "tools": {
+        "profile": "coding",
+        "web": {
+          "search": {
+            "provider": "searxng"
+          }
+        }
       }
     }
