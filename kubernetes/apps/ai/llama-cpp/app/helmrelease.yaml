@@ -61,6 +61,7 @@ spec:
               - --n-gpu-layers
               - "35"
               - --flash-attn
+              - on
             env:
               LLAMA_API_KEY:
                 valueFrom:
