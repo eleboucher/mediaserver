@@ -12,6 +12,8 @@ spec:
     - ../../../../components/postgres/cert
     - ../../../../components/oidc
   dependsOn:
+    - name: cnpg-cluster
+      namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: external-secrets

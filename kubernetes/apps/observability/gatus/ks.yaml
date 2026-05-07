@@ -9,6 +9,9 @@ spec:
   path: ./kubernetes/apps/observability/gatus/app
   components:
     - ../../../../components/volsync
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   postBuild:
     substitute:
       APP: gatus

@@ -8,6 +8,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: toolhive-config
       namespace: ai
   interval: 1h

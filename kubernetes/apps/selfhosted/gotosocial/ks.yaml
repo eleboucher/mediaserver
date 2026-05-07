@@ -9,6 +9,11 @@ spec:
     - ../../../../components/postgres/cert
     - ../../../../components/volsync
     - ../../../../components/oidc
+  dependsOn:
+    - name: cnpg-cluster
+      namespace: database
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   interval: 1h
   path: ./kubernetes/apps/selfhosted/gotosocial/server
   postBuild:

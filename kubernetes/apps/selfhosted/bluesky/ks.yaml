@@ -12,6 +12,8 @@ spec:
     - ../../../../components/postgres/cert
     - ../../../../components/volsync
   dependsOn:
+    - name: cnpg-cluster
+      namespace: database
     - name: garage
       namespace: garage-system
     - name: rook-ceph-cluster

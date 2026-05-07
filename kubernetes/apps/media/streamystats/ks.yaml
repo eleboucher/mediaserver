@@ -13,6 +13,8 @@ spec:
     - ../../../../components/anubis
   path: ./kubernetes/apps/media/streamystats/app
   dependsOn:
+    - name: cnpg-cluster
+      namespace: database
     - name: envoy-gateway
       namespace: network
   prune: true

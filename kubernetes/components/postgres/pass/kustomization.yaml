@@ -20,3 +20,43 @@ patches:
           substitute:
             DISABLE_PASSWORD: "false"
             APP: "${APP}"
+  - target:
+      kind: HelmRelease
+      group: helm.toolkit.fluxcd.io
+      version: v2
+    patch: |-
+      apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: not-used
+      spec:
+        values:
+          defaultPodOptions:
+            annotations:
+              k8s.ksgate.org/postgres-ready: |
+                {
+                  "apiVersion": "postgresql.cnpg.io/v1",
+                  "kind": "Cluster",
+                  "name": "postgres",
+                  "namespace": "database",
+                  "expression": "resource.status.readyInstances >= 1"
+                }
+              k8s.ksgate.org/postgres-service: |
+                {
+                  "apiVersion": "v1",
+                  "kind": "Service",
+                  "name": "pooler-rw",
+                  "namespace": "database"
+                }
+              k8s.ksgate.org/database-applied: |
+                {
+                  "apiVersion": "postgresql.cnpg.io/v1",
+                  "kind": "Database",
+                  "name": "postgres-${APP}",
+                  "namespace": "database",
+                  "expression": "resource.status.applied"
+                }
+            schedulingGates:
+              - name: k8s.ksgate.org/postgres-ready
+              - name: k8s.ksgate.org/postgres-service
+              - name: k8s.ksgate.org/database-applied

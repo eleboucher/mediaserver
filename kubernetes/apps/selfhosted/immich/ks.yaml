@@ -8,6 +8,11 @@ spec:
   components:
     - ../../../../components/postgres/cert
     - ../../../../components/oidc
+  dependsOn:
+    - name: cnpg-cluster
+      namespace: database
+    - name: dragonfly
+      namespace: database
   interval: 1h
   path: ./kubernetes/apps/selfhosted/immich/app
   postBuild:

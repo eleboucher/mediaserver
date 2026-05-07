@@ -7,6 +7,9 @@ metadata:
 spec:
   components:
     - ../../../../components/postgres/pass
+  dependsOn:
+    - name: cnpg-cluster
+      namespace: database
   interval: 1h
   path: ./kubernetes/apps/observability/umami/app
   prune: true

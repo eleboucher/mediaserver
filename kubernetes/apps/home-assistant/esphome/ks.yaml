@@ -11,6 +11,9 @@ spec:
   interval: 1h
   components:
     - ../../../../components/volsync
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   path: "./kubernetes/apps/home-assistant/esphome/app"
   postBuild:
     substitute:
