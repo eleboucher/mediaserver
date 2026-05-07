@@ -15,10 +15,9 @@ resource "routeros_ipv6_address" "wg_mb_ll" {
   interface = routeros_interface_wireguard.wg_mb.name
 }
 
-# advertise_dns=false avoids dual-stack clients racing AAAA queries upstream and caching NXDOMAIN over private zones.
 resource "routeros_ipv6_neighbor_discovery" "lan" {
   interface           = "vlan10-mgmt"
-  advertise_dns       = false
+  advertise_dns       = true
   other_configuration = true
   ra_interval         = "20s-1m"
 }
