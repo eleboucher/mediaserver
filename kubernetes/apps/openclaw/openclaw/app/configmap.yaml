@@ -95,7 +95,6 @@ data:
             "api": "openai-responses",
             "apiKey": "{{ .LLAMA_API_KEY }}",
             "baseUrl": "https://llama.erwanleboucher.dev/v1",
-            "timeoutSeconds": 300,
             "models": [
               {
                 "id": "google/gemma-4-E4B-it",
