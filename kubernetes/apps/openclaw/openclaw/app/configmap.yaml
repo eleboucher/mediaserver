@@ -40,7 +40,10 @@ data:
         "defaults": {
           "maxConcurrent": 4,
           "model": {
-            "primary": "llama-cpp/qwen/qwen3.6-35B-A3B:general"
+            "primary": "llama-cpp/qwen/qwen3.6-35B-A3B:general",
+            "fallbacks": [
+              "llama-cpp/google/gemma-4-E4B-it"
+            ]
           },
           "subagents": {
             "maxConcurrent": 8
@@ -95,7 +98,7 @@ data:
           "llama-cpp": {
             "api": "openai-responses",
             "apiKey": "{{ .LLAMA_API_KEY }}",
-            "baseUrl": "https://llama.erwanleboucher.dev/v1",
+            "baseUrl": "http://llama-cpp.ai:8080/v1",
             "models": [
               {
                 "id": "google/gemma-4-E4B-it",
