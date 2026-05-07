@@ -47,10 +47,11 @@ spec:
                     command:
                       - sh
                       - -c
-                      - showmount -e localhost | grep -q /mnt/media
+                      - rpcinfo -T tcp localhost 100003 >/dev/null
                   initialDelaySeconds: 30
                   periodSeconds: 30
-                  failureThreshold: 3
+                  timeoutSeconds: 10
+                  failureThreshold: 6
               readiness: *probes
             resources:
               requests:
