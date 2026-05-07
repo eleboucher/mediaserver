@@ -1,0 +1,431 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openclaw
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: openclaw
+  interval: 15m
+  values:
+    defaultPodOptions:
+      shareProcessNamespace: true
+      securityContext:
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 100
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+    controllers:
+      openclaw:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        replicas: 1
+        strategy: Recreate
+        type: deployment
+        initContainers:
+          install-tools:
+            image:
+              repository: ghcr.io/openclaw/openclaw
+              tag: 2026.4.22@sha256:639fc648f1e2cb9137cd2d4513038e3b5efdebc94a6bd7fbef42c908005945f4
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -e
+                mkdir -p /home/node/.local/bin /home/node/.local/go
+
+                if [ ! -f /home/node/.local/bin/gh ]; then
+                  cd /tmp
+                  curl -fsSL https://github.com/cli/cli/releases/download/v2.61.0/gh_2.61.0_linux_amd64.tar.gz -o gh.tar.gz
+                  tar xzf gh.tar.gz
+                  cp gh_2.61.0_linux_amd64/bin/gh /home/node/.local/bin/
+                  rm -rf gh.tar.gz gh_2.61.0_linux_amd64
+                fi
+
+                if [ ! -f /home/node/.local/bin/openclaw ]; then
+                  ln -s /app/openclaw.mjs /home/node/.local/bin/openclaw
+                fi
+
+                if [ ! -f /home/node/.local/go/bin/go ]; then
+                  cd /tmp
+                  curl -fsSL https://go.dev/dl/go1.23.5.linux-amd64.tar.gz -o go.tar.gz
+                  tar xzf go.tar.gz
+                  mv go /home/node/.local/
+                  rm -rf go.tar.gz
+                fi
+
+                if [ ! -f /home/node/.local/homebrew/bin/brew ]; then
+                  export HOMEBREW_PREFIX=/home/node/.local/homebrew
+                  mkdir -p $HOMEBREW_PREFIX
+                  git clone --depth 1 https://github.com/Homebrew/brew $HOMEBREW_PREFIX
+                fi
+
+                mkdir -p /home/node/.openclaw
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+          daemon:
+            image:
+              repository: docker
+              tag: 29.4.1-dind@sha256:c77e5d7912f9b137cc67051fdc2991d8f5ae22c55ddf532bb836dcb693a04940
+            restartPolicy: Always
+            env:
+              DOCKER_TLS_CERTDIR: /certs
+            securityContext:
+              allowPrivilegeEscalation: true
+              privileged: true
+              runAsGroup: 0
+              runAsUser: 0
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - "docker"
+                      - "info"
+                  failureThreshold: 3
+                  periodSeconds: 20
+                  timeoutSeconds: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - "docker"
+                      - "info"
+                  failureThreshold: 3
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - "docker"
+                      - "info"
+                  failureThreshold: 60
+                  periodSeconds: 2
+                  timeoutSeconds: 3
+        containers:
+          app:
+            image:
+              repository: ghcr.io/openclaw/openclaw
+              tag: 2026.4.22@sha256:639fc648f1e2cb9137cd2d4513038e3b5efdebc94a6bd7fbef42c908005945f4
+            command:
+              - /bin/sh
+              - -c
+              - exec node dist/index.js gateway --bind lan
+            env:
+              BROWSER_WS_ENDPOINT: ws://localhost:9222
+              DOCKER_CERT_PATH: /certs/client
+              DOCKER_HOST: tcp://localhost:2376
+              DOCKER_TLS_VERIFY: "1"
+              GOPATH: /home/node/go
+              HOME: /home/node
+              HOMEBREW_CELLAR: /home/node/.local/homebrew/Cellar
+              HOMEBREW_PREFIX: /home/node/.local/homebrew
+              HOMEBREW_REPOSITORY: /home/node/.local/homebrew
+              OPENCLAW_EXTENSION_API_PATH: /app/dist/extensionAPI.js
+              OPENCLAW_GATEWAY_PORT: "18789"
+              OPENCLAW_LOG_LEVEL: info
+              PATH: /home/node/.local/bin:/home/node/.local/go/bin:/home/node/.local/homebrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+              PIP_BREAK_SYSTEM_PACKAGES: "1"
+              TERM: xterm-256color
+              TZ: ${TZ}
+            envFrom:
+              - secretRef:
+                  name: openclaw
+            resources:
+              requests:
+                cpu: 500m
+                memory: 2Gi
+              limits:
+                cpu: 4
+                memory: 16Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+          chrome:
+            image:
+              repository: zenika/alpine-chrome
+              tag: with-node
+            command:
+              - chromium-browser
+              - --headless=new
+              - --disable-gpu
+              - --remote-debugging-address=0.0.0.0
+              - --remote-debugging-port=9222
+              - --no-sandbox
+              - --disable-dev-shm-usage
+              - --disable-blink-features=AutomationControlled
+              - --remote-allow-origins=*
+              - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+            env:
+              TZ: ${TZ}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 1000m
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+          codeserver:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.117.0@sha256:e6702766518b961c7e3c41095c129c7c9a82b041578c53326c52fa363a057727
+            args:
+              - --auth
+              - none
+              - --user-data-dir
+              - /home/node/.vscode
+              - --extensions-dir
+              - /home/node/.vscode
+              - --port
+              - "12321"
+              - /config
+            env:
+              TZ: ${TZ}
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+    service:
+      app:
+        controller: openclaw
+        ipFamilies:
+          - IPv4
+        ports:
+          codeserver:
+            port: 12321
+          http:
+            port: 18789
+    route:
+      app:
+        hostnames:
+          - "openclaw.erwanleboucher.dev"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 18789
+      codeserver:
+        hostnames:
+          - "openclaw-code.erwanleboucher.dev"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 12321
+    persistence:
+      data:
+        existingClaim: openclaw
+        globalMounts:
+          - path: /home/node/.openclaw
+      home:
+        accessMode: ReadWriteOnce
+        forceRename: openclaw-home
+        size: 5Gi
+        storageClass: ceph-block
+        globalMounts:
+          - path: /home/node
+      config:
+        type: secret
+        name: openclaw-config
+        defaultMode: 0o400
+        globalMounts:
+          - path: /home/node/.openclaw/openclaw.json
+            subPath: openclaw.json
+      next-cache:
+        type: emptyDir
+        globalMounts:
+          - path: /app/.next/cache
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      certs:
+        type: emptyDir
+        globalMounts:
+          - path: /certs
+    rbac:
+      roles:
+        openclaw-read-all:
+          type: ClusterRole
+          rules:
+            - apiGroups:
+                - ""
+              resources:
+                - pods
+                - pods/log
+                - nodes
+                - services
+                - namespaces
+                - configmaps
+                - persistentvolumes
+                - persistentvolumeclaims
+                - endpoints
+                - resourcequotas
+                - limitranges
+                - serviceaccounts
+                - events
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "apps"
+              resources:
+                - deployments
+                - daemonsets
+                - statefulsets
+                - replicasets
+                - controllerrevisions
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "batch"
+              resources:
+                - "jobs"
+                - "cronjobs"
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "networking.k8s.io"
+              resources:
+                - "ingresses"
+                - "ingressclasses"
+                - "networkpolicies"
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "storage.k8s.io"
+              resources:
+                - storageclasses
+                - csinodes
+                - csidrivers
+                - volumeattachments
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "helm.toolkit.fluxcd.io"
+              resources:
+                - "helmreleases"
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "kustomize.toolkit.fluxcd.io"
+              resources:
+                - "kustomizations"
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "source.toolkit.fluxcd.io"
+              resources:
+                - gitrepositories
+                - helmrepositories
+                - ocirepositories
+                - buckets
+                - helmcharts
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "external-secrets.io"
+              resources:
+                - externalsecrets
+                - secretstores
+                - clustersecretstores
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+        openclaw-pod-delete:
+          type: ClusterRole
+          rules:
+            - apiGroups:
+                - ""
+              resources:
+                - "pods"
+              verbs:
+                - "delete"
+        openclaw-exec-deploy:
+          type: Role
+          rules:
+            - apiGroups:
+                - ""
+              resources:
+                - "pods/exec"
+              verbs:
+                - "create"
+            - apiGroups:
+                - "apps"
+              resources:
+                - "deployments"
+              verbs:
+                - "patch"
+                - "update"
+      bindings:
+        openclaw-read-all:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: openclaw-read-all
+          subjects:
+            - identifier: openclaw
+              serviceAccount: openclaw
+        openclaw-pod-delete:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: openclaw-pod-delete
+          subjects:
+            - identifier: openclaw
+              serviceAccount: openclaw
+        openclaw-exec-deploy:
+          type: RoleBinding
+          roleRef:
+            identifier: openclaw-exec-deploy
+          subjects:
+            - identifier: openclaw
+              serviceAccount: openclaw
+              namespace: openclaw
+    serviceAccount:
+      openclaw: {}

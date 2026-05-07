@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-configmap
+data:
+  openclaw.json: |-
+    {
+      "llm": {
+        "baseUrl": "http://llama-cpp.ai.svc.cluster.local:8080/v1",
+        "apiKey": "{{ .LLAMA_API_KEY }}",
+        "model": "qwen/qwen3.6-35B-A3B:general"
+      }
+    }
