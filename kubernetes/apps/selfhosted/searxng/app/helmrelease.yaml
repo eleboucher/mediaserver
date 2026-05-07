@@ -144,7 +144,7 @@ spec:
             env:
               SEARXNG_BASE_URL: https://search.erwanleboucher.dev
               SEARXNG_PORT: &httpPort 8080
-              SEARXNG_VALKEY_URL: "redis://dragonfly.database.svc:6379?pool_size=100&idle_timeout=180s"
+              SEARXNG_VALKEY_URL: "redis://dragonfly.database.svc:6379"
             envFrom:
               - secretRef:
                   name: searxng-secret
